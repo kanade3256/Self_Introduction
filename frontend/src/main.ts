@@ -74,8 +74,8 @@
     if (footer) footer.textContent = name;
   };
   fetch('site.config.json')
-    .then((r) => (r.ok ? r.json() as Promise<SiteConfig> : Promise.resolve({})))
-    .then((cfg) => {
+    .then((r) => (r.ok ? (r.json() as Promise<SiteConfig>) : Promise.resolve<SiteConfig>({})))
+    .then((cfg: SiteConfig) => {
       if (cfg?.name) applyName(cfg.name);
     })
     .catch(() => {

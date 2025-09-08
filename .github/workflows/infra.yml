@@ -38,7 +38,8 @@ jobs:
         run: sam build
 
   deploy:
-    if: github.event_name == 'workflow_dispatch' && inputs.deploy == 'true'
+    # Fully disabled to prevent accidental AWS Lambda deploys
+    if: false
     needs: build
     runs-on: ubuntu-latest
     steps:
