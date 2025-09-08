@@ -1,0 +1,54 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: Self Introduction Portfolio - Lambda functions with common layer
+
+Globals:
+  Function:
+    Timeout: 180
+    Runtime: python3.11
+    Tracing: Active
+    LoggingConfig:
+      LogFormat: JSON
+    Environment:
+      Variables:
+        SECRET_NAME: "PortfolioDefaultSecret"
+
+Resources:
+
+  # ---------- Lambda Layer ----------
+  CommonLayer:
+    Type: AWS::Serverless::LayerVersion
+    Properties:
+      LayerName: common-layer
+      Description: Shared utility library for portfolio functions
+      ContentUri: ../backend/common_layer/
+      CompatibleRuntimes:
+        - python3.11
+      RetentionPolicy: Delete
+    Metadata:
+      BuildMethod: python3.11
+      BuildMethod: python3.11
+
+  # ---------- Lambda Functions ----------
+
+  ErrorLINENotifierFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: ErrorLINENotifier
+      CodeUri: ../backend/ErrorLINENotifier/
+      Handler: app.lambda_handler
+      Runtime: python3.11
+      Architectures: [x86_64]
+      Layers: [!Ref CommonLayer]
+      Description: LINE error notification function
+      Environment:
+        Variables:
+          LINE_USER_IDS: "Ud55966cebee1b08b41346b72f4ea86fb"
+          SYSTEM_NAME: "SelfIntroductionPortfolio"
+          LINE_ACCESS_TOKEN: "oRg8qh4KiyD9fq6V+a911S6WH5o6m6QXrfw1uExMB95nT2oPtJiJB5h2kEcr9c/BRLNkH5deVQ7iu7on/yi7z81ZfrB8GZnmO91RDECybd5d5PgTdxVLF0KI1TZYFcNwSr7g/IrybLXy3GNkomQYugdB04t89/1O/w1cDnyilFU="
+      Policies:
+        - Statement:
+            - Effect: Allow
+              Action:
+                - secretsmanager:GetSecretValue
+              Resource: arn:aws:secretsmanager:ap-northeast-1:*:secret:PortfolioDefaultSecret-*
