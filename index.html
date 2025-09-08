@@ -1,0 +1,165 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>あなたの名前 | ポートフォリオ</title>
+    <meta name="description" content="エンジニア/デザイナーのポートフォリオサイト。自己紹介、スキル、制作物、職務経歴、連絡先を掲載。" />
+    <meta name="theme-color" content="#0ea5e9" id="meta-theme-color" />
+    <link rel="icon" href="assets/favicon.svg" type="image/svg+xml" />
+    <link rel="preload" href="css/style.css" as="style" />
+    <link rel="stylesheet" href="css/style.css" />
+  </head>
+  <body>
+    <a class="skip-link" href="#main">メインコンテンツへ移動</a>
+
+    <header class="site-header" role="banner">
+      <div class="container header-inner">
+        <a class="brand" href="#home" aria-label="ホーム">あなたの名前</a>
+        <button class="nav-toggle" aria-expanded="false" aria-controls="site-nav" aria-label="メニューを開閉">☰</button>
+        <nav id="site-nav" class="site-nav" role="navigation" aria-label="メインナビゲーション">
+          <ul>
+            <li><a href="#about">自己紹介</a></li>
+            <li><a href="#skills">スキル</a></li>
+            <li><a href="#projects">制作物</a></li>
+            <li><a href="#experience">経歴</a></li>
+            <li><a href="#contact">連絡</a></li>
+          </ul>
+        </nav>
+        <button id="theme-toggle" class="theme-toggle" aria-label="テーマを切り替え">🌓</button>
+      </div>
+    </header>
+
+    <main id="main" class="site-main" tabindex="-1">
+      <section id="home" class="section hero">
+        <div class="container grid hero-grid">
+          <div class="hero-text">
+            <p class="eyebrow">こんにちは、</p>
+            <h1>私は <span class="accent">あなたの名前</span> です</h1>
+            <p class="lead">フロントエンド / バックエンド / デザイン など、ユーザー価値に直結する開発が得意です。</p>
+            <div class="actions">
+              <a class="btn primary" href="#projects">制作物を見る</a>
+              <a class="btn" href="#contact">問い合わせ</a>
+            </div>
+          </div>
+          <div class="hero-media">
+            <img src="assets/avatar.svg" alt="プロフィール画像のプレースホルダー" />
+          </div>
+        </div>
+      </section>
+
+      <section id="about" class="section">
+        <div class="container narrow">
+          <h2>自己紹介</h2>
+          <p>
+            ここに自己紹介文を記載してください。興味関心、得意分野、価値観、仕事の進め方、成果や受賞歴などを簡潔に。
+          </p>
+        </div>
+      </section>
+
+      <section id="skills" class="section alt">
+        <div class="container">
+          <h2>スキル</h2>
+          <ul class="tags">
+            <li>TypeScript</li>
+            <li>React</li>
+            <li>Node.js</li>
+            <li>Next.js</li>
+            <li>Python</li>
+            <li>Go</li>
+            <li>AWS</li>
+            <li>Docker</li>
+            <li>UI/UX</li>
+            <li>Figma</li>
+          </ul>
+        </div>
+      </section>
+
+      <section id="projects" class="section">
+        <div class="container">
+          <h2>制作物</h2>
+          <div class="grid cards">
+            <article class="card">
+              <h3>プロジェクト名 A</h3>
+              <p>概要説明：どんな課題を解決し、どのような成果を出したか。</p>
+              <ul class="meta">
+                <li>役割: 個人開発</li>
+                <li>技術: React, TypeScript, Node.js</li>
+              </ul>
+              <div class="card-actions">
+                <a class="btn small" href="#" aria-label="デモを開く">デモ</a>
+                <a class="btn small" href="#" aria-label="GitHubを開く">GitHub</a>
+              </div>
+            </article>
+            <article class="card">
+              <h3>プロジェクト名 B</h3>
+              <p>概要説明：成果数値、ユーザー数、速度改善などの具体的なインパクト。</p>
+              <ul class="meta">
+                <li>役割: チーム開発</li>
+                <li>技術: Next.js, Prisma, PostgreSQL</li>
+              </ul>
+              <div class="card-actions">
+                <a class="btn small" href="#">ケーススタディ</a>
+              </div>
+            </article>
+            <article class="card">
+              <h3>プロジェクト名 C</h3>
+              <p>概要説明：担当範囲、工夫点、学びなど。</p>
+              <ul class="meta">
+                <li>役割: フルスタック</li>
+                <li>技術: Go, gRPC, Docker, AWS</li>
+              </ul>
+              <div class="card-actions">
+                <a class="btn small" href="#">詳細</a>
+              </div>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section id="experience" class="section alt">
+        <div class="container">
+          <h2>職務経歴</h2>
+          <div class="timeline">
+            <div class="tl-item">
+              <div class="tl-dot"></div>
+              <div class="tl-content">
+                <h3>会社名 / ポジション</h3>
+                <p class="muted">2022 - 現在</p>
+                <p>担当業務、実績、リードしたプロジェクトなど。</p>
+              </div>
+            </div>
+            <div class="tl-item">
+              <div class="tl-dot"></div>
+              <div class="tl-content">
+                <h3>会社名 / ポジション</h3>
+                <p class="muted">2020 - 2022</p>
+                <p>主要タスク、改善、成果指標など。</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="contact" class="section">
+        <div class="container narrow">
+          <h2>連絡先</h2>
+          <p>お仕事のご相談・お問い合わせは以下からお気軽にどうぞ。</p>
+          <div class="actions">
+            <a class="btn primary" href="mailto:you@example.com">メールを送る</a>
+            <a class="btn" href="#">履歴書 / 職務経歴書</a>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <div class="container footer-inner">
+        <small>© <span id="year"></span> あなたの名前. All rights reserved.</small>
+      </div>
+    </footer>
+
+    <script src="js/main.js" defer></script>
+  </body>
+  </html>
+

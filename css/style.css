@@ -1,0 +1,135 @@
+/* 基本リセット */
+*, *::before, *::after { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body { margin: 0; font-family: system-ui, -apple-system, Segoe UI, Roboto, "Hiragino Sans", "Noto Sans JP", "Yu Gothic UI", "Yu Gothic", sans-serif; line-height: 1.6; }
+img, svg { display: block; max-width: 100%; height: auto; }
+a { color: inherit; text-decoration: none; }
+ul { padding-left: 1rem; }
+
+/* カラーテーマ */
+:root {
+  --bg: #0b1220;
+  --panel: #0f172a;
+  --card: #111827;
+  --muted: #94a3b8;
+  --text: #e5e7eb;
+  --primary: #0ea5e9; /* sky-500 */
+  --primary-contrast: #001018;
+  --ring: #22d3ee; /* cyan-400 */
+  --shadow: 0 8px 24px rgba(2, 6, 23, 0.35);
+}
+
+@media (prefers-color-scheme: light) {
+  :root {
+    --bg: #ffffff;
+    --panel: #ffffff;
+    --card: #f8fafc;
+    --muted: #475569;
+    --text: #0f172a;
+    --primary: #0ea5e9;
+    --primary-contrast: #ffffff;
+    --ring: #06b6d4;
+    --shadow: 0 8px 24px rgba(2, 6, 23, 0.08);
+  }
+}
+
+[data-theme="light"] {
+  --bg: #ffffff;
+  --panel: #ffffff;
+  --card: #f8fafc;
+  --muted: #475569;
+  --text: #0f172a;
+  --primary: #0ea5e9;
+  --primary-contrast: #ffffff;
+  --ring: #06b6d4;
+  --shadow: 0 8px 24px rgba(2, 6, 23, 0.08);
+}
+
+[data-theme="dark"] {
+  --bg: #0b1220;
+  --panel: #0f172a;
+  --card: #111827;
+  --muted: #94a3b8;
+  --text: #e5e7eb;
+  --primary: #0ea5e9;
+  --primary-contrast: #001018;
+  --ring: #22d3ee;
+  --shadow: 0 8px 24px rgba(2, 6, 23, 0.35);
+}
+
+html { scroll-behavior: smooth; }
+body { background: var(--bg); color: var(--text); }
+
+.container { width: min(1100px, calc(100% - 2rem)); margin-inline: auto; }
+.narrow { width: min(760px, 100%); }
+.grid { display: grid; gap: 2rem; }
+
+.skip-link { position: absolute; left: -9999px; top: auto; width: 1px; height: 1px; overflow: hidden; }
+.skip-link:focus { position: fixed; left: 1rem; top: 1rem; width: auto; height: auto; background: var(--panel); color: var(--text); padding: .5rem .75rem; border-radius: .5rem; box-shadow: var(--shadow); }
+
+/* ヘッダー */
+.site-header { position: sticky; top: 0; z-index: 50; background: color-mix(in oklab, var(--panel) 85%, transparent); backdrop-filter: saturate(1.2) blur(10px); border-bottom: 1px solid color-mix(in oklab, var(--muted) 20%, transparent); }
+.header-inner { display: flex; align-items: center; gap: 1rem; padding: .75rem 0; }
+.brand { font-weight: 700; letter-spacing: .2px; }
+.site-nav ul { list-style: none; display: flex; gap: 1rem; margin: 0; padding: 0; }
+.site-nav a { padding: .5rem .75rem; border-radius: .5rem; color: var(--muted); }
+.site-nav a:hover, .site-nav a.active { color: var(--text); background: color-mix(in oklab, var(--primary) 20%, transparent); }
+.nav-toggle { display: none; background: transparent; border: 1px solid color-mix(in oklab, var(--muted) 30%, transparent); color: var(--text); padding: .4rem .6rem; border-radius: .5rem; }
+.theme-toggle { background: transparent; border: 1px solid color-mix(in oklab, var(--muted) 30%, transparent); color: var(--text); padding: .4rem .6rem; border-radius: .5rem; }
+
+@media (max-width: 800px) {
+  .site-nav { display: none; position: absolute; top: 100%; right: 0; background: var(--panel); border: 1px solid color-mix(in oklab, var(--muted) 20%, transparent); border-radius: .75rem; box-shadow: var(--shadow); }
+  .site-nav.open { display: block; }
+  .site-nav ul { flex-direction: column; gap: 0; }
+  .site-nav a { display: block; padding: .75rem 1rem; }
+  .nav-toggle { display: inline-flex; margin-left: auto; }
+}
+
+/* セクション */
+.section { padding: 72px 0; }
+.section.alt { background: linear-gradient(180deg, color-mix(in oklab, var(--panel) 45%, transparent), transparent 60%); }
+.section h2 { margin: 0 0 1rem; font-size: clamp(1.4rem, 1.2rem + 1vw, 2rem); }
+.lead { color: var(--muted); }
+.muted { color: var(--muted); }
+.accent { color: var(--primary); }
+
+/* ヒーロー */
+.hero .eyebrow { color: var(--muted); margin: 0; }
+.hero h1 { margin: .25rem 0 1rem; font-size: clamp(1.8rem, 1.4rem + 2vw, 3rem); line-height: 1.2; }
+.hero-grid { grid-template-columns: 1.2fr .8fr; align-items: center; }
+.hero-media { justify-self: center; max-width: 320px; }
+@media (max-width: 900px) { .hero-grid { grid-template-columns: 1fr; } }
+
+/* ボタン */
+.btn { display: inline-flex; align-items: center; justify-content: center; gap: .5rem; padding: .625rem 1rem; border-radius: .6rem; border: 1px solid color-mix(in oklab, var(--muted) 25%, transparent); color: var(--text); background: color-mix(in oklab, var(--panel) 80%, transparent); transition: transform .06s ease, background .2s ease, border-color .2s ease; }
+.btn:hover { transform: translateY(-1px); border-color: color-mix(in oklab, var(--primary) 55%, var(--panel)); }
+.btn.primary { background: var(--primary); color: var(--primary-contrast); border-color: color-mix(in oklab, var(--primary) 65%, var(--panel)); }
+.btn.small { padding: .45rem .7rem; font-size: .94rem; }
+.actions { display: flex; gap: .75rem; flex-wrap: wrap; }
+
+/* タグ */
+.tags { list-style: none; margin: .5rem 0 0; padding: 0; display: flex; flex-wrap: wrap; gap: .5rem; }
+.tags li { background: var(--card); border: 1px solid color-mix(in oklab, var(--muted) 25%, transparent); color: var(--muted); padding: .35rem .6rem; border-radius: .5rem; }
+
+/* カード */
+.cards { grid-template-columns: repeat(12, 1fr); }
+.card { grid-column: span 4; background: var(--card); border: 1px solid color-mix(in oklab, var(--muted) 20%, transparent); border-radius: .9rem; padding: 1rem; box-shadow: var(--shadow); }
+.card h3 { margin: .25rem 0 .5rem; }
+.card .meta { list-style: none; padding: 0; margin: .5rem 0; color: var(--muted); }
+.card-actions { display: flex; gap: .5rem; }
+@media (max-width: 1000px) { .card { grid-column: span 6; } }
+@media (max-width: 640px) { .card { grid-column: span 12; } }
+
+/* タイムライン */
+.timeline { position: relative; margin-left: .75rem; }
+.timeline::before { content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 2px; background: color-mix(in oklab, var(--muted) 30%, transparent); }
+.tl-item { position: relative; padding-left: 1.5rem; margin-bottom: 1.25rem; }
+.tl-dot { position: absolute; left: -5px; top: .4rem; width: 12px; height: 12px; border-radius: 999px; background: var(--primary); box-shadow: 0 0 0 3px color-mix(in oklab, var(--primary) 20%, transparent); }
+
+/* フッター */
+.site-footer { border-top: 1px solid color-mix(in oklab, var(--muted) 20%, transparent); padding: 2rem 0; background: color-mix(in oklab, var(--panel) 70%, transparent); }
+.footer-inner { display: flex; align-items: center; justify-content: center; }
+
+/* フォーカスリング */
+:focus-visible { outline: 3px solid color-mix(in oklab, var(--ring) 70%, var(--primary)); outline-offset: 2px; border-radius: .35rem; }
+
