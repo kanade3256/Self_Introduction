@@ -1,8 +1,15 @@
-name: Deploy to GitHub Pages
+name: Deploy Frontend to GitHub Pages
 
 on:
   push:
     branches: [ main ]
+    paths:
+      - 'frontend/**'
+      - '.github/workflows/pages.yml'
+  pull_request:
+    paths:
+      - 'frontend/**'
+      - '.github/workflows/pages.yml'
   workflow_dispatch:
 
 permissions:
@@ -21,13 +28,13 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Build TypeScript
-        run: npx --yes -p typescript@5 tsc -p .
+      - name: Build TypeScript (frontend)
+        run: npx --yes -p typescript@5 tsc -p frontend/tsconfig.json
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: .
+          path: frontend
 
   deploy:
     needs: build

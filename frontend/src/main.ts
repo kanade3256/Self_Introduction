@@ -57,5 +57,28 @@
     );
     sections.forEach((s) => observer.observe(s));
   }
-})();
 
+  // サイト共通設定の読込（名前など）
+  type SiteConfig = { name?: string };
+  const applyName = (name: string) => {
+    // タイトル
+    document.title = `${name} | ポートフォリオ`;
+    // ヘッダーブランド（最初の .brand を対象）
+    const brand = document.querySelector<HTMLElement>('.brand');
+    if (brand) brand.textContent = name;
+    // ヒーローの名前
+    const display = document.getElementById('display-name');
+    if (display) display.textContent = name;
+    // フッターの名前
+    const footer = document.getElementById('footer-name');
+    if (footer) footer.textContent = name;
+  };
+  fetch('site.config.json')
+    .then((r) => (r.ok ? r.json() as Promise<SiteConfig> : Promise.resolve({})))
+    .then((cfg) => {
+      if (cfg?.name) applyName(cfg.name);
+    })
+    .catch(() => {
+      /* 失敗時はプレースホルダーを維持 */
+    });
+})();

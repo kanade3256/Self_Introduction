@@ -1,50 +1,137 @@
-# ポートフォリオ テンプレート
+# SelfIntroduction / Frontend + SAM Backend（LINE通知）
 
-モダンで軽量・レスポンシブ・アクセシブルな静的ポートフォリオのひな形です。HTML/CSS に加え、TypeScript で記述しています（出力はプレーン JS）。
+このリポジトリは、フロントエンド（静的サイト）と、AWS SAM で管理するバックエンド（SNS→Lambda→LINE 通知）を同一プロジェクト内で分離管理します。デプロイ経路はパス単位（frontend / backend / infra）で完全分離されています。
 
-## ファイル構成
+## ディレクトリ構成
 
-- `index.html` : トップページ（自己紹介/スキル/制作物/経歴/連絡）
-- `css/style.css` : レイアウト、色テーマ（ライト/ダーク）
-- `src/main.ts` : テーマ切替、モバイルナビ、現在位置のナビ有効化（TypeScript）
-- `js/main.js` : コンパイル済み JavaScript（`tsconfig.json` の出力先）
-- `tsconfig.json` : TypeScript 設定
-- `assets/avatar.svg` : プロフィール画像のプレースホルダー
-- `assets/favicon.svg` : ファビコン
+- `frontend/` フロント資産（GitHub Pages で配信）
+  - `index.html`, `css/`, `assets/`, `src/`, `js/`, `tsconfig.json`
+- `backend/ErrorLINENotifier/` Python Lambda（SNS → LINE 通知）
+  - `app.py`（エンドポイント）
+- `backend/common_layer/` Lambda Layer（共通ロジック）
+  - `python/send_message.py`, `python/secret_loder.py`, `requirements.txt`
+- `infra/` AWS SAM テンプレート
+  - `template.yaml`（Python 3.12, Layer付き, SNS→Lambda）
+- `.github/workflows/` CI 分離
+  - `pages.yml`（frontend のみ）
+  - `backend.yml`（backend のみ）
+  - `infra.yml`（infra のみ、手動デプロイ対応）
 
-## 使い方
+## 必要なもの（インストール）
 
-1. `index.html` をブラウザで開くだけで動作します（`js/main.js` はビルド済みを同梱）。
-2. 以下をあなたの情報に置き換えてください。
-   - タイトル/名前/説明: `index.html:5-7`
-   - ヒーロー文言: `index.html:22`
-   - スキルタグ: `index.html:48`
-   - 制作物カード: `index.html:57`
-   - 経歴: `index.html:86`
-   - 連絡先メール: `index.html:104`
-3. 画像を差し替える場合は `assets/` に追加し、`index.html` の参照を更新します。
+- Python 3.12
+- AWS SAM CLI（ビルド/デプロイに使用）
+  - macOS: `brew install aws-sam-cli`
+  - Windows: `choco install aws-sam-cli` または MSI
+  - Linux: `pipx install aws-sam-cli` など
+- Docker（任意, `sam local` 実行時に推奨）
+- AWS CLI（任意, シークレット作成などに便利）
 
-## テーマ設定
+## .env（ローカル用の例）
 
-- 初回は OS の設定（ライト/ダーク）を自動で検出します。
-- 右上の「🌓」ボタンで切り替え可能。選択は `localStorage` に保存されます。
+リポジトリ直下に `.env` を作成してください（Git追跡はされません）。
 
-## カスタマイズのヒント
+```
+# AWS
+AWS_REGION=ap-northeast-1
+AWS_PROFILE=default
 
-- カラーパレット: `css/style.css` の `:root` と `[data-theme="dark"]` セクション
-- セクションの追加: `index.html` に `<section>` を追加し、ヘッダーのナビにリンクを増やす
-- SNS リンク: ヒーローやフッターにボタンを追加
-- 履歴書リンク: `#contact` セクションのボタンの `href` を更新
+# Lambda 実行時の環境変数
+SECRET_NAME=/myapp/line-notifier/secret
+LINE_USER_IDS=Uxxxxxxxxxxxx,gyyyyyyyyyyyy
+SYSTEM_NAME=ErrorNotifier
+```
 
-## 開発/ビルド
+注意: シークレット本体（LINE_ACCESS_TOKEN など）は `.env` に書かず、AWS Secrets Manager に保存します。
 
-- TypeScript を編集する場合は `src/main.ts` を変更し、以下でビルドしてください。
-  - すでに TypeScript が入っている環境: `tsc -p .`
-  - 未導入の場合: `npm i -D typescript && npx tsc -p .`
+## Secrets Manager の準備
 
-## 公開方法
+通知に使用するシークレット（JSON）を作成します。キー例:
 
-- GitHub Pages, Netlify, Vercel などの静的ホスティングにそのままアップロード可能です。
+- `LINE_ACCESS_TOKEN`（必須）
+- `SLACK_TOKEN`（任意, LINE失敗時のフォールバック）
+- `SLACK_CHANNEL`（任意）
 
----
-不明点や追加の要望（英語版、ブログ一覧、プロジェクト詳細ページ化など）があればお知らせください。
+AWS CLI 例:
+
+```
+aws secretsmanager create-secret \
+  --name /myapp/line-notifier/secret \
+  --secret-string '{"LINE_ACCESS_TOKEN":"<your-line-channel-access-token>","SLACK_TOKEN":"xoxb-...","SLACK_CHANNEL":"#alerts"}'
+```
+
+## SAM ビルド/デプロイ
+
+1) ビルド
+
+```
+cd infra
+sam build
+```
+
+2) デプロイ（初回または更新）
+
+```
+sam deploy \
+  --stack-name line-error-notifier \
+  --capabilities CAPABILITY_IAM \
+  --parameter-overrides \
+    StackName=line-error-notifier \
+    SecretName=$SECRET_NAME \
+    LineUserIds=$LINE_USER_IDS \
+    SystemName=$SYSTEM_NAME
+```
+
+実行には AWS 資格情報（プロファイルまたはOIDC）が必要です。
+
+## ローカルテスト（sam local）
+
+Docker が使える環境で、簡易に動作確認できます。
+
+`env.json`（例）
+
+```
+{
+  "ErrorLINENotifier": {
+    "SECRET_NAME": "/myapp/line-notifier/secret",
+    "LINE_USER_IDS": "Uxxxxxxxxxxxx,gyyyyyyyyyyyy",
+    "SYSTEM_NAME": "ErrorNotifier"
+  }
+}
+```
+
+`event.json`（例: SNS相当の簡易イベント）
+
+```
+{ "message": "ローカルテスト: これはテスト通知です" }
+```
+
+実行:
+
+```
+cd infra
+sam build
+sam local invoke ErrorLINENotifier --event event.json --env-vars env.json
+```
+
+## CI（GitHub Actions）
+
+- Frontend: `frontend/**` 変更時のみ `pages.yml` が実行され Pages へデプロイ
+- Backend: `backend/**` 変更時のみ `backend.yml` が実行
+- Infra: `infra/**` 変更時のみ `infra.yml` がビルド。手動実行でデプロイ可能
+
+`infra.yml` 用リポジトリシークレット:
+
+- `AWS_ROLE_TO_ASSUME`: デプロイ用のIAMロールARN
+- `AWS_REGION`: 例 `ap-northeast-1`
+- `PARAM_SECRET_NAME`: 例 `/myapp/line-notifier/secret`
+- `PARAM_LINE_USER_IDS`: 例 `Uxxx,gyyy`
+- `PARAM_SYSTEM_NAME`: 例 `ErrorNotifier`
+
+## 補足
+
+- Lambda ランタイム: Python 3.12
+- 共通レイヤー: `backend/common_layer/requirements.txt` の依存（`requests`）を同梱
+- 直接 Python 実行で試す場合はローカルにも依存を入れてください（簡易テスト）
+  - `pip install requests boto3`
+- IAM は本番では Secrets Manager の ARN を個別に指定するなど最小権限化してください。

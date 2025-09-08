@@ -132,4 +132,3 @@ body { background: var(--bg); color: var(--text); }
 
 /* フォーカスリング */
 :focus-visible { outline: 3px solid color-mix(in oklab, var(--ring) 70%, var(--primary)); outline-offset: 2px; border-radius: .35rem; }
-

@@ -1,0 +1,74 @@
+name: CI Infra (SAM)
+
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - 'infra/**'
+      - '.github/workflows/infra.yml'
+  pull_request:
+    paths:
+      - 'infra/**'
+      - '.github/workflows/infra.yml'
+  workflow_dispatch:
+    inputs:
+      deploy:
+        description: 'Deploy stack'
+        required: false
+        default: 'false'
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup Python (SAM CLI prerequisite)
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+      - name: Install AWS SAM CLI
+        run: |
+          pip install aws-sam-cli
+      - name: SAM Build
+        working-directory: infra
+        run: sam build
+
+  deploy:
+    if: github.event_name == 'workflow_dispatch' && inputs.deploy == 'true'
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup Python (SAM CLI prerequisite)
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+      - name: Install AWS SAM CLI
+        run: |
+          pip install aws-sam-cli
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.AWS_ROLE_TO_ASSUME }}
+          aws-region: ${{ secrets.AWS_REGION || 'ap-northeast-1' }}
+      - name: SAM Deploy
+        working-directory: infra
+        env:
+          STACK_NAME: line-error-notifier
+          PARAM_SECRET_NAME: ${{ secrets.PARAM_SECRET_NAME }}
+          PARAM_LINE_USER_IDS: ${{ secrets.PARAM_LINE_USER_IDS }}
+          PARAM_SYSTEM_NAME: ${{ secrets.PARAM_SYSTEM_NAME }}
+        run: |
+          sam deploy \
+            --stack-name "$STACK_NAME" \
+            --no-confirm-changeset \
+            --capabilities CAPABILITY_IAM \
+            --parameter-overrides \
+              StackName=$STACK_NAME \
+              SecretName=$PARAM_SECRET_NAME \
+              LineUserIds=$PARAM_LINE_USER_IDS \
+              SystemName=$PARAM_SYSTEM_NAME

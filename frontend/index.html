@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>あなたの名前 | ポートフォリオ</title>
+    <title>Kanato Murayama | ポートフォリオ</title>
     <meta name="description" content="エンジニア/デザイナーのポートフォリオサイト。自己紹介、スキル、制作物、職務経歴、連絡先を掲載。" />
     <meta name="theme-color" content="#0ea5e9" id="meta-theme-color" />
     <link rel="icon" href="assets/favicon.svg" type="image/svg+xml" />
@@ -15,7 +15,7 @@
 
     <header class="site-header" role="banner">
       <div class="container header-inner">
-        <a class="brand" href="#home" aria-label="ホーム">あなたの名前</a>
+        <a class="brand" href="#home" aria-label="ホーム">Kanato Murayama</a>
         <button class="nav-toggle" aria-expanded="false" aria-controls="site-nav" aria-label="メニューを開閉">☰</button>
         <nav id="site-nav" class="site-nav" role="navigation" aria-label="メインナビゲーション">
           <ul>
@@ -24,6 +24,7 @@
             <li><a href="#projects">制作物</a></li>
             <li><a href="#experience">経歴</a></li>
             <li><a href="#contact">連絡</a></li>
+            <li><a href="https://qiita.com/kanade3256" target="_blank" rel="noopener noreferrer" aria-label="Qiitaプロフィールを開く">Qiita</a></li>
           </ul>
         </nav>
         <button id="theme-toggle" class="theme-toggle" aria-label="テーマを切り替え">🌓</button>
@@ -35,7 +36,7 @@
         <div class="container grid hero-grid">
           <div class="hero-text">
             <p class="eyebrow">こんにちは、</p>
-            <h1>私は <span class="accent">Kanato Murayama</span> です</h1>
+            <h1>私は <span class="accent" id="display-name">Kanato Murayama</span> です</h1>
             <p class="lead">フロントエンド / バックエンド / デザイン など、ユーザー価値に直結する開発が得意です。</p>
             <div class="actions">
               <a class="btn primary" href="#projects">制作物を見る</a>
@@ -148,6 +149,7 @@
           <div class="actions">
             <a class="btn primary" href="mailto:you@example.com">メールを送る</a>
             <a class="btn" href="#">履歴書 / 職務経歴書</a>
+            <a class="btn" href="https://qiita.com/kanade3256" target="_blank" rel="noopener noreferrer" aria-label="Qiitaのプロフィールを開く">Qiita</a>
           </div>
         </div>
       </section>
@@ -155,11 +157,10 @@
 
     <footer class="site-footer">
       <div class="container footer-inner">
-        <small>© <span id="year"></span> あなたの名前. All rights reserved.</small>
+        <small>© <span id="year"></span> <span id="footer-name">Kanato Murayama</span>. All rights reserved.</small>
       </div>
     </footer>
 
     <script src="js/main.js" defer></script>
   </body>
   </html>
-
