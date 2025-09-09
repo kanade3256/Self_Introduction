@@ -3,8 +3,55 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Kanato Murayama | ポートフォリオ</title>
-    <meta name="description" content="エンジニア/デザイナーのポートフォリオサイト。自己紹介、スキル、制作物、職務経歴、連絡先を掲載。" />
+    
+    <!-- Primary Meta Tags -->
+    <title>Kanato Murayama | ポートフォリオ - データサイエンス × フルスタック開発</title>
+    <meta name="title" content="Kanato Murayama | ポートフォリオ - データサイエンス × フルスタック開発" />
+    <meta name="description" content="データサイエンス × クラウドDX × フルスタック開発を通じて課題解決に取り組む学生エンジニア。歩行データ解析研究・AWS Lambda・Next.js・Firebaseでの実績あり。" />
+    <meta name="keywords" content="フルスタックエンジニア,データサイエンス,Python,JavaScript,TypeScript,React,Next.js,AWS,Firebase,歩行データ解析,機械学習,クラウド開発" />
+    <meta name="author" content="Kanato Murayama" />
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://yoursite.com/" />
+    <meta property="og:title" content="Kanato Murayama | ポートフォリオ - データサイエンス × フルスタック開発" />
+    <meta property="og:description" content="データサイエンス × クラウドDX × フルスタック開発を通じて課題解決に取り組む学生エンジニア。歩行データ解析研究・AWS Lambda・Next.js・Firebaseでの実績あり。" />
+    <meta property="og:image" content="https://yoursite.com/assets/og-image.png" />
+    
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image" />
+    <meta property="twitter:url" content="https://yoursite.com/" />
+    <meta property="twitter:title" content="Kanato Murayama | ポートフォリオ - データサイエンス × フルスタック開発" />
+    <meta property="twitter:description" content="データサイエンス × クラウドDX × フルスタック開発を通じて課題解決に取り組む学生エンジニア。歩行データ解析研究・AWS Lambda・Next.js・Firebaseでの実績あり。" />
+    <meta property="twitter:image" content="https://yoursite.com/assets/og-image.png" />
+    
+    <!-- Structured Data (JSON-LD) -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Person",
+      "name": "Kanato Murayama",
+      "jobTitle": "Full-Stack Engineer & Data Scientist",
+      "description": "データサイエンス × クラウドDX × フルスタック開発を通じて課題解決に取り組む学生エンジニア",
+      "url": "https://yoursite.com",
+      "sameAs": [
+        "https://github.com/kanade3256",
+        "https://qiita.com/kanade3256"
+      ],
+      "knowsAbout": [
+        "Python",
+        "JavaScript",
+        "TypeScript",
+        "React",
+        "Next.js",
+        "AWS",
+        "Firebase",
+        "Data Science",
+        "Machine Learning"
+      ]
+    }
+    </script>
+    
     <meta name="theme-color" content="#0ea5e9" id="meta-theme-color" />
     <link rel="icon" href="assets/favicon.svg" type="image/svg+xml" />
     <link rel="preload" href="css/style.css" as="style" />
@@ -23,11 +70,16 @@
             <li><a href="#skills">スキル</a></li>
             <li><a href="#projects">制作物</a></li>
             <li><a href="#experience">経歴</a></li>
+            <li><a href="timeline.html">タイムライン</a></li>
+            <li><a href="resume.html">履歴書</a></li>
             <li><a href="#contact">連絡</a></li>
             <li><a href="https://qiita.com/kanade3256" target="_blank" rel="noopener noreferrer" aria-label="Qiitaプロフィールを開く">Qiita</a></li>
           </ul>
         </nav>
-        <button id="theme-toggle" class="theme-toggle" aria-label="テーマを切り替え">🌓</button>
+        <div class="header-controls">
+          <button id="lang-toggle" class="lang-toggle" aria-label="言語を切り替え">🌐 EN</button>
+          <button id="theme-toggle" class="theme-toggle" aria-label="テーマを切り替え">🌓</button>
+        </div>
       </div>
     </header>
 
@@ -37,14 +89,32 @@
           <div class="hero-text">
             <p class="eyebrow">こんにちは、</p>
             <h1>私は <span class="accent" id="display-name">Kanato Murayama</span> です</h1>
-            <p class="lead">フロントエンド / バックエンド / デザイン など、ユーザー価値に直結する開発が得意です。</p>
+            <p class="lead">データサイエンス × クラウドDX × フルスタック開発を通じて、課題解決とユーザー価値創出に取り組んでいます。</p>
+            <div class="achievements">
+              <div class="achievement-card">
+                <h3>研究実績</h3>
+                <p>歩行データの時系列クラスタリング研究</p>
+                <span class="achievement-tech">Python/DTW/MediaPipe</span>
+              </div>
+              <div class="achievement-card">
+                <h3>実務系DX</h3>
+                <p>Komeda Portal - バイトシフトDXシステム</p>
+                <span class="achievement-tech">AWS Lambda/LINE連携</span>
+              </div>
+              <div class="achievement-card">
+                <h3>個人開発</h3>
+                <p>研究室メモ共有アプリ</p>
+                <span class="achievement-tech">Next.js/Firebase/認証</span>
+              </div>
+            </div>
             <div class="actions">
               <a class="btn primary" href="#projects">制作物を見る</a>
+              <a class="btn" href="#about">詳しく知る</a>
               <a class="btn" href="#contact">問い合わせ</a>
             </div>
           </div>
           <div class="hero-media">
-            <img src="assets/avatar.svg" alt="プロフィール画像のプレースホルダー" />
+            <img src="assets/avatar.svg" alt="Kanato Murayama のプロフィール画像" />
           </div>
         </div>
       </section>
@@ -52,27 +122,101 @@
       <section id="about" class="section">
         <div class="container narrow">
           <h2>自己紹介</h2>
-          <p>
-            ここに自己紹介文を記載してください。興味関心、得意分野、価値観、仕事の進め方、成果や受賞歴などを簡潔に。
-          </p>
+          <div class="about-content">
+            <p>
+              <strong>データサイエンス × クラウドDX × フルスタック開発</strong> を軸に、課題解決とユーザー価値創出に取り組んでいます。
+            </p>
+            <p>
+              研究では<strong>歩行データの時系列解析</strong>を通じて、AI・データサイエンスの専門性を深めています。MediaPipeによる骨格データ抽出から、DTWアルゴリズムを用いたクラスタリングまで、データを形にし、分析・可視化・検証まで回せる力を身につけました。
+            </p>
+            <p>
+              実務系開発では<strong>Komeda Portal</strong>や<strong>FastSign構想</strong>を通じて、AWS Lambda・Next.js・Prismaなどモダンなクラウドスタックでの業務効率化を実現。企業が求める「クラウド × モダンWeb開発経験」と実装→運用→改善までの一連の経験を積んでいます。
+            </p>
+            <p>
+              個人開発では<strong>研究室メモ共有アプリ</strong>や<strong>CLIツール</strong>など、課題を自分で見つけて解決する主体性と、運用・セキュリティ・ユーザビリティまで意識した開発姿勢を大切にしています。
+            </p>
+            <p>
+              <strong>技術力＋遊び心</strong>で、ユーザーが本当に価値を感じるプロダクトづくりを目指しています。
+            </p>
+          </div>
+          <div class="about-highlights">
+            <div class="highlight">
+              <span class="highlight-icon">🎓</span>
+              <div>
+                <h4>研究・専門性</h4>
+                <p>AI × データ解析 × 研究的アプローチ</p>
+              </div>
+            </div>
+            <div class="highlight">
+              <span class="highlight-icon">💼</span>
+              <div>
+                <h4>実務・即戦力性</h4>
+                <p>クラウドDX・モダンWeb開発経験</p>
+              </div>
+            </div>
+            <div class="highlight">
+              <span class="highlight-icon">🚀</span>
+              <div>
+                <h4>主体性・継続力</h4>
+                <p>課題発見から運用まで一貫した開発</p>
+              </div>
+            </div>
+          </div>
         </div>
       </section>
 
       <section id="skills" class="section alt">
         <div class="container">
           <h2>スキル</h2>
-          <ul class="tags">
-            <li>TypeScript</li>
-            <li>React</li>
-            <li>Node.js</li>
-            <li>Next.js</li>
-            <li>Python</li>
-            <li>Go</li>
-            <li>AWS</li>
-            <li>Docker</li>
-            <li>UI/UX</li>
-            <li>Figma</li>
-          </ul>
+          <div class="skills-grid">
+            <div class="skill-category">
+              <h3>データサイエンス・AI</h3>
+              <ul class="tags">
+                <li>Python</li>
+                <li>pandas</li>
+                <li>SciPy</li>
+                <li>scikit-learn</li>
+                <li>MediaPipe</li>
+                <li>DTW</li>
+                <li>k-means</li>
+                <li>時系列解析</li>
+              </ul>
+            </div>
+            <div class="skill-category">
+              <h3>フロントエンド</h3>
+              <ul class="tags">
+                <li>TypeScript</li>
+                <li>React</li>
+                <li>Next.js</li>
+                <li>Tailwind CSS</li>
+                <li>Vite</li>
+                <li>HTML5/CSS3</li>
+              </ul>
+            </div>
+            <div class="skill-category">
+              <h3>バックエンド・クラウド</h3>
+              <ul class="tags">
+                <li>Node.js</li>
+                <li>Firebase</li>
+                <li>AWS Lambda</li>
+                <li>S3</li>
+                <li>Secrets Manager</li>
+                <li>Prisma</li>
+                <li>PostgreSQL</li>
+              </ul>
+            </div>
+            <div class="skill-category">
+              <h3>開発・ツール</h3>
+              <ul class="tags">
+                <li>Git</li>
+                <li>Docker</li>
+                <li>CLI開発</li>
+                <li>Microservices</li>
+                <li>LINE API</li>
+                <li>認証・セキュリティ</li>
+              </ul>
+            </div>
+          </div>
         </div>
       </section>
 
@@ -81,37 +225,99 @@
           <h2>制作物</h2>
           <div class="grid cards">
             <article class="card">
-              <h3>プロジェクト名 A</h3>
-              <p>概要説明：どんな課題を解決し、どのような成果を出したか。</p>
+              <div class="card-header">
+                <div class="card-icon research">🔬</div>
+                <div class="card-title-group">
+                  <h3>歩行データ時系列クラスタリング研究</h3>
+                  <span class="card-category">研究・データサイエンス</span>
+                </div>
+              </div>
+              <p>MediaPipeで骨格データ抽出後、時系列補完（スプライン/PCHIP）→DTW＋クラスタリングにより歩行スタイルを分類。AI×データ解析×研究的アプローチで歩行の特徴量設計・可視化を実現。</p>
               <ul class="meta">
-                <li>役割: 個人開発</li>
-                <li>技術: React, TypeScript, Node.js</li>
+                <li>役割: 研究・実装・分析</li>
+                <li>技術: Python, pandas, SciPy, scikit-learn, DTW, k-means</li>
+                <li>成果: 歩行パターンの定量的分類に成功</li>
               </ul>
               <div class="card-actions">
-                <a class="btn small" href="#" aria-label="デモを開く">デモ</a>
+                <a class="btn small" href="#" aria-label="研究詳細を開く">研究詳細</a>
+                <a class="btn small" href="#" aria-label="レポートを開く">レポート</a>
+              </div>
+            </article>
+            <article class="card">
+              <div class="card-header">
+                <div class="card-icon business">💼</div>
+                <div class="card-title-group">
+                  <h3>Komeda Portal - バイトシフトDX</h3>
+                  <span class="card-category">実務・クラウドDX</span>
+                </div>
+              </div>
+              <p>AWS Lambda + Secrets Manager + S3 + LINE リッチメニュー連携によるバイトシフト管理システム。クラウドで業務効率化を実現し、実装→運用→改善までの一連の経験を獲得。</p>
+              <ul class="meta">
+                <li>役割: フルスタック開発・運用</li>
+                <li>技術: AWS Lambda, Secrets Manager, S3, LINE API</li>
+                <li>成果: シフト管理業務の効率化・自動化</li>
+              </ul>
+              <div class="card-actions">
+                <a class="btn small" href="#" aria-label="システム詳細を開く">システム詳細</a>
+                <a class="btn small" href="#" aria-label="アーキテクチャを開く">アーキテクチャ</a>
+              </div>
+            </article>
+            <article class="card">
+              <div class="card-header">
+                <div class="card-icon personal">🚀</div>
+                <div class="card-title-group">
+                  <h3>研究室メモ共有アプリ</h3>
+                  <span class="card-category">個人開発・フルスタック</span>
+                </div>
+              </div>
+              <p>Next.js + Firebase + Tailwind による研究室向けメモ共有システム。認証・ロール管理・リアルタイム同期・セキュリティルールを実装し、運用・セキュリティ・ユーザビリティまで意識。</p>
+              <ul class="meta">
+                <li>役割: 個人開発（企画→設計→実装→運用）</li>
+                <li>技術: Next.js, Firebase, Tailwind CSS, TypeScript</li>
+                <li>成果: 研究室内のナレッジ共有効率化</li>
+              </ul>
+              <div class="card-actions">
+                <a class="btn small" href="#" aria-label="アプリデモを開く">デモ</a>
                 <a class="btn small" href="#" aria-label="GitHubを開く">GitHub</a>
+                <a class="btn small" href="#" aria-label="技術詳細を開く">技術詳細</a>
               </div>
             </article>
             <article class="card">
-              <h3>プロジェクト名 B</h3>
-              <p>概要説明：成果数値、ユーザー数、速度改善などの具体的なインパクト。</p>
+              <div class="card-header">
+                <div class="card-icon internship">🏢</div>
+                <div class="card-title-group">
+                  <h3>FastSign - 契約DXプラットフォーム</h3>
+                  <span class="card-category">インターン・エンタープライズ</span>
+                </div>
+              </div>
+              <p>Works Applications インターンでの構想プロジェクト。Next.js + Prisma + PostgreSQL + Microservices設計による契約・承認フローDX化。SaaS的プロダクト設計の経験を積む。</p>
               <ul class="meta">
-                <li>役割: チーム開発</li>
-                <li>技術: Next.js, Prisma, PostgreSQL</li>
+                <li>役割: チーム開発・フルスタック</li>
+                <li>技術: Next.js, Prisma, PostgreSQL, Microservices</li>
+                <li>成果: エンタープライズ向けDXソリューション設計</li>
               </ul>
               <div class="card-actions">
-                <a class="btn small" href="#">ケーススタディ</a>
+                <a class="btn small" href="#" aria-label="プロジェクト詳細を開く">プロジェクト詳細</a>
+                <a class="btn small" href="#" aria-label="設計資料を開く">設計資料</a>
               </div>
             </article>
             <article class="card">
-              <h3>プロジェクト名 C</h3>
-              <p>概要説明：担当範囲、工夫点、学びなど。</p>
+              <div class="card-header">
+                <div class="card-icon tool">🛠️</div>
+                <div class="card-title-group">
+                  <h3>Satisfactory 逆算CLIツール</h3>
+                  <span class="card-category">個人開発・ツール</span>
+                </div>
+              </div>
+              <p>Pythonによるゲーム向け生産計算ツール。複雑な生産チェーンの逆算計算を自動化し、技術力＋遊び心を両立。CLI設計・アルゴリズム実装・ユーザビリティを追求。</p>
               <ul class="meta">
-                <li>役割: フルスタック</li>
-                <li>技術: Go, gRPC, Docker, AWS</li>
+                <li>役割: 個人開発・アルゴリズム設計</li>
+                <li>技術: Python, CLI設計, アルゴリズム</li>
+                <li>成果: ゲーミングコミュニティで活用</li>
               </ul>
               <div class="card-actions">
-                <a class="btn small" href="#">詳細</a>
+                <a class="btn small" href="#" aria-label="GitHubを開く">GitHub</a>
+                <a class="btn small" href="#" aria-label="使用方法を開く">使用方法</a>
               </div>
             </article>
           </div>
@@ -143,13 +349,122 @@
       </section>
 
       <section id="contact" class="section">
-        <div class="container narrow">
+        <div class="container">
           <h2>連絡先</h2>
-          <p>お仕事のご相談・お問い合わせは以下からお気軽にどうぞ。</p>
-          <div class="actions">
-            <a class="btn primary" href="mailto:you@example.com">メールを送る</a>
-            <a class="btn" href="#">履歴書 / 職務経歴書</a>
-            <a class="btn" href="https://qiita.com/kanade3256" target="_blank" rel="noopener noreferrer" aria-label="Qiitaのプロフィールを開く">Qiita</a>
+          <div class="contact-grid">
+            <div class="contact-info">
+              <h3>お気軽にお問い合わせください</h3>
+              <p>
+                お仕事のご相談、技術的な質問、コラボレーションなど、
+                どんなことでもお気軽にご連絡ください。
+              </p>
+              
+              <div class="contact-methods">
+                <div class="contact-method">
+                  <div class="contact-icon">📧</div>
+                  <div class="contact-details">
+                    <h4>メール</h4>
+                    <a href="mailto:you@example.com">you@example.com</a>
+                    <p>24時間以内にご返信いたします</p>
+                  </div>
+                </div>
+                
+                <div class="contact-method">
+                  <div class="contact-icon">💼</div>
+                  <div class="contact-details">
+                    <h4>LinkedIn</h4>
+                    <a href="#" target="_blank">Kanato Murayama</a>
+                    <p>プロフェッショナルなご相談はこちら</p>
+                  </div>
+                </div>
+                
+                <div class="contact-method">
+                  <div class="contact-icon">🐙</div>
+                  <div class="contact-details">
+                    <h4>GitHub</h4>
+                    <a href="https://github.com/kanade3256" target="_blank">@kanade3256</a>
+                    <p>コードレビューや技術的な質問</p>
+                  </div>
+                </div>
+                
+                <div class="contact-method">
+                  <div class="contact-icon">📝</div>
+                  <div class="contact-details">
+                    <h4>Qiita</h4>
+                    <a href="https://qiita.com/kanade3256" target="_blank">@kanade3256</a>
+                    <p>技術記事・知見の共有</p>
+                  </div>
+                </div>
+              </div>
+              
+              <div class="contact-documents">
+                <h4>ダウンロード資料</h4>
+                <div class="document-links">
+                  <a class="btn" href="#" aria-label="履歴書PDFをダウンロード">
+                    📄 履歴書 (PDF)
+                  </a>
+                  <a class="btn" href="#" aria-label="職務経歴書PDFをダウンロード">
+                    📋 職務経歴書 (PDF)
+                  </a>
+                  <a class="btn" href="#" aria-label="ポートフォリオ詳細をダウンロード">
+                    📁 ポートフォリオ詳細
+                  </a>
+                </div>
+              </div>
+            </div>
+            
+            <div class="contact-form">
+              <h3>メッセージを送る</h3>
+              <form action="#" method="POST" class="message-form">
+                <div class="form-group">
+                  <label for="contact-name">お名前 <span class="required">*</span></label>
+                  <input type="text" id="contact-name" name="name" required aria-describedby="name-help">
+                  <small id="name-help">フルネームでご入力ください</small>
+                </div>
+                
+                <div class="form-group">
+                  <label for="contact-email">メールアドレス <span class="required">*</span></label>
+                  <input type="email" id="contact-email" name="email" required aria-describedby="email-help">
+                  <small id="email-help">ご返信にお使いいたします</small>
+                </div>
+                
+                <div class="form-group">
+                  <label for="contact-company">会社・組織名</label>
+                  <input type="text" id="contact-company" name="company">
+                </div>
+                
+                <div class="form-group">
+                  <label for="contact-subject">件名 <span class="required">*</span></label>
+                  <select id="contact-subject" name="subject" required>
+                    <option value="">選択してください</option>
+                    <option value="job-inquiry">求人・採用に関するお問い合わせ</option>
+                    <option value="collaboration">コラボレーション・共同開発</option>
+                    <option value="consulting">技術コンサルティング</option>
+                    <option value="speaking">講演・登壇依頼</option>
+                    <option value="technical">技術的な質問・相談</option>
+                    <option value="other">その他</option>
+                  </select>
+                </div>
+                
+                <div class="form-group">
+                  <label for="contact-message">メッセージ <span class="required">*</span></label>
+                  <textarea id="contact-message" name="message" rows="6" required aria-describedby="message-help"></textarea>
+                  <small id="message-help">ご用件を具体的にお聞かせください</small>
+                </div>
+                
+                <div class="form-group">
+                  <label class="checkbox-label">
+                    <input type="checkbox" name="privacy" required>
+                    <span class="checkmark"></span>
+                    <a href="#" target="_blank">プライバシーポリシー</a>に同意します <span class="required">*</span>
+                  </label>
+                </div>
+                
+                <button type="submit" class="btn primary submit-btn">
+                  メッセージを送信する
+                </button>
+              </form>
+            </div>
           </div>
         </div>
       </section>

@@ -1,0 +1,246 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>プロジェクト詳細 | Kanato Murayama</title>
+    <meta name="description" content="プロジェクト詳細ページのテンプレート" />
+    <meta name="theme-color" content="#0ea5e9" id="meta-theme-color" />
+    <link rel="icon" href="assets/favicon.svg" type="image/svg+xml" />
+    <link rel="preload" href="css/style.css" as="style" />
+    <link rel="stylesheet" href="css/style.css" />
+  </head>
+  <body>
+    <a class="skip-link" href="#main">メインコンテンツへ移動</a>
+
+    <header class="site-header" role="banner">
+      <div class="container header-inner">
+        <a class="brand" href="index.html" aria-label="ホーム">Kanato Murayama</a>
+        <button class="nav-toggle" aria-expanded="false" aria-controls="site-nav" aria-label="メニューを開閉">☰</button>
+        <nav id="site-nav" class="site-nav" role="navigation" aria-label="メインナビゲーション">
+          <ul>
+            <li><a href="index.html#about">自己紹介</a></li>
+            <li><a href="index.html#skills">スキル</a></li>
+            <li><a href="index.html#projects">制作物</a></li>
+            <li><a href="index.html#experience">経歴</a></li>
+            <li><a href="index.html#contact">連絡</a></li>
+            <li><a href="https://qiita.com/kanade3256" target="_blank" rel="noopener noreferrer" aria-label="Qiitaプロフィールを開く">Qiita</a></li>
+          </ul>
+        </nav>
+        <button id="theme-toggle" class="theme-toggle" aria-label="テーマを切り替え">🌓</button>
+      </div>
+    </header>
+
+    <main id="main" class="site-main" tabindex="-1">
+      <!-- プロジェクトヘッダー -->
+      <section class="project-hero">
+        <div class="container">
+          <nav class="breadcrumb">
+            <a href="index.html">ホーム</a>
+            <span>/</span>
+            <a href="index.html#projects">制作物</a>
+            <span>/</span>
+            <span class="current">プロジェクト名</span>
+          </nav>
+          
+          <div class="project-header">
+            <div class="project-icon research">🔬</div>
+            <div class="project-title-group">
+              <span class="project-category">研究・データサイエンス</span>
+              <h1>歩行データ時系列クラスタリング研究</h1>
+              <p class="project-summary">
+                MediaPipeで骨格データ抽出後、時系列補完（スプライン/PCHIP）→DTW＋クラスタリングにより歩行スタイルを分類
+              </p>
+            </div>
+          </div>
+          
+          <div class="project-meta">
+            <div class="meta-item">
+              <span class="meta-label">期間</span>
+              <span>2023年9月 - 2024年3月</span>
+            </div>
+            <div class="meta-item">
+              <span class="meta-label">役割</span>
+              <span>研究・実装・分析</span>
+            </div>
+            <div class="meta-item">
+              <span class="meta-label">技術スタック</span>
+              <span>Python, pandas, SciPy, scikit-learn, DTW, k-means</span>
+            </div>
+          </div>
+          
+          <div class="project-actions">
+            <a class="btn primary" href="#" aria-label="研究レポートを開く">研究レポート</a>
+            <a class="btn" href="#" aria-label="ポスターを開く">ポスター</a>
+            <a class="btn" href="#" aria-label="GitHubを開く">GitHub</a>
+          </div>
+        </div>
+      </section>
+
+      <!-- プロジェクト詳細 -->
+      <section class="project-details">
+        <div class="container">
+          <div class="project-content">
+            <!-- 背景・課題 -->
+            <div class="content-section">
+              <h2>背景・課題</h2>
+              <p>
+                歩行データの解析は、リハビリテーション・スポーツ科学・ヘルスケア分野で重要な研究テーマです。
+                従来の歩行解析は高価な専用機器や主観的な評価に依存しており、より手軽で定量的な解析手法が求められていました。
+              </p>
+              <ul>
+                <li>専用機器による高コスト・アクセス性の問題</li>
+                <li>主観的評価による再現性・客観性の課題</li>
+                <li>歩行スタイルの定量的分類手法の不足</li>
+              </ul>
+            </div>
+
+            <!-- アプローチ・技術 -->
+            <div class="content-section">
+              <h2>アプローチ・技術</h2>
+              <div class="approach-flow">
+                <div class="flow-step">
+                  <div class="step-number">1</div>
+                  <div class="step-content">
+                    <h3>データ取得</h3>
+                    <p>MediaPipeを使用して動画から骨格データを抽出</p>
+                    <span class="step-tech">MediaPipe, OpenCV</span>
+                  </div>
+                </div>
+                <div class="flow-step">
+                  <div class="step-number">2</div>
+                  <div class="step-content">
+                    <h3>前処理・補完</h3>
+                    <p>欠損データの補完（スプライン/PCHIP補間）とノイズ除去</p>
+                    <span class="step-tech">SciPy, pandas</span>
+                  </div>
+                </div>
+                <div class="flow-step">
+                  <div class="step-number">3</div>
+                  <div class="step-content">
+                    <h3>特徴量設計</h3>
+                    <p>歩行周期・関節角度・速度パターンの特徴量抽出</p>
+                    <span class="step-tech">NumPy, 信号処理</span>
+                  </div>
+                </div>
+                <div class="flow-step">
+                  <div class="step-number">4</div>
+                  <div class="step-content">
+                    <h3>距離計算・クラスタリング</h3>
+                    <p>DTW（Dynamic Time Warping）による時系列距離計算とk-meansクラスタリング</p>
+                    <span class="step-tech">DTW, scikit-learn</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- 成果・結果 -->
+            <div class="content-section">
+              <h2>成果・結果</h2>
+              <div class="results-grid">
+                <div class="result-card">
+                  <h3>定量的分類の実現</h3>
+                  <p>歩行パターンを客観的指標で3つのクラスターに分類することに成功</p>
+                </div>
+                <div class="result-card">
+                  <h3>手軽なシステム構築</h3>
+                  <p>一般的なWebカメラを使用した低コスト・高アクセス性のシステムを構築</p>
+                </div>
+                <div class="result-card">
+                  <h3>研究発表</h3>
+                  <p>学内研究発表会でポスター発表を実施、研究手法の有効性を実証</p>
+                </div>
+              </div>
+              
+              <div class="tech-highlights">
+                <h3>技術的なポイント</h3>
+                <ul>
+                  <li><strong>時系列データ処理</strong>: 不規則なサンプリング間隔やノイズを考慮した前処理パイプライン</li>
+                  <li><strong>DTWアルゴリズム</strong>: 歩行周期の個人差を考慮した類似度計算手法</li>
+                  <li><strong>特徴量エンジニアリング</strong>: ドメイン知識を活用した生体力学的特徴量の設計</li>
+                  <li><strong>可視化・検証</strong>: クラスタリング結果の解釈性を高める可視化手法の実装</li>
+                </ul>
+              </div>
+            </div>
+
+            <!-- 学び・今後の展望 -->
+            <div class="content-section">
+              <h2>学び・今後の展望</h2>
+              <div class="learnings-future">
+                <div class="learnings">
+                  <h3>学んだこと</h3>
+                  <ul>
+                    <li>実データを扱う際の前処理・ノイズ処理の重要性</li>
+                    <li>ドメイン知識と機械学習技術の融合アプローチ</li>
+                    <li>研究における仮説設定・検証・考察のプロセス</li>
+                    <li>時系列データ解析の専門的手法（DTW、補間など）</li>
+                  </ul>
+                </div>
+                <div class="future">
+                  <h3>今後の展望</h3>
+                  <ul>
+                    <li>深層学習（LSTM、Transformer）を活用したより高精度な分類</li>
+                    <li>リアルタイム解析システムの構築</li>
+                    <li>リハビリテーション現場での実用化検証</li>
+                    <li>他の生体データ（心拍数、筋電図）との統合解析</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- サイドバー -->
+          <aside class="project-sidebar">
+            <div class="sidebar-section">
+              <h3>プロジェクト情報</h3>
+              <dl class="project-info">
+                <dt>プロジェクト期間</dt>
+                <dd>2023年9月 - 2024年3月 (6ヶ月)</dd>
+                
+                <dt>チーム構成</dt>
+                <dd>個人研究</dd>
+                
+                <dt>指導教員</dt>
+                <dd>〇〇教授 (データサイエンス専攻)</dd>
+                
+                <dt>発表実績</dt>
+                <dd>学内研究発表会 2024年3月</dd>
+              </dl>
+            </div>
+
+            <div class="sidebar-section">
+              <h3>使用技術</h3>
+              <ul class="tech-stack">
+                <li><span class="tech-category">言語</span>Python 3.9</li>
+                <li><span class="tech-category">データ処理</span>pandas, NumPy</li>
+                <li><span class="tech-category">科学計算</span>SciPy</li>
+                <li><span class="tech-category">機械学習</span>scikit-learn</li>
+                <li><span class="tech-category">コンピュータビジョン</span>MediaPipe, OpenCV</li>
+                <li><span class="tech-category">可視化</span>Matplotlib, Seaborn</li>
+                <li><span class="tech-category">アルゴリズム</span>DTW, k-means</li>
+              </ul>
+            </div>
+
+            <div class="sidebar-section">
+              <h3>関連リンク</h3>
+              <ul class="related-links">
+                <li><a href="#" target="_blank">研究レポート (PDF)</a></li>
+                <li><a href="#" target="_blank">ポスター発表資料</a></li>
+                <li><a href="#" target="_blank">ソースコード (GitHub)</a></li>
+                <li><a href="#" target="_blank">データセット</a></li>
+              </ul>
+            </div>
+          </aside>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <div class="container footer-inner">
+        <small>© <span id="year"></span> <span id="footer-name">Kanato Murayama</span>. All rights reserved.</small>
+      </div>
+    </footer>
+
+    <script src="js/main.js" defer></script>
+  </body>
+  </html>

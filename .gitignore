@@ -37,6 +37,8 @@ htmlcov/
 .tox/
 .cache
 .python-version
+secret_loder.py
+send_message.py
 
 # AWS SAM / build artifacts
 **/.aws-sam/

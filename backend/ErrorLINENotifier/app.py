@@ -2,8 +2,11 @@ import os
 import json
 import logging
 import sys
+from datetime import datetime, timezone
 import boto3
 from typing import Tuple, List
+from send_message import send_line_message
+from secret_loder import load_secret
 
 try:
     import requests  # provided by Lambda Layer
@@ -16,57 +19,21 @@ logger = logging.getLogger()
 logger.setLevel(logging.INFO)
 
 
-def _load_secret(secret_name: str) -> dict:
-    client = boto3.client("secretsmanager")
-    resp = client.get_secret_value(SecretId=secret_name)
-    text = resp.get("SecretString")
-    if not text and "SecretBinary" in resp:
-        # Binaryは想定外だが一応サポート
-        text = resp["SecretBinary"].decode("utf-8")
-    return json.loads(text or "{}")
-
-
-def _get_settings() -> Tuple[str, List[str]]:
-    secret_name = os.environ.get("SECRET_NAME")
-    if not secret_name:
-        raise ValueError("SECRET_NAME is required to load LINE settings from Secrets Manager")
-    data = _load_secret(secret_name)
-    access_token = data.get("LINE_ACCESS_TOKEN")
-    # LINE_USER_IDS は Secrets 側を優先し、なければ env をフォールバック
-    ids_raw = data.get("LINE_USER_IDS") or os.environ.get("LINE_USER_IDS") or os.environ.get("LINE_USER_ID") or ""
+def _get_recipients() -> List[str]:
+    try:
+        data = load_secret()
+    except Exception:
+        data = {}
+    ids_raw = (
+        data.get("LINE_USER_IDS")
+        or os.environ.get("LINE_USER_IDS")
+        or os.environ.get("LINE_USER_ID")
+        or ""
+    )
     recipients = [s.strip() for s in str(ids_raw).split(",") if s and str(s).strip()]
-    if not access_token:
-        raise ValueError("LINE_ACCESS_TOKEN not found in secret")
     if not recipients:
         raise ValueError("LINE_USER_IDS not found in secret/env")
-    return access_token, recipients
-
-
-def _send_line(access_token: str, to: str, text: str) -> None:
-    url = "https://api.line.me/v2/bot/message/push"
-    headers = {
-        "Content-Type": "application/json; charset=utf-8",
-        "Authorization": f"Bearer {access_token}",
-    }
-    payload = {
-        "to": to,
-        "messages": [{"type": "text", "text": text[:5000]}],
-    }
-    # Use requests if available, else fall back to urllib
-    try:
-        if 'requests' in sys.modules:
-            r = requests.post(url, headers=headers, json=payload, timeout=10)  # type: ignore[name-defined]
-            if not r.ok:
-                raise RuntimeError(f"LINE API error {r.status_code}: {r.text}")
-        else:
-            import urllib.request
-            req = urllib.request.Request(url, data=json.dumps(payload).encode("utf-8"), headers=headers, method="POST")
-            with urllib.request.urlopen(req, timeout=10) as res:  # noqa: S310
-                if res.status != 200:
-                    body = res.read().decode("utf-8", errors="ignore")
-                    raise RuntimeError(f"LINE API error {res.status}: {body}")
-    except Exception as e:
-        raise
+    return recipients
 
 
 def _format_sns_record(record: dict) -> str:
@@ -95,7 +62,7 @@ def lambda_handler(event, context):
     logger.info(f"環境変数確認 - SECRET_NAME: {os.environ.get('SECRET_NAME')}")
     
     system_name = os.environ.get("SYSTEM_NAME", "ErrorNotifier")
-    access_token, recipients = _get_settings()
+    recipients = _get_recipients()
 
     messages: list[str] = []
 
@@ -110,14 +77,32 @@ def lambda_handler(event, context):
     else:
         messages.append(json.dumps(event, ensure_ascii=False))
 
-    body = "\n\n---\n\n".join(messages)
+    # 要約作成: 各メッセージの先頭行を集約し、長すぎる場合は省略
+    def _summarize_messages(msgs: List[str]) -> str:
+        heads: List[str] = []
+        for m in msgs:
+            try:
+                first_non_empty = next((ln.strip() for ln in str(m).splitlines() if ln.strip()), "")
+            except Exception:
+                first_non_empty = str(m)[:200]
+            if first_non_empty:
+                heads.append(first_non_empty)
+        if not heads:
+            return "(詳細情報なし)"
+        summary = " / ".join(heads)
+        return summary if len(summary) <= 280 else summary[:277] + "..."
+
+    # 送信メッセージ: 日時 + 概要
+    now_str = datetime.now(timezone.utc).astimezone().isoformat(timespec="seconds")
+    summary = _summarize_messages(messages)
+    text_to_send = f"エラー通知\n日時: {now_str}\n概要: {summary}"
 
     # Send to all recipients
     results = []
     for uid in recipients:
         try:
             prefix = f"[{system_name}] " if system_name else ""
-            _send_line(access_token, uid, prefix + body)
+            send_line_message(uid, prefix + text_to_send, system_name)
             results.append({"user": uid, "result": "ok"})
         except Exception as e:
             logger.error(f"LINE send failed for {uid}: {e}")
