@@ -1,7 +1,13 @@
 /* 基本リセット */
 *, *::before, *::after { box-sizing: border-box; }
 html { -webkit-text-size-adjust: 100%; }
-body { margin: 0; font-family: system-ui, -apple-system, Segoe UI, Roboto, "Hiragino Sans", "Noto Sans JP", "Yu Gothic UI", "Yu Gothic", sans-serif; line-height: 1.6; }
+body { 
+  margin: 0; 
+  font-family: system-ui, -apple-system, Segoe UI, Roboto, "Hiragino Sans", "Noto Sans JP", "Yu Gothic UI", "Yu Gothic", sans-serif; 
+  line-height: 1.6;
+  background: #0b1220; 
+  color: #e5e7eb;
+}
 img, svg { display: block; max-width: 100%; height: auto; }
 a { color: inherit; text-decoration: none; }
 ul { padding-left: 1rem; }
@@ -58,7 +64,64 @@ ul { padding-left: 1rem; }
 }
 
 html { scroll-behavior: smooth; }
-body { background: var(--bg); color: var(--text); }
+
+/* アンカーリンクのオフセット調整（固定ヘッダー対応） */
+section[id], 
+*[id] {
+  scroll-margin-top: 100px;
+}
+
+body { 
+  background: var(--bg); 
+  color: var(--text); 
+  padding-top: 80px; /* ヘッダー分の余白 */
+}
+
+/* 防止: 予期しない横スクロール */
+html, body { max-width: 100%; overflow-x: hidden; }
+body { overflow-wrap: anywhere; }
+
+/* シンプルな永続表示アニメーション */
+.reveal { 
+  opacity: 1; 
+  transform: none; 
+}
+
+/* JavaScriptが有効な場合のみアニメーション */
+.js-loaded .reveal:not(.in):not([data-revealed="true"]) { 
+  opacity: 0; 
+  transform: translateY(30px); 
+}
+
+/* 表示状態 - 永続的に維持 */
+.reveal.in,
+.reveal[data-revealed="true"] {
+  opacity: 1 !important;
+  transform: none !important;
+  transition: opacity 0.6s ease, transform 0.6s ease !important;
+}
+
+/* ヒーロー背景と動き（疑似要素で安定描画） */
+.hero { position: relative; overflow: hidden; }
+.hero::before { 
+  content: ""; 
+  position: absolute; 
+  inset: -20%; 
+  background: radial-gradient(circle at center, color-mix(in oklab, var(--primary) 18%, transparent) 0%, transparent 60%);
+  transform: translate(-25%, -25%);
+  filter: blur(30px);
+  opacity: .35;
+  pointer-events: none;
+  animation: heroOrb 16s ease-in-out infinite alternate;
+}
+@keyframes heroOrb { 
+  to { transform: translate(25%, 25%); }
+}
+.hero-media img { animation: floaty 6s ease-in-out infinite; }
+@keyframes floaty { 0% { transform: translateY(0px); } 50% { transform: translateY(-6px); } 100% { transform: translateY(0px); } }
+
+/* ボタンの操作感を少し強化 */
+.btn:active { transform: translateY(0); filter: brightness(.98); }
 
 .container { width: min(1100px, calc(100% - 2rem)); margin-inline: auto; }
 .narrow { width: min(760px, 100%); }
@@ -75,8 +138,18 @@ body { background: var(--bg); color: var(--text); }
 .skip-link { position: absolute; left: -9999px; top: auto; width: 1px; height: 1px; overflow: hidden; }
 .skip-link:focus { position: fixed; left: 1rem; top: 1rem; width: auto; height: auto; background: var(--panel); color: var(--text); padding: .5rem .75rem; border-radius: .5rem; box-shadow: var(--shadow); }
 
-/* ヘッダー */
-.site-header { position: sticky; top: 0; z-index: 50; background: color-mix(in oklab, var(--panel) 85%, transparent); backdrop-filter: saturate(1.2) blur(10px); border-bottom: 1px solid color-mix(in oklab, var(--muted) 20%, transparent); }
+/* ヘッダー - 固定追従 */
+.site-header { 
+  position: fixed; 
+  top: 0; 
+  left: 0;
+  right: 0;
+  z-index: 1000; 
+  background: color-mix(in oklab, var(--panel) 90%, transparent); 
+  backdrop-filter: saturate(1.2) blur(15px); 
+  border-bottom: 1px solid color-mix(in oklab, var(--muted) 25%, transparent); 
+  transition: all 0.3s ease;
+}
 .header-inner { display: flex; align-items: center; gap: 1rem; padding: .75rem 0; }
 .brand { font-weight: 700; letter-spacing: .2px; }
 .site-nav ul { list-style: none; display: flex; gap: 1rem; margin: 0; padding: 0; }
@@ -84,7 +157,20 @@ body { background: var(--bg); color: var(--text); }
 .site-nav a:hover, .site-nav a.active { color: var(--text); background: color-mix(in oklab, var(--primary) 20%, transparent); }
 .nav-toggle { display: none; background: transparent; border: 1px solid color-mix(in oklab, var(--muted) 30%, transparent); color: var(--text); padding: .4rem .6rem; border-radius: .5rem; }
 .header-controls { display: flex; align-items: center; gap: .5rem; }
-.theme-toggle, .lang-toggle { background: transparent; border: 1px solid color-mix(in oklab, var(--muted) 30%, transparent); color: var(--text); padding: .4rem .6rem; border-radius: .5rem; font-size: .85rem; }
+.theme-toggle, .lang-toggle { 
+  background: transparent; 
+  border: 1px solid color-mix(in oklab, var(--muted) 30%, transparent); 
+  color: var(--text); 
+  padding: .4rem .6rem; 
+  border-radius: .5rem; 
+  font-size: .85rem; 
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+.theme-toggle:hover, .lang-toggle:hover {
+  background: color-mix(in oklab, var(--primary) 15%, transparent);
+  border-color: var(--primary);
+}
 
 @media (max-width: 800px) {
   .header-inner { flex-wrap: wrap; padding: .5rem 0; }

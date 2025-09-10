@@ -13,17 +13,17 @@
     
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website" />
-    <meta property="og:url" content="https://yoursite.com/" />
+    <meta property="og:url" content="https://kanade3256.github.io/SelfIntroduction/" />
     <meta property="og:title" content="Kanato Murayama | ポートフォリオ - データサイエンス × フルスタック開発" />
     <meta property="og:description" content="データサイエンス × クラウドDX × フルスタック開発を通じて課題解決に取り組む学生エンジニア。歩行データ解析研究・AWS Lambda・Next.js・Firebaseでの実績あり。" />
-    <meta property="og:image" content="https://yoursite.com/assets/og-image.png" />
+    <meta property="og:image" content="https://kanade3256.github.io/SelfIntroduction/assets/og-image.png" />
     
     <!-- Twitter -->
     <meta property="twitter:card" content="summary_large_image" />
-    <meta property="twitter:url" content="https://yoursite.com/" />
+    <meta property="twitter:url" content="https://kanade3256.github.io/SelfIntroduction/" />
     <meta property="twitter:title" content="Kanato Murayama | ポートフォリオ - データサイエンス × フルスタック開発" />
     <meta property="twitter:description" content="データサイエンス × クラウドDX × フルスタック開発を通じて課題解決に取り組む学生エンジニア。歩行データ解析研究・AWS Lambda・Next.js・Firebaseでの実績あり。" />
-    <meta property="twitter:image" content="https://yoursite.com/assets/og-image.png" />
+    <meta property="twitter:image" content="https://kanade3256.github.io/SelfIntroduction/assets/og-image.png" />
     
     <!-- Structured Data (JSON-LD) -->
     <script type="application/ld+json">
@@ -66,13 +66,13 @@
         <button class="nav-toggle" aria-expanded="false" aria-controls="site-nav" aria-label="メニューを開閉">☰</button>
         <nav id="site-nav" class="site-nav" role="navigation" aria-label="メインナビゲーション">
           <ul>
-            <li><a href="#about">自己紹介</a></li>
-            <li><a href="#skills">スキル</a></li>
-            <li><a href="#projects">制作物</a></li>
-            <li><a href="#experience">経歴</a></li>
-            <li><a href="timeline.html">タイムライン</a></li>
-            <li><a href="resume.html">履歴書</a></li>
-            <li><a href="#contact">連絡</a></li>
+            <li><a href="#about" data-i18n="nav.about">自己紹介</a></li>
+            <li><a href="#skills" data-i18n="nav.skills">スキル</a></li>
+            <li><a href="#projects" data-i18n="nav.projects">制作物</a></li>
+            <li><a href="#experience" data-i18n="nav.experience">経歴</a></li>
+            <li><a href="timeline.html" data-i18n="nav.timeline">タイムライン</a></li>
+            <li><a href="resume.html" data-i18n="nav.resume">履歴書</a></li>
+            <li><a href="#contact" data-i18n="nav.contact">連絡</a></li>
             <li><a href="https://qiita.com/kanade3256" target="_blank" rel="noopener noreferrer" aria-label="Qiitaプロフィールを開く">Qiita</a></li>
           </ul>
         </nav>
@@ -87,30 +87,34 @@
       <section id="home" class="section hero">
         <div class="container grid hero-grid">
           <div class="hero-text">
-            <p class="eyebrow">こんにちは、</p>
-            <h1>私は <span class="accent" id="display-name">Kanato Murayama</span> です</h1>
-            <p class="lead">データサイエンス × クラウドDX × フルスタック開発を通じて、課題解決とユーザー価値創出に取り組んでいます。</p>
+            <p class="eyebrow reveal" data-i18n="index.hero.hello">こんにちは、</p>
+            <h1 class="reveal">
+              <span data-i18n="index.hero.i_am_prefix">私は </span>
+              <span class="accent" id="display-name">Kanato Murayama</span>
+              <span data-i18n="index.hero.i_am_suffix"> です</span>
+            </h1>
+            <p class="lead reveal" data-i18n="index.hero.lead">データサイエンス × クラウドDX × フルスタック開発を通じて、課題解決とユーザー価値創出に取り組んでいます。</p>
             <div class="achievements">
-              <div class="achievement-card">
-                <h3>研究実績</h3>
-                <p>歩行データの時系列クラスタリング研究</p>
+              <div class="achievement-card reveal">
+                <h3 data-i18n="index.achievements.research.title">研究実績</h3>
+                <p data-i18n="index.achievements.research.desc">歩行データの時系列クラスタリング研究</p>
                 <span class="achievement-tech">Python/DTW/MediaPipe</span>
               </div>
-              <div class="achievement-card">
-                <h3>実務系DX</h3>
-                <p>Komeda Portal - バイトシフトDXシステム</p>
+              <div class="achievement-card reveal">
+                <h3 data-i18n="index.achievements.business.title">実務系DX</h3>
+                <p data-i18n="index.achievements.business.desc">Komeda Portal - バイトシフトDXシステム</p>
                 <span class="achievement-tech">AWS Lambda/LINE連携</span>
               </div>
-              <div class="achievement-card">
-                <h3>個人開発</h3>
-                <p>研究室メモ共有アプリ</p>
+              <div class="achievement-card reveal">
+                <h3 data-i18n="index.achievements.personal.title">個人開発</h3>
+                <p data-i18n="index.achievements.personal.desc">研究室メモ共有アプリ</p>
                 <span class="achievement-tech">Next.js/Firebase/認証</span>
               </div>
             </div>
             <div class="actions">
-              <a class="btn primary" href="#projects">制作物を見る</a>
-              <a class="btn" href="#about">詳しく知る</a>
-              <a class="btn" href="#contact">問い合わせ</a>
+              <a class="btn primary reveal" href="#projects" data-i18n="index.actions.view_projects">制作物を見る</a>
+              <a class="btn reveal" href="#about" data-i18n="index.actions.learn_more">詳しく知る</a>
+              <a class="btn reveal" href="#contact" data-i18n="index.actions.contact">問い合わせ</a>
             </div>
           </div>
           <div class="hero-media">
@@ -121,40 +125,40 @@
 
       <section id="about" class="section">
         <div class="container narrow">
-          <h2>自己紹介</h2>
+          <h2 class="reveal" data-i18n="index.about.title">自己紹介</h2>
           <div class="about-content">
-            <p>
+            <p class="reveal">
               <strong>データサイエンス × クラウドDX × フルスタック開発</strong> を軸に、課題解決とユーザー価値創出に取り組んでいます。
             </p>
-            <p>
+            <p class="reveal">
               研究では<strong>歩行データの時系列解析</strong>を通じて、AI・データサイエンスの専門性を深めています。MediaPipeによる骨格データ抽出から、DTWアルゴリズムを用いたクラスタリングまで、データを形にし、分析・可視化・検証まで回せる力を身につけました。
             </p>
-            <p>
+            <p class="reveal">
               実務系開発では<strong>Komeda Portal</strong>や<strong>FastSign構想</strong>を通じて、AWS Lambda・Next.js・Prismaなどモダンなクラウドスタックでの業務効率化を実現。企業が求める「クラウド × モダンWeb開発経験」と実装→運用→改善までの一連の経験を積んでいます。
             </p>
-            <p>
+            <p class="reveal">
               個人開発では<strong>研究室メモ共有アプリ</strong>や<strong>CLIツール</strong>など、課題を自分で見つけて解決する主体性と、運用・セキュリティ・ユーザビリティまで意識した開発姿勢を大切にしています。
             </p>
-            <p>
+            <p class="reveal">
               <strong>技術力＋遊び心</strong>で、ユーザーが本当に価値を感じるプロダクトづくりを目指しています。
             </p>
           </div>
           <div class="about-highlights">
-            <div class="highlight">
+            <div class="highlight reveal">
               <span class="highlight-icon">🎓</span>
               <div>
                 <h4>研究・専門性</h4>
                 <p>AI × データ解析 × 研究的アプローチ</p>
               </div>
             </div>
-            <div class="highlight">
+            <div class="highlight reveal">
               <span class="highlight-icon">💼</span>
               <div>
                 <h4>実務・即戦力性</h4>
                 <p>クラウドDX・モダンWeb開発経験</p>
               </div>
             </div>
-            <div class="highlight">
+            <div class="highlight reveal">
               <span class="highlight-icon">🚀</span>
               <div>
                 <h4>主体性・継続力</h4>
@@ -167,9 +171,9 @@
 
       <section id="skills" class="section alt">
         <div class="container">
-          <h2>スキル</h2>
+          <h2 class="reveal" data-i18n="index.skills.title">スキル</h2>
           <div class="skills-grid">
-            <div class="skill-category">
+            <div class="skill-category reveal">
               <h3>データサイエンス・AI</h3>
               <ul class="tags">
                 <li>Python</li>
@@ -182,7 +186,7 @@
                 <li>時系列解析</li>
               </ul>
             </div>
-            <div class="skill-category">
+            <div class="skill-category reveal">
               <h3>フロントエンド</h3>
               <ul class="tags">
                 <li>TypeScript</li>
@@ -193,7 +197,7 @@
                 <li>HTML5/CSS3</li>
               </ul>
             </div>
-            <div class="skill-category">
+            <div class="skill-category reveal">
               <h3>バックエンド・クラウド</h3>
               <ul class="tags">
                 <li>Node.js</li>
@@ -205,7 +209,7 @@
                 <li>PostgreSQL</li>
               </ul>
             </div>
-            <div class="skill-category">
+            <div class="skill-category reveal">
               <h3>開発・ツール</h3>
               <ul class="tags">
                 <li>Git</li>
@@ -222,9 +226,9 @@
 
       <section id="projects" class="section">
         <div class="container">
-          <h2>制作物</h2>
+          <h2 class="reveal" data-i18n="index.projects.title">制作物</h2>
           <div class="grid cards">
-            <article class="card">
+            <article class="card reveal">
               <div class="card-header">
                 <div class="card-icon research">🔬</div>
                 <div class="card-title-group">
@@ -243,7 +247,7 @@
                 <a class="btn small" href="#" aria-label="レポートを開く">レポート</a>
               </div>
             </article>
-            <article class="card">
+            <article class="card reveal">
               <div class="card-header">
                 <div class="card-icon business">💼</div>
                 <div class="card-title-group">
@@ -262,7 +266,7 @@
                 <a class="btn small" href="#" aria-label="アーキテクチャを開く">アーキテクチャ</a>
               </div>
             </article>
-            <article class="card">
+            <article class="card reveal">
               <div class="card-header">
                 <div class="card-icon personal">🚀</div>
                 <div class="card-title-group">
@@ -282,7 +286,7 @@
                 <a class="btn small" href="#" aria-label="技術詳細を開く">技術詳細</a>
               </div>
             </article>
-            <article class="card">
+            <article class="card reveal">
               <div class="card-header">
                 <div class="card-icon internship">🏢</div>
                 <div class="card-title-group">
@@ -301,7 +305,7 @@
                 <a class="btn small" href="#" aria-label="設計資料を開く">設計資料</a>
               </div>
             </article>
-            <article class="card">
+            <article class="card reveal">
               <div class="card-header">
                 <div class="card-icon tool">🛠️</div>
                 <div class="card-title-group">
@@ -326,9 +330,9 @@
 
       <section id="experience" class="section alt">
         <div class="container">
-          <h2>職務経歴</h2>
+          <h2 class="reveal" data-i18n="index.experience.title">職務経歴</h2>
           <div class="timeline">
-            <div class="tl-item">
+            <div class="tl-item reveal">
               <div class="tl-dot"></div>
               <div class="tl-content">
                 <h3>会社名 / ポジション</h3>
@@ -336,7 +340,7 @@
                 <p>担当業務、実績、リードしたプロジェクトなど。</p>
               </div>
             </div>
-            <div class="tl-item">
+            <div class="tl-item reveal">
               <div class="tl-dot"></div>
               <div class="tl-content">
                 <h3>会社名 / ポジション</h3>
@@ -350,17 +354,14 @@
 
       <section id="contact" class="section">
         <div class="container">
-          <h2>連絡先</h2>
+          <h2 class="reveal" data-i18n="index.contact.title">連絡先</h2>
           <div class="contact-grid">
             <div class="contact-info">
-              <h3>お気軽にお問い合わせください</h3>
-              <p>
-                お仕事のご相談、技術的な質問、コラボレーションなど、
-                どんなことでもお気軽にご連絡ください。
-              </p>
+              <h3 class="reveal" data-i18n="contact.cta.title">お気軽にお問い合わせください</h3>
+              <p class="reveal" data-i18n="contact.cta.body">お仕事のご相談、技術的な質問、コラボレーションなど、どんなことでもお気軽にご連絡ください。</p>
               
               <div class="contact-methods">
-                <div class="contact-method">
+                <div class="contact-method reveal">
                   <div class="contact-icon">📧</div>
                   <div class="contact-details">
                     <h4>メール</h4>
@@ -369,7 +370,7 @@
                   </div>
                 </div>
                 
-                <div class="contact-method">
+                <div class="contact-method reveal">
                   <div class="contact-icon">💼</div>
                   <div class="contact-details">
                     <h4>LinkedIn</h4>
@@ -378,7 +379,7 @@
                   </div>
                 </div>
                 
-                <div class="contact-method">
+                <div class="contact-method reveal">
                   <div class="contact-icon">🐙</div>
                   <div class="contact-details">
                     <h4>GitHub</h4>
@@ -387,7 +388,7 @@
                   </div>
                 </div>
                 
-                <div class="contact-method">
+                <div class="contact-method reveal">
                   <div class="contact-icon">📝</div>
                   <div class="contact-details">
                     <h4>Qiita</h4>
@@ -397,7 +398,7 @@
                 </div>
               </div>
               
-              <div class="contact-documents">
+              <div class="contact-documents reveal">
                 <h4>ダウンロード資料</h4>
                 <div class="document-links">
                   <a class="btn" href="#" aria-label="履歴書PDFをダウンロード">
@@ -413,7 +414,7 @@
               </div>
             </div>
             
-            <div class="contact-form">
+            <div class="contact-form reveal">
               <h3>メッセージを送る</h3>
               <form action="#" method="POST" class="message-form">
                 <div class="form-group">
