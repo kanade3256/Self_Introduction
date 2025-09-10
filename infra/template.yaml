@@ -52,3 +52,45 @@ Resources:
               Action:
                 - secretsmanager:GetSecretValue
               Resource: arn:aws:secretsmanager:ap-northeast-1:*:secret:PortfolioDefaultSecret-*
+
+  # ---------- Contact Form Handler with Function URL ----------
+
+  InquiryToLINEFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: InquiryToLINE
+      CodeUri: ../backend/InquiryToLINE/
+      Handler: app.lambda_handler
+      Runtime: python3.11
+      Architectures: [x86_64]
+      Layers: [!Ref CommonLayer]
+      Description: Receive contact form submission and notify via LINE immediately
+      Environment:
+        Variables:
+          LINE_USER_IDS: "Ud55966cebee1b08b41346b72f4ea86fb"
+          SYSTEM_NAME: "PortfolioInquiry"
+          CORS_ORIGIN: "*"
+      FunctionUrlConfig:
+        AuthType: NONE
+        Cors:
+          AllowOrigins:
+            - "*"
+          AllowHeaders:
+            - "Content-Type"
+            - "Authorization"
+          AllowMethods:
+            - "POST"
+          MaxAge: 86400
+      Policies:
+        - Statement:
+            - Effect: Allow
+              Action:
+                - secretsmanager:GetSecretValue
+              Resource: arn:aws:secretsmanager:ap-northeast-1:*:secret:PortfolioDefaultSecret-*
+
+Outputs:
+  InquiryFunctionUrl:
+    Description: Function URL for Contact Form submission
+    Value: !GetAtt InquiryToLINEFunctionUrl.FunctionUrl
+    Export:
+      Name: !Sub "${AWS::StackName}-InquiryFunctionUrl"
