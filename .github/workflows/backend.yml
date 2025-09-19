@@ -66,7 +66,7 @@ jobs:
           SAM_CLI_TELEMETRY: 0
 
       - name: SAM Deploy
-        run: sam deploy --no-confirm-changeset --no-fail-on-empty-changeset
+        run: sam deploy --stack-name portfolio-sam-app --no-confirm-changeset --no-fail-on-empty-changeset --capabilities CAPABILITY_IAM
         working-directory: ./infra
         env:
           SAM_CLI_TELEMETRY: 0
