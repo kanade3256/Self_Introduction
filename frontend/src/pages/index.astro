@@ -1,0 +1,186 @@
+---
+import { getCollection } from 'astro:content';
+import Base from '../layouts/Base.astro';
+import siteConfig from '../data/site.json';
+
+// ホームページのコンテンツを取得
+const homeContent = await getCollection('pages', ({ id }) => id === 'home');
+const home = homeContent[0];
+
+// プロジェクトを取得（featured優先）
+const allProjects = await getCollection('projects');
+const featuredProjects = allProjects
+  .filter(project => project.data.featured)
+  .sort((a, b) => b.data.date.getTime() - a.data.date.getTime())
+  .slice(0, 3);
+
+const { Content: HomeContent } = await home.render();
+---
+
+<Base title="ホーム" description={siteConfig.description}>
+  <!-- Hero Section -->
+  <section id="home" class="hero">
+    <div class="container hero-inner">
+      <div class="hero-content">
+        <div class="hero-text">
+          <h1 class="reveal">{siteConfig.hero.title}</h1>
+          <p class="lead reveal">{siteConfig.hero.lead}</p>
+          
+          <div class="achievements reveal">
+            {siteConfig.achievements.map((achievement) => (
+              <div class={`achievement ${achievement.category}`}>
+                <span class="achievement-icon">{achievement.icon}</span>
+                <div class="achievement-content">
+                  <h3 data-i18n={`index.achievements.${achievement.category}.title`}>{achievement.title}</h3>
+                  <p data-i18n={`index.achievements.${achievement.category}.desc`}>{achievement.description}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+        
+        <div class="hero-visual reveal">
+          <img src={siteConfig.hero.avatarImage} alt="Profile Avatar" class="avatar" width="200" height="200" />
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- About Section -->
+  <section id="about" class="section">
+    <div class="container">
+      <h2 class="section-title reveal" data-i18n="index.about.title">自己紹介</h2>
+      <div class="content-wrapper reveal">
+        <HomeContent />
+      </div>
+    </div>
+  </section>
+
+  <!-- Skills Section -->
+  {siteConfig.featureFlags.showSkills && (
+    <section id="skills" class="section skills-section">
+      <div class="container">
+        <h2 class="section-title reveal" data-i18n="index.skills.title">技術スキル</h2>
+        
+        {Object.entries(siteConfig.skills).map(([categoryKey, category]) => (
+          <div class="skill-category reveal">
+            <h3 class="skill-category-title">{category.title}</h3>
+            <div class="skills-grid">
+              {category.items.map((skill) => (
+                <div class={`skill-item ${skill.category}`}>
+                  <div class="skill-header">
+                    <span class="skill-name">{skill.name}</span>
+                    <span class="skill-level">{skill.level}%</span>
+                  </div>
+                  <div class="skill-bar">
+                    <div class="skill-progress" style={`width: ${skill.level}%`}></div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        ))}
+      </div>
+    </section>
+  )}
+
+  <!-- Projects Section -->
+  {siteConfig.featureFlags.showProjects && (
+    <section id="projects" class="section">
+      <div class="container">
+        <h2 class="section-title reveal" data-i18n="index.projects.title">主な制作物</h2>
+        
+        <div class="projects-grid">
+          {featuredProjects.map((project) => (
+            <article class="card reveal">
+              <div class="card-header">
+                <div class={`card-icon ${project.data.category.includes('実務') ? 'business' : project.data.category.includes('研究') ? 'research' : 'personal'}`}>
+                  {project.data.category.includes('実務') ? '💼' : project.data.category.includes('研究') ? '🔬' : '🚀'}
+                </div>
+                <div class="card-title-group">
+                  <h3>{project.data.title}</h3>
+                  <span class="card-category">{project.data.category}</span>
+                </div>
+              </div>
+              <p>{project.data.summary}</p>
+              <ul class="meta">
+                <li>役割: {project.data.role}</li>
+                <li>技術: {project.data.technologies.slice(0, 3).join(', ')}</li>
+                <li>成果: {project.data.achievements[0]}</li>
+              </ul>
+              <div class="card-actions">
+                {project.data.links?.demo && (
+                  <a class="btn small" href={project.data.links.demo} target="_blank" rel="noopener noreferrer" aria-label="デモサイトを開く">デモサイト</a>
+                )}
+                {project.data.links?.repo && (
+                  <a class="btn small" href={project.data.links.repo} target="_blank" rel="noopener noreferrer" aria-label="GitHubを開く">GitHub</a>
+                )}
+                <a class="btn small" href={`/projects/${project.slug}`} aria-label="詳細を見る">詳細を見る</a>
+              </div>
+            </article>
+          ))}
+        </div>
+        
+        <div class="section-footer reveal">
+          <a href="/projects" class="btn">すべてのプロジェクトを見る</a>
+        </div>
+      </div>
+    </section>
+  )}
+
+  <!-- Contact Section -->
+  {siteConfig.featureFlags.showContact && (
+    <section id="contact" class="section contact-section">
+      <div class="container">
+        <h2 class="section-title reveal" data-i18n="index.contact.title">お問い合わせ</h2>
+        
+        <div class="contact-wrapper reveal">
+          <div class="contact-intro">
+            <p>プロジェクトやお仕事のご依頼、技術的なご質問など、お気軽にお問い合わせください。</p>
+          </div>
+          
+          <form class="message-form" aria-label="お問い合わせフォーム">
+            <div class="form-row">
+              <div class="form-group">
+                <label for="contact-name">お名前 <span class="required">*</span></label>
+                <input type="text" id="contact-name" name="name" required aria-describedby="name-error">
+                <span class="error-message" id="name-error"></span>
+              </div>
+              <div class="form-group">
+                <label for="contact-email">メールアドレス <span class="required">*</span></label>
+                <input type="email" id="contact-email" name="email" required aria-describedby="email-error">
+                <span class="error-message" id="email-error"></span>
+              </div>
+            </div>
+            
+            <div class="form-row">
+              <div class="form-group">
+                <label for="contact-company">組織名</label>
+                <input type="text" id="contact-company" name="company" placeholder="任意">
+              </div>
+              <div class="form-group">
+                <label for="contact-subject">件名 <span class="required">*</span></label>
+                <select id="contact-subject" name="subject" required aria-describedby="subject-error">
+                  <option value="">選択してください</option>
+                  <option value="プロジェクト相談">プロジェクト相談</option>
+                  <option value="技術的質問">技術的質問</option>
+                  <option value="転職・採用">転職・採用について</option>
+                  <option value="その他">その他</option>
+                </select>
+                <span class="error-message" id="subject-error"></span>
+              </div>
+            </div>
+            
+            <div class="form-group">
+              <label for="contact-message">メッセージ <span class="required">*</span></label>
+              <textarea id="contact-message" name="message" rows="6" required aria-describedby="message-error" placeholder="ご質問やご相談内容をお聞かせください"></textarea>
+              <span class="error-message" id="message-error"></span>
+            </div>
+            
+            <button type="submit" class="btn submit-btn">送信する</button>
+          </form>
+        </div>
+      </div>
+    </section>
+  )}
+</Base>

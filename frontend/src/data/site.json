@@ -1,0 +1,150 @@
+{
+  "siteName": "Kanato Murayama | ポートフォリオ",
+  "description": "データサイエンス × クラウドDX × フルスタック開発を軸とした学生エンジニアのポートフォリオ",
+  "author": "Kanato Murayama",
+  "siteUrl": "https://kanade3256.github.io/SelfIntroduction/",
+  
+  "nav": [
+    {
+      "label": "自己紹介",
+      "href": "#about",
+      "key": "nav.about"
+    },
+    {
+      "label": "スキル",
+      "href": "#skills", 
+      "key": "nav.skills"
+    },
+    {
+      "label": "制作物",
+      "href": "#projects",
+      "key": "nav.projects"
+    },
+    {
+      "label": "経歴",
+      "href": "#experience",
+      "key": "nav.experience"
+    },
+    {
+      "label": "お問い合わせ",
+      "href": "#contact",
+      "key": "nav.contact"
+    }
+  ],
+
+  "socials": {
+    "github": {
+      "url": "https://github.com/kanade3256",
+      "label": "GitHub"
+    },
+    "qiita": {
+      "url": "https://qiita.com/kanade3256", 
+      "label": "Qiita"
+    },
+    "x": {
+      "url": "https://x.com/your_handle",
+      "label": "X (Twitter)"
+    }
+  },
+
+  "contact": {
+    "email": "your.email@example.com",
+    "phone": "+81-XX-XXXX-XXXX",
+    "location": "京都, 日本"
+  },
+
+  "featureFlags": {
+    "showBlog": false,
+    "showContact": true,
+    "showProjects": true,
+    "showSkills": true,
+    "showExperience": true,
+    "enableI18n": true,
+    "enableDarkMode": true,
+    "enableAnimations": true
+  },
+
+  "hero": {
+    "title": "データサイエンス × クラウドDX × フルスタック開発",
+    "lead": "課題解決とユーザー価値創出に取り組んでいます。",
+    "avatarImage": "/assets/avatar.svg"
+  },
+
+  "achievements": [
+    {
+      "icon": "🔬",
+      "category": "research",
+      "title": "研究実績",
+      "description": "歩行データの時系列クラスタリング研究"
+    },
+    {
+      "icon": "💼", 
+      "category": "business",
+      "title": "実務経験",
+      "description": "Komeda Portal - バイトシフトDXシステム"
+    },
+    {
+      "icon": "🚀",
+      "category": "personal", 
+      "title": "個人開発",
+      "description": "研究室メモ共有アプリ"
+    }
+  ],
+
+  "skills": {
+    "programming": {
+      "title": "プログラミング言語",
+      "items": [
+        { "name": "Python", "level": 90, "category": "data-science" },
+        { "name": "JavaScript/TypeScript", "level": 85, "category": "web" },
+        { "name": "SQL", "level": 80, "category": "database" }
+      ]
+    },
+    "frameworks": {
+      "title": "フレームワーク・ライブラリ", 
+      "items": [
+        { "name": "Next.js", "level": 85, "category": "web" },
+        { "name": "React", "level": 80, "category": "web" },
+        { "name": "scikit-learn", "level": 90, "category": "data-science" },
+        { "name": "pandas", "level": 95, "category": "data-science" }
+      ]
+    },
+    "cloud": {
+      "title": "クラウド・インフラ",
+      "items": [
+        { "name": "AWS Lambda", "level": 85, "category": "cloud" },
+        { "name": "Firebase", "level": 80, "category": "cloud" },
+        { "name": "AWS S3", "level": 75, "category": "cloud" }
+      ]
+    }
+  },
+
+  "languages": {
+    "ja": "日本語",
+    "en": "English"
+  },
+
+  "meta": {
+    "keywords": [
+      "フルスタックエンジニア",
+      "データサイエンス", 
+      "Python",
+      "JavaScript",
+      "TypeScript",
+      "React",
+      "Next.js",
+      "AWS",
+      "Firebase",
+      "歩行データ解析",
+      "機械学習",
+      "クラウド開発"
+    ],
+    "ogImage": "/assets/og-image.png",
+    "themeColor": "#0ea5e9"
+  },
+
+  "editingTips": {
+    "ja": "コンテンツを編集するには、src/content/ フォルダ内のMarkdownファイルを編集してください。",
+    "en": "To edit content, modify the Markdown files in the src/content/ folder."
+  }
+}

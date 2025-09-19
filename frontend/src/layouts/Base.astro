@@ -1,0 +1,127 @@
+---
+export interface Props {
+  title?: string;
+  description?: string;
+}
+
+const { title, description } = Astro.props;
+
+// サイト設定をインポート
+import siteConfig from '../data/site.json';
+---
+
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    
+    <!-- Primary Meta Tags -->
+    <title>{title ? `${title} | ${siteConfig.siteName}` : siteConfig.siteName}</title>
+    <meta name="title" content={title ? `${title} | ${siteConfig.siteName}` : siteConfig.siteName} />
+    <meta name="description" content={description || siteConfig.description} />
+    <meta name="keywords" content={siteConfig.meta.keywords.join(',')} />
+    <meta name="author" content={siteConfig.author} />
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content={siteConfig.siteUrl} />
+    <meta property="og:title" content={title ? `${title} | ${siteConfig.siteName}` : siteConfig.siteName} />
+    <meta property="og:description" content={description || siteConfig.description} />
+    <meta property="og:image" content={`${siteConfig.siteUrl}${siteConfig.meta.ogImage}`} />
+    
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image" />
+    <meta property="twitter:url" content={siteConfig.siteUrl} />
+    <meta property="twitter:title" content={title ? `${title} | ${siteConfig.siteName}` : siteConfig.siteName} />
+    <meta property="twitter:description" content={description || siteConfig.description} />
+    <meta property="twitter:image" content={`${siteConfig.siteUrl}${siteConfig.meta.ogImage}`} />
+    
+    <!-- Structured Data (JSON-LD) -->
+    <script type="application/ld+json" set:html={JSON.stringify({
+      "@context": "https://schema.org",
+      "@type": "Person",
+      "name": siteConfig.author,
+      "jobTitle": "Full-Stack Engineer & Data Scientist",
+      "description": siteConfig.description,
+      "url": siteConfig.siteUrl,
+      "sameAs": [
+        siteConfig.socials.github.url,
+        siteConfig.socials.qiita.url
+      ],
+      "knowsAbout": [
+        "Python",
+        "JavaScript", 
+        "TypeScript",
+        "React",
+        "Next.js",
+        "AWS",
+        "Firebase",
+        "Data Science",
+        "Machine Learning"
+      ]
+    })} />
+    
+    <meta name="theme-color" content={siteConfig.meta.themeColor} id="meta-theme-color" />
+    <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml" />
+    <link rel="preload" href="/css/style.css" as="style" />
+    <link rel="stylesheet" href="/css/style.css" />
+  </head>
+  <body>
+    <a class="skip-link" href="#main">メインコンテンツへ移動</a>
+
+    <header class="site-header" role="banner">
+      <div class="container header-inner">
+        <a class="brand" href="#home" aria-label="ホーム">{siteConfig.author}</a>
+        <button class="nav-toggle" aria-expanded="false" aria-controls="site-nav" aria-label="メニューを開閉">☰</button>
+        <nav id="site-nav" class="site-nav" role="navigation" aria-label="メインナビゲーション">
+          <ul>
+            {siteConfig.nav.map((item) => (
+              <li><a href={item.href} data-i18n={item.key}>{item.label}</a></li>
+            ))}
+          </ul>
+          {siteConfig.featureFlags.enableI18n && (
+            <div class="language-switcher">
+              <button class="lang-btn" data-lang="ja" aria-label="日本語に切り替え">🇯🇵</button>
+              <button class="lang-btn" data-lang="en" aria-label="Switch to English">🇺🇸</button>
+            </div>
+          )}
+        </nav>
+      </div>
+    </header>
+
+    <main id="main" role="main">
+      <slot />
+    </main>
+
+    <footer class="site-footer" role="contentinfo">
+      <div class="container">
+        <div class="footer-content">
+          <div class="footer-section">
+            <h3>お問い合わせ</h3>
+            <p>プロジェクトや技術についてお気軽にご連絡ください。</p>
+            <div class="social-links">
+              {Object.entries(siteConfig.socials).map(([key, social]) => (
+                <a href={social.url} target="_blank" rel="noopener noreferrer" aria-label={social.label}>
+                  {key === 'github' && '📂'}
+                  {key === 'qiita' && '📝'}
+                  {key === 'x' && '🐦'}
+                </a>
+              ))}
+            </div>
+          </div>
+        </div>
+        <div class="footer-bottom">
+          <p>&copy; 2025 {siteConfig.author}. All rights reserved.</p>
+          {siteConfig.featureFlags.enableI18n && (
+            <p class="editing-tip">
+              <small>{siteConfig.editingTips.ja}</small>
+            </p>
+          )}
+        </div>
+      </div>
+    </footer>
+
+    <script src="/js/main.js"></script>
+  </body>
+</html>

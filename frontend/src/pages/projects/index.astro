@@ -1,0 +1,118 @@
+---
+import { getCollection } from 'astro:content';
+import Base from '../layouts/Base.astro';
+
+// すべてのプロジェクトを取得
+const allProjects = await getCollection('projects');
+const sortedProjects = allProjects.sort((a, b) => b.data.date.getTime() - a.data.date.getTime());
+---
+
+<Base title="プロジェクト一覧" description="これまでに手がけた研究・実務・個人開発プロジェクトの一覧">
+  <section class="page-header">
+    <div class="container">
+      <h1 class="page-title reveal">プロジェクト一覧</h1>
+      <p class="page-lead reveal">研究・実務・個人開発で取り組んだプロジェクトをご紹介します。</p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <div class="projects-grid">
+        {sortedProjects.map((project) => (
+          <article class="card reveal">
+            <div class="card-header">
+              <div class={`card-icon ${project.data.category.includes('実務') ? 'business' : project.data.category.includes('研究') ? 'research' : 'personal'}`}>
+                {project.data.category.includes('実務') ? '💼' : project.data.category.includes('研究') ? '🔬' : '🚀'}
+              </div>
+              <div class="card-title-group">
+                <h2>{project.data.title}</h2>
+                <span class="card-category">{project.data.category}</span>
+              </div>
+            </div>
+            <p>{project.data.summary}</p>
+            
+            <div class="project-meta">
+              <div class="meta-item">
+                <strong>役割:</strong> {project.data.role}
+              </div>
+              <div class="meta-item">
+                <strong>技術:</strong> {project.data.technologies.slice(0, 4).join(', ')}
+                {project.data.technologies.length > 4 && ` ほか${project.data.technologies.length - 4}件`}
+              </div>
+              <div class="meta-item">
+                <strong>期間:</strong> {project.data.date.toLocaleDateString('ja-JP', { year: 'numeric', month: 'long' })}
+              </div>
+            </div>
+            
+            <div class="tags">
+              {project.data.tags.slice(0, 3).map((tag) => (
+                <span class="tag">{tag}</span>
+              ))}
+            </div>
+            
+            <div class="card-actions">
+              {project.data.links?.demo && (
+                <a class="btn small" href={project.data.links.demo} target="_blank" rel="noopener noreferrer">デモサイト</a>
+              )}
+              {project.data.links?.repo && (
+                <a class="btn small" href={project.data.links.repo} target="_blank" rel="noopener noreferrer">GitHub</a>
+              )}
+              <a class="btn small primary" href={`/projects/${project.slug}`}>詳細を見る</a>
+            </div>
+          </article>
+        ))}
+      </div>
+    </div>
+  </section>
+</Base>
+
+<style>
+.page-header {
+  padding: 4rem 0 2rem;
+  text-align: center;
+  background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-accent) 100%);
+  color: white;
+}
+
+.page-title {
+  font-size: 2.5rem;
+  margin-bottom: 1rem;
+}
+
+.page-lead {
+  font-size: 1.25rem;
+  opacity: 0.9;
+}
+
+.project-meta {
+  margin: 1.5rem 0;
+  padding: 1rem;
+  background: var(--color-surface);
+  border-radius: 8px;
+  border-left: 4px solid var(--color-primary);
+}
+
+.meta-item {
+  margin-bottom: 0.5rem;
+}
+
+.meta-item:last-child {
+  margin-bottom: 0;
+}
+
+.tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin: 1rem 0;
+}
+
+.tag {
+  background: var(--color-primary);
+  color: white;
+  padding: 0.25rem 0.75rem;
+  border-radius: 20px;
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+</style>
