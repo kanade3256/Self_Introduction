@@ -3,18 +3,12 @@ import { getCollection } from 'astro:content';
 import Base from '../layouts/Base.astro';
 import siteConfig from '../data/site.json';
 
-// ホームページのコンテンツを取得
-const homeContent = await getCollection('pages', ({ id }) => id === 'home');
-const home = homeContent[0];
-
-// プロジェクトを取得（featured優先）
+// 注目プロジェクトを取得
 const allProjects = await getCollection('projects');
 const featuredProjects = allProjects
   .filter(project => project.data.featured)
   .sort((a, b) => b.data.date.getTime() - a.data.date.getTime())
   .slice(0, 3);
-
-const { Content: HomeContent } = await home.render();
 ---
 
 <Base title="ホーム" description={siteConfig.description}>
