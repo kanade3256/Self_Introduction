@@ -60,7 +60,7 @@ frontend/build/
 
 # Dependencies
 frontend/node_modules/
-frontend/package-lock.json
+# Note: package-lock.json should be committed for reproducible builds
 
 # TypeScript
 *.tsbuildinfo
