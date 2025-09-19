@@ -13,13 +13,14 @@ infra/test/*
 !.env.example
 .envrc
 
-# Node
+# Node.js
 node_modules/
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
-package-lock.json
+lerna-debug.log*
+.pnpm-debug.log*
 
 # Python
 __pycache__/
@@ -46,17 +47,36 @@ send_message.py
 .aws-sam/
 samconfig.toml
 
-# Frontend build outputs
-frontend/js/
+# Astro build outputs
 frontend/dist/
+frontend/.astro/
+
+# Frontend build outputs (legacy)
+frontend/js/
 frontend/.parcel-cache/
 frontend/.next/
 frontend/.svelte-kit/
 frontend/build/
 
+# Dependencies
+frontend/node_modules/
+frontend/package-lock.json
+
+# TypeScript
+*.tsbuildinfo
+
 # Logs
 *.log
 logs/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Runtime data
+pids
+*.pid
+*.seed
+*.pid.lock
 
 # Temporary files
 *.tmp
@@ -65,6 +85,7 @@ logs/
 *.swp
 *.swo
 *~
+.sass-cache/
 
 # IDE specific
 *.sublime-project
@@ -73,12 +94,31 @@ logs/
 .vscode/launch.json
 .vscode/extensions.json
 
-# OS specific
-*.pid
-*.seed
-*.pid.lock
+# OS specific files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
 
 # Misc
 coverage/
 tmp/
 .nyc_output/
+.eslintcache
+.stylelintcache
+
+# Test coverage
+coverage.lcov
+
+# Editor directories and files
+.vscode/*
+!.vscode/extensions.json
+.idea
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
