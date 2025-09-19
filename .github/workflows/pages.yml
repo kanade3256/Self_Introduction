@@ -37,15 +37,34 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: "20"
-          cache: npm
-          cache-dependency-path: ${{ env.BUILD_PATH }}/package-lock.json
+          # Temporarily disable cache to avoid issues
+          # cache: npm
+          # cache-dependency-path: ${{ env.BUILD_PATH }}/package-lock.json
           
       - name: Setup Pages
         id: pages
         uses: actions/configure-pages@v4
         
+      - name: Verify package files
+        run: |
+          echo "Checking package files..."
+          ls -la package*.json || true
+          echo "Node.js version: $(node --version)"
+          echo "NPM version: $(npm --version)"
+        working-directory: ${{ env.BUILD_PATH }}
+        
       - name: Install dependencies
-        run: npm ci
+        run: |
+          # Clean npm cache to avoid issues
+          npm cache clean --force
+          # Try npm ci first, fallback to npm install if it fails
+          if [ -f package-lock.json ]; then
+            echo "Found package-lock.json, using npm ci..."
+            npm ci || { echo "npm ci failed, falling back to npm install..."; npm install; }
+          else
+            echo "No package-lock.json found, using npm install..."
+            npm install
+          fi
         working-directory: ${{ env.BUILD_PATH }}
         
       - name: Build with Astro
