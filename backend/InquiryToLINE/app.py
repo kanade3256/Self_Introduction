@@ -91,7 +91,7 @@ def _fmt_time_iso_jst(dt: datetime | None = None) -> str:
     return dt.strftime("%Y/%m/%d %H:%M")
 
 
-def _format_line_text(payload: Dict[str, Any], system_name: str | None = None) -> str:
+def _format_line_text(payload: Dict[str, Any]) -> str:
     name = (payload.get("name") or payload.get("contactName") or "").strip()
     email = (payload.get("email") or "").strip()
     company = (payload.get("company") or payload.get("organization") or "").strip() or "個人"
@@ -113,8 +113,7 @@ def _format_line_text(payload: Dict[str, Any], system_name: str | None = None) -
         f"メッセージ：{message}" if message else "メッセージ：(未入力)",
     ]
     body = "\n".join(lines)
-    prefix = f"[{system_name}] " if system_name else ""
-    return prefix + body
+    return body
 
 
 def _response(status: int, body: Dict[str, Any]) -> Dict[str, Any]:
@@ -163,7 +162,7 @@ def lambda_handler(event, context):
 
     # Format message for LINE
     system_name = os.environ.get("SYSTEM_NAME", "PortfolioInquiry")
-    text = _format_line_text(payload, system_name)
+    text = _format_line_text(payload)
     logger.info(f"Formatted LINE message: {text}")
 
     # Send to LINE
