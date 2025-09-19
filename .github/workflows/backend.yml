@@ -1,25 +1,13 @@
-name: Deploy Backend (SAM) - DISABLED
-
-# Note: This workflow is currently disabled due to missing AWS credentials
-# To enable: Add AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY to GitHub Secrets
-
-# on:
-#   push:
-#     branches: ["main"]
-#     paths:
-#       - 'backend/**'
-#       - 'infra/**'
-#       - '.github/workflows/backend.yml'
-#   workflow_dispatch:
+name: Deploy Backend (SAM)
 
 on:
-  # Disabled - uncomment above to enable automatic deployment
+  push:
+    branches: ["main"]
+    paths:
+      - 'backend/**'
+      - 'infra/**'
+      - '.github/workflows/backend.yml'
   workflow_dispatch:
-    inputs:
-      manual_trigger:
-        description: 'Manual deployment trigger'
-        required: false
-        default: 'true'
 
 permissions:
   contents: read
