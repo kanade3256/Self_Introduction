@@ -6,7 +6,7 @@ from datetime import datetime, timezone
 import boto3
 from typing import Tuple, List
 from send_message import send_line_message
-from secret_loder import load_secret
+from secret_loader import load_secret
 
 try:
     import requests  # provided by Lambda Layer

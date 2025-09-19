@@ -6,7 +6,7 @@ from typing import Any, Dict, List, Tuple
 
 # Use functions from the shared Lambda Layer
 from send_message import send_line_message
-from secret_loder import load_secret
+from secret_loader import load_secret
 
 
 logger = logging.getLogger()

@@ -5,6 +5,7 @@ Thumbs.db
 .idea/
 .direnv/
 events/
+infra/test/*
 
 # Env / secrets (never commit)
 .env
