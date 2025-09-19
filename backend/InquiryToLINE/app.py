@@ -116,12 +116,33 @@ def _format_line_text(payload: Dict[str, Any]) -> str:
     return body
 
 
-def _response(status: int, body: Dict[str, Any]) -> Dict[str, Any]:
+def _response(status: int, body: Dict[str, Any], event: Dict[str, Any] = None) -> Dict[str, Any]:
+    # リクエストのOriginヘッダーを取得
+    origin = "*"
+    if event:
+        headers = event.get("headers", {})
+        # case-insensitiveでOriginヘッダーを検索
+        request_origin = None
+        for key, value in headers.items():
+            if key.lower() == "origin":
+                request_origin = value
+                break
+        
+        # 許可されたOriginのリスト（本番では厳密に制御）
+        allowed_origins = [
+            "http://localhost:4321",
+            "http://127.0.0.1:5500",
+            "https://kanade3256.github.io"
+        ]
+        
+        if request_origin and request_origin in allowed_origins:
+            origin = request_origin
+    
     return {
         "statusCode": status,
         "headers": {
             "Content-Type": "application/json; charset=utf-8",
-            "Access-Control-Allow-Origin": os.environ.get("CORS_ORIGIN", "*") or "*",
+            "Access-Control-Allow-Origin": origin,
             "Access-Control-Allow-Methods": "OPTIONS,POST",
             "Access-Control-Allow-Headers": "Content-Type,Authorization",
         },
@@ -138,16 +159,16 @@ def lambda_handler(event, context):
     http_method = request_context.get("http", {}).get("method", "").upper()
     
     if http_method == "OPTIONS":
-        return _response(204, {"message": "CORS preflight"})
+        return _response(204, {"message": "CORS preflight"}, event)
 
     # Only allow POST for actual submissions
     if http_method != "POST":
-        return _response(405, {"ok": False, "error": "Method not allowed. Use POST."})
+        return _response(405, {"ok": False, "error": "Method not allowed. Use POST."}, event)
 
     # Parse request body
     payload, status = _parse_body(event)
     if status != 200:
-        return _response(400, {"ok": False, "error": "Invalid request body format"})
+        return _response(400, {"ok": False, "error": "Invalid request body format"}, event)
 
     logger.info(f"Parsed payload: {payload}")
 
@@ -158,7 +179,7 @@ def lambda_handler(event, context):
         return _response(400, {
             "ok": False, 
             "error": f"Missing required fields: {', '.join(missing)}"
-        })
+        }, event)
 
     # Format message for LINE
     system_name = os.environ.get("SYSTEM_NAME", "PortfolioInquiry")
@@ -193,17 +214,17 @@ def lambda_handler(event, context):
                 "message": success_message,
                 "sent": sent_count,
                 "details": results
-            })
+            }, event)
         else:
             return _response(500, {
                 "ok": False,
                 "error": "LINE通知の送信に失敗しました。管理者にお問い合わせください。",
                 "details": results
-            })
+            }, event)
             
     except Exception as e:
         logger.error(f"Unexpected error: {str(e)}")
         return _response(500, {
             "ok": False,
             "error": "サーバー内部エラーが発生しました。しばらくしてから再度お試しください。"
-        })
+        }, event)

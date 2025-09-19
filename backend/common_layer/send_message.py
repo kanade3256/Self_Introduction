@@ -1,7 +1,7 @@
 import requests
 import logging
 import os
-from secret_loader import load_secret
+from backend.common_layer.secret_loader import load_secret
 
 # ロガーの設定
 logger = logging.getLogger()
