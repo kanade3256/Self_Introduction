@@ -182,16 +182,22 @@ def lambda_handler(event, context):
                 results.append({"user": uid, "status": "failed", "error": str(e)})
 
         if sent_count > 0:
+            success_message = "お問い合わせを受け付けました。ありがとうございます。"
+            if sent_count > 1:
+                success_message += f" 管理者{sent_count}名に通知を送信しました。"
+            else:
+                success_message += " 管理者に通知を送信しました。"
+                
             return _response(200, {
                 "ok": True,
-                "message": "お問い合わせを受け付けました。ありがとうございます。",
+                "message": success_message,
                 "sent": sent_count,
                 "details": results
             })
         else:
             return _response(500, {
                 "ok": False,
-                "error": "Failed to send notifications",
+                "error": "LINE通知の送信に失敗しました。管理者にお問い合わせください。",
                 "details": results
             })
             
@@ -199,5 +205,5 @@ def lambda_handler(event, context):
         logger.error(f"Unexpected error: {str(e)}")
         return _response(500, {
             "ok": False,
-            "error": "Internal server error occurred"
+            "error": "サーバー内部エラーが発生しました。しばらくしてから再度お試しください。"
         })

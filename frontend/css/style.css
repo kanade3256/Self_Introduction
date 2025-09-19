@@ -726,3 +726,143 @@ body { overflow-wrap: anywhere; }
   .contact-method { padding: .8rem; }
   .contact-icon { width: 2rem; height: 2rem; font-size: 1rem; }
 }
+
+/* カスタムダイアログ */
+.custom-dialog-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(4px);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.3s ease;
+}
+
+.custom-dialog-overlay.show {
+  opacity: 1;
+  visibility: visible;
+}
+
+.custom-dialog {
+  background: var(--panel);
+  border-radius: 12px;
+  box-shadow: var(--shadow);
+  max-width: 90vw;
+  width: 400px;
+  transform: scale(0.9) translateY(20px);
+  transition: transform 0.3s ease;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.custom-dialog-overlay.show .custom-dialog {
+  transform: scale(1) translateY(0);
+}
+
+.custom-dialog-header {
+  padding: 1.5rem 1.5rem 0;
+  text-align: center;
+}
+
+.custom-dialog-icon {
+  width: 3rem;
+  height: 3rem;
+  border-radius: 50%;
+  margin: 0 auto 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+}
+
+.custom-dialog-icon.success {
+  background: rgba(34, 197, 94, 0.2);
+  color: #22c55e;
+}
+
+.custom-dialog-icon.error {
+  background: rgba(239, 68, 68, 0.2);
+  color: #ef4444;
+}
+
+.custom-dialog-icon.loading {
+  background: rgba(14, 165, 233, 0.2);
+  color: var(--primary);
+}
+
+.custom-dialog-title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin: 0;
+  color: var(--text);
+}
+
+.custom-dialog-content {
+  padding: 1rem 1.5rem;
+  text-align: center;
+}
+
+.custom-dialog-message {
+  color: var(--muted);
+  margin: 0;
+  line-height: 1.5;
+}
+
+.custom-dialog-actions {
+  padding: 1rem 1.5rem 1.5rem;
+  display: flex;
+  justify-content: center;
+  gap: 0.75rem;
+}
+
+.custom-dialog-btn {
+  padding: 0.75rem 1.5rem;
+  border: none;
+  border-radius: 8px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-size: 0.9rem;
+}
+
+.custom-dialog-btn.primary {
+  background: var(--primary);
+  color: var(--primary-contrast);
+}
+
+.custom-dialog-btn.primary:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(14, 165, 233, 0.4);
+}
+
+.custom-dialog-btn.secondary {
+  background: transparent;
+  color: var(--muted);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.custom-dialog-btn.secondary:hover {
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--text);
+}
+
+/* スピナーアニメーション */
+.loading-spinner {
+  width: 1.2rem;
+  height: 1.2rem;
+  border: 2px solid rgba(14, 165, 233, 0.3);
+  border-radius: 50%;
+  border-top-color: var(--primary);
+  animation: spin 1s ease-in-out infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
