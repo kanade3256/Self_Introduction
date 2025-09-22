@@ -39,7 +39,7 @@ const joinBase = (path: string) => {
 
 const stylesheetPath = joinBase('/css/style.css');
 const scriptPath = joinBase('/js/main.js');
-const iconPath = joinBase('/assets/favicon.svg');
+const iconPath = joinBase('/assets/profile.jpg');
 const ogImageUrl = new URL('assets/og-image.png', siteConfig.siteUrl).toString();
 const siteTitle = title ? title + ' | ' + siteConfig.siteName : siteConfig.siteName;
 
@@ -115,7 +115,7 @@ const getNavAriaCurrent = (href: string) => {
       })}
     />
     <meta name="theme-color" content={siteConfig.meta.themeColor} id="meta-theme-color" />
-    <link rel="icon" href={iconPath} type="image/svg+xml" />
+    <link rel="icon" href={iconPath} type="image/jpeg" />
     <link rel="preload" href={stylesheetPath} as="style" />
     <link rel="stylesheet" href={stylesheetPath} />
   </head>
