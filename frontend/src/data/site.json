@@ -1,4 +1,4 @@
-{
+﻿{
   "siteName": "Kanato Murayama | ポートフォリオ",
   "description": "データサイエンス × クラウドDX × フルスタック開発を軸とした学生エンジニアのポートフォリオ",
   "author": "Kanato Murayama",
@@ -12,7 +12,7 @@
     },
     {
       "label": "スキル",
-      "href": "#skills", 
+      "href": "#skills",
       "key": "nav.skills"
     },
     {
@@ -27,12 +27,12 @@
     },
     {
       "label": "タイムライン",
-      "href": "/timeline",
+      "href": "timeline",
       "key": "nav.timeline"
     },
     {
       "label": "履歴書",
-      "href": "/resume",
+      "href": "resume",
       "key": "nav.resume"
     },
     {
@@ -54,7 +54,7 @@
       "label": "GitHub"
     },
     "qiita": {
-      "url": "https://qiita.com/kanade3256", 
+      "url": "https://qiita.com/kanade3256",
       "label": "Qiita"
     },
     "x": {
@@ -83,7 +83,7 @@
   "hero": {
     "title": "データサイエンス × クラウドDX × フルスタック開発",
     "lead": "課題解決とユーザー価値創出に取り組んでいます。",
-    "avatarImage": "/assets/avatar.svg"
+    "avatarImage": "assets/profile.jpg"
   },
 
   "achievements": [
@@ -94,14 +94,14 @@
       "description": "歩行データの時系列クラスタリング研究"
     },
     {
-      "icon": "💼", 
+      "icon": "💼",
       "category": "business",
       "title": "実務経験",
       "description": "Komeda Portal - バイトシフトDXシステム"
     },
     {
       "icon": "🚀",
-      "category": "personal", 
+      "category": "personal",
       "title": "個人開発",
       "description": "研究室メモ共有アプリ"
     }
@@ -117,7 +117,7 @@
       ]
     },
     "frameworks": {
-      "title": "フレームワーク・ライブラリ", 
+      "title": "フレームワーク・ライブラリ",
       "items": [
         { "name": "Next.js", "level": 85, "category": "web" },
         { "name": "React", "level": 80, "category": "web" },
@@ -143,7 +143,7 @@
   "meta": {
     "keywords": [
       "フルスタックエンジニア",
-      "データサイエンス", 
+      "データサイエンス",
       "Python",
       "JavaScript",
       "TypeScript",
@@ -155,7 +155,7 @@
       "機械学習",
       "クラウド開発"
     ],
-    "ogImage": "/assets/og-image.png",
+    "ogImage": "assets/og-image.png",
     "themeColor": "#0ea5e9"
   },
 

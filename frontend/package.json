@@ -4,10 +4,10 @@
   "version": "0.0.1",
   "private": true,
   "scripts": {
-    "dev": "astro dev",
-    "start": "astro dev",
-    "build": "astro build",
-    "preview": "astro preview",
+    "dev": "cross-env NODE_ENV=development astro dev",
+    "start": "cross-env NODE_ENV=development astro dev",
+    "build": "cross-env NODE_ENV=production astro build",
+    "preview": "cross-env NODE_ENV=production astro preview",
     "astro": "astro"
   },
   "dependencies": {
@@ -16,7 +16,8 @@
     "astro": "^4.15.11"
   },
   "devDependencies": {
-    "@types/node": "^22.7.5"
+    "@types/node": "^22.7.5",
+    "cross-env": "^7.0.3"
   },
   "engines": {
     "node": ">=18.14.1"

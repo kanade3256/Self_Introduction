@@ -1,42 +1,32 @@
-# Frontend（静的サイト / GitHub Pages）
+﻿# Frontend (Astro)
 
-自己紹介・スキル・制作物などを掲載する静的サイトです。HTML/CSS と TypeScript（`tsc`）を使用します。GitHub Pages へのデプロイは `frontend/**` の変更時のみトリガーされます。
+自己紹介サイトを Astro で構築しています。GitHub Pages へは `frontend/**` の変更で自動デプロイされます。
 
-## 構成
+## ディレクトリ構成
+- `src/pages/`：Astro ページ。トップは `index.astro`、タイムラインや履歴書は `timeline.astro` / `resume.astro`
+- `src/layouts/`：共通レイアウト。`Base.astro` がメタ情報とナビゲーションを管理
+- `src/data/site.json`：サイト設定（ナビリンク・文言・プロフィール画像パスなど）
+- `public/`：公開用の静的アセット（CSS / JS / 画像）
+- `dist/`：`npm run build` で生成される成果物
+- `index.html`：Go Live 用のリダイレクトページ（ビルド後に `dist/index.html` を開く）
 
-- `frontend/index.html`：トップページ
-- `frontend/css/`：スタイル
-- `frontend/assets/`：画像・アイコン
-- `frontend/src/main.ts`：TypeScript ソース
-- `frontend/js/main.js`：コンパイル後の JS（CI/ローカルで生成）
-- `frontend/tsconfig.json`：TypeScript 設定
+## 開発フロー
+```bash
+cd frontend
+npm install
+npm run dev   # http://localhost:4321/
+```
 
 ## ビルド
-
-TypeScript を JS にコンパイルします。
-
 ```bash
-# 1回だけビルド
-npx --yes -p typescript@5 tsc -p frontend/tsconfig.json
-
-# 監視して自動ビルド
-npx --yes -p typescript@5 tsc -p frontend/tsconfig.json -w
+npm run build    # dist/ に静的ファイルを生成
+npm run preview  # ビルド内容をローカル確認
 ```
 
-ローカルサーブは任意の静的サーバで可能です。
+## Go Live で確認する場合
+1. `npm run build` を実行して最新の `dist/` を生成
+2. VS Code の Go Live を `frontend` ディレクトリで開始
+3. ルートの `index.html` から自動的に `dist/index.html` へ遷移します
 
-```bash
-# 例: npx serve を使う
-npx --yes serve frontend
-```
-
-## デプロイ（GitHub Pages / CI）
-
-- `.github/workflows/pages.yml` が `frontend/**` の変更で実行され、`frontend/` の内容を Pages に公開します。
-- 追加の設定は不要ですが、独自ドメインやメタ情報の更新は `index.html` を修正してください。
-
-## カスタマイズのヒント
-
-- カラー/テーマ: `frontend/css/style.css` の `:root` と `[data-theme="dark"]`
-- セクション追加: `frontend/index.html` に `<section>` を追加し、ヘッダーナビも更新
-- 画像: `frontend/assets/` に追加し、HTML 側の参照を更新
+## アセットの追加
+画像は `public/assets/` に配置して `src/data/site.json` でパスを指定します。`assets/ファイル名` の形式で記述すると環境ごとに適切な相対パスに変換されます。

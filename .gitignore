@@ -1,4 +1,4 @@
-# General
+﻿# General
 .DS_Store
 Thumbs.db
 .vscode/
@@ -51,7 +51,6 @@ frontend/dist/
 frontend/.astro/
 
 # Frontend build outputs (legacy)
-frontend/js/
 frontend/.parcel-cache/
 frontend/.next/
 frontend/.svelte-kit/
@@ -121,3 +120,9 @@ coverage.lcov
 *.njsproj
 *.sln
 *.sw?
+# Legacy static bundle (unused)
+frontend/index.html
+frontend/assets/
+frontend/css/
+frontend/imgs/
+frontend/js/

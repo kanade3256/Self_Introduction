@@ -1,6 +1,17 @@
----
+﻿---
 import Base from '../layouts/Base.astro';
 import siteConfig from '../data/site.json';
+
+const baseUrl = import.meta.env.BASE_URL ?? '/';
+const normalizePath = (href: string) => href.replace(/^\/+/, '');
+const asset = (path: string) => {
+  const normalized = normalizePath(path);
+  if (!normalized) {
+    return baseUrl;
+  }
+  return `./${normalized}`;
+};
+const avatarSrc = asset(siteConfig.hero.avatarImage);
 ---
 
 <Base title="履歴書・職務経歴" description="Kanato Murayamaの詳細な履歴書・職務経歴書">
@@ -9,7 +20,7 @@ import siteConfig from '../data/site.json';
     <div class="container">
       <div class="resume-header">
         <div class="profile-image">
-          <img src="/assets/avatar.svg" alt="Kanato Murayama" width="120" height="120">
+          <img src={avatarSrc} alt="Kanato Murayama" width="120" height="120" />
         </div>
         <div class="profile-info">
           <h1>Kanato Murayama</h1>
@@ -103,52 +114,31 @@ import siteConfig from '../data/site.json';
 
         <!-- Technical Skills -->
         <section class="resume-section">
-          <h2>技術スキル</h2>
+          <h2>テクニカルスキル</h2>
           
           <div class="skill-group">
-            <h3>プログラミング言語</h3>
+            <h3>プログラミング & データサイエンス</h3>
             <div class="skill-items">
               <div class="skill-item">
-                <div class="skill-name">Python</div>
+                <div class="skill-name">Python / pandas / scikit-learn</div>
                 <div class="skill-level expert"></div>
-                <p class="skill-description">データ分析、機械学習、Web API開発。pandas、NumPy、scikit-learnでの実装経験豊富。</p>
+                <p class="skill-description">データ前処理・分析・機械学習モデル構築（回帰・分類・クラスタリング）。</p>
               </div>
               <div class="skill-item">
-                <div class="skill-name">JavaScript / TypeScript</div>
+                <div class="skill-name">TypeScript / React / Next.js</div>
                 <div class="skill-level advanced"></div>
-                <p class="skill-description">フロントエンド・バックエンド開発。React、Next.js、Node.jsでの実装経験。</p>
+                <p class="skill-description">フロントエンドアーキテクチャ設計、SSR/SSG、UIコンポーネント開発。</p>
               </div>
               <div class="skill-item">
-                <div class="skill-name">SQL</div>
+                <div class="skill-name">SQL / Prisma</div>
                 <div class="skill-level advanced"></div>
-                <p class="skill-description">データベース設計、クエリ最適化。PostgreSQL、Firebase Firestoreでの経験。</p>
+                <p class="skill-description">データモデリング、クエリ最適化、ORM を用いたアプリケーション実装。</p>
               </div>
             </div>
           </div>
 
           <div class="skill-group">
-            <h3>フレームワーク・ライブラリ</h3>
-            <div class="skill-items">
-              <div class="skill-item">
-                <div class="skill-name">Next.js / React</div>
-                <div class="skill-level advanced"></div>
-                <p class="skill-description">SPA、SSR、App Routerでのモダンフロントエンド開発。状態管理、パフォーマンス最適化。</p>
-              </div>
-              <div class="skill-item">
-                <div class="skill-name">pandas / scikit-learn</div>
-                <div class="skill-level expert"></div>
-                <p class="skill-description">データ前処理、機械学習モデル構築。時系列解析、クラスタリング手法での実装経験。</p>
-              </div>
-              <div class="skill-item">
-                <div class="skill-name">Tailwind CSS</div>
-                <div class="skill-level advanced"></div>
-                <p class="skill-description">ユーティリティファーストなCSSフレームワーク。コンポーネント設計、レスポンシブ対応。</p>
-              </div>
-            </div>
-          </div>
-
-          <div class="skill-group">
-            <h3>クラウド・インフラ</h3>
+            <h3>バックエンド・クラウド</h3>
             <div class="skill-items">
               <div class="skill-item">
                 <div class="skill-name">AWS (Lambda, S3, Secrets Manager)</div>
@@ -259,3 +249,4 @@ import siteConfig from '../data/site.json';
     </div>
   </section>
 </Base>
+

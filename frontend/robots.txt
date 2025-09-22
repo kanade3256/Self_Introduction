@@ -1,5 +1,0 @@
-User-agent: *
-Allow: /
-
-# Update if your public root differs
-Sitemap: https://kanade3256.github.io/SelfIntroduction/sitemap.xml

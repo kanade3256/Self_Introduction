@@ -1,4 +1,4 @@
----
+﻿---
 import { getCollection } from 'astro:content';
 import Base from '../layouts/Base.astro';
 import siteConfig from '../data/site.json';
@@ -9,6 +9,12 @@ const featuredProjects = allProjects
   .filter(project => project.data.featured)
   .sort((a, b) => b.data.date.getTime() - a.data.date.getTime())
   .slice(0, 3);
+
+// 環境に応じたパス設定
+const isDev = import.meta.env.DEV;
+const basePath = isDev ? '' : '/SelfIntroduction';
+const avatarPath = isDev ? siteConfig.hero.avatarImage : `${basePath}${siteConfig.hero.avatarImage}`;
+const projectsHref = isDev ? '/projects' : `${basePath}/projects`;
 ---
 
 <Base title="ホーム" description={siteConfig.description}>
@@ -34,7 +40,7 @@ const featuredProjects = allProjects
         </div>
         
         <div class="hero-visual reveal">
-          <img src={siteConfig.hero.avatarImage} alt="Profile Avatar" class="avatar" width="200" height="200" />
+          <img src={avatarPath} alt="Profile Avatar" class="avatar" width="200" height="200" />
         </div>
       </div>
     </div>
@@ -53,7 +59,7 @@ const featuredProjects = allProjects
           実務系開発では<strong>Komeda Portal</strong>や<strong>FastSign構想</strong>を通じて、AWS Lambda・Next.js・Prismaなどモダンなクラウドスタックでの業務効率化を実現。
         </p>
         <div class="about-actions">
-          <a href="/projects" class="btn primary">詳しい経歴を見る</a>
+          <a href={projectsHref} class="btn primary">詳しい経歴を見る</a>
         </div>
       </div>
     </div>
@@ -113,19 +119,27 @@ const featuredProjects = allProjects
               </ul>
               <div class="card-actions">
                 {project.data.links?.demo && (
-                  <a class="btn small" href={project.data.links.demo} target="_blank" rel="noopener noreferrer" aria-label="デモサイトを開く">デモサイト</a>
+                  <a class="btn small" href={project.data.links.demo} target="_blank" rel="noopener noreferrer" aria-label="デモサイトを開く">
+                    デモサイト
+                  </a>
                 )}
                 {project.data.links?.repo && (
-                  <a class="btn small" href={project.data.links.repo} target="_blank" rel="noopener noreferrer" aria-label="GitHubを開く">GitHub</a>
+                  <a class="btn small" href={project.data.links.repo} target="_blank" rel="noopener noreferrer" aria-label="GitHubリポジトリを開く">
+                    GitHub
+                  </a>
                 )}
-                <a class="btn small" href={`/projects/${project.slug}`} aria-label="詳細を見る">詳細を見る</a>
+                {project.data.links?.report && (
+                  <a class="btn small" href={project.data.links.report} target="_blank" rel="noopener noreferrer" aria-label="詳細レポートを開く">
+                    レポート
+                  </a>
+                )}
               </div>
             </article>
           ))}
         </div>
         
         <div class="section-footer reveal">
-          <a href="/projects" class="btn">すべてのプロジェクトを見る</a>
+          <a href={projectsHref} class="btn">すべてのプロジェクトを見る</a>
         </div>
       </div>
     </section>
@@ -181,12 +195,12 @@ const featuredProjects = allProjects
             <div class="form-row">
               <div class="form-group">
                 <label for="contact-name">お名前 <span class="required">*</span></label>
-                <input type="text" id="contact-name" name="name" required aria-describedby="name-error">
+                <input type="text" id="contact-name" name="name" required aria-describedby="name-error" />
                 <span class="error-message" id="name-error"></span>
               </div>
               <div class="form-group">
                 <label for="contact-email">メールアドレス <span class="required">*</span></label>
-                <input type="email" id="contact-email" name="email" required aria-describedby="email-error">
+                <input type="email" id="contact-email" name="email" required aria-describedby="email-error" />
                 <span class="error-message" id="email-error"></span>
               </div>
             </div>
@@ -194,7 +208,7 @@ const featuredProjects = allProjects
             <div class="form-row">
               <div class="form-group">
                 <label for="contact-company">組織名</label>
-                <input type="text" id="contact-company" name="company" placeholder="任意">
+                <input type="text" id="contact-company" name="company" placeholder="任意" />
               </div>
               <div class="form-group">
                 <label for="contact-subject">件名 <span class="required">*</span></label>
@@ -222,3 +236,9 @@ const featuredProjects = allProjects
     </section>
   )}
 </Base>
+
+
+
+
+
+
