@@ -1,4 +1,4 @@
-﻿---
+---
 export interface Props {
   title?: string;
   description?: string;
@@ -6,24 +6,40 @@ export interface Props {
 
 const { title, description } = Astro.props;
 
-// サイト設定をインポート
 import siteConfig from '../data/site.json';
 
-// 環境に応じたパス設定
 const isDev = import.meta.env.DEV;
 const basePath = isDev ? '' : '/SelfIntroduction';
-const jsPath = isDev ? '/js/main.js' : `${basePath}/js/main.js`;
-const iconPath = isDev ? '/assets/favicon.svg' : `${basePath}/assets/favicon.svg`;
-const stylesheetPath = isDev ? '/css/style.css' : `${basePath}/css/style.css`;
-const scriptPath = isDev ? '/js/main.js' : `${basePath}/js/main.js`;
-const ogImageUrl = isDev ? `${siteConfig.siteUrl}/assets/og-image.png` : `${siteConfig.siteUrl}${basePath}/assets/og-image.png`;
+const stylesheetPath = isDev ? '/css/style.css' : basePath + '/css/style.css';
+const scriptPath = isDev ? '/js/main.js' : basePath + '/js/main.js';
+const iconPath = isDev ? '/assets/favicon.svg' : basePath + '/assets/favicon.svg';
+const ogImageUrl = isDev
+  ? siteConfig.siteUrl + '/assets/og-image.png'
+  : siteConfig.siteUrl + basePath + '/assets/og-image.png';
+const siteTitle = title ? title + ' | ' + siteConfig.siteName : siteConfig.siteName;
 
-// ナビゲーションリンクのパス調整
+const normalizePath = (path: string) => {
+  if (path.length > 1 && path.endsWith('/')) {
+    return path.slice(0, -1);
+  }
+  return path;
+};
+
 const getNavHref = (href: string) => {
   if (href.startsWith('http') || href.startsWith('#')) {
-    return href; // 外部リンクやアンカーリンクはそのまま
+    return href;
   }
-  return isDev ? href : `${basePath}${href}`;
+  const withLeadingSlash = href.startsWith('/') ? href : '/' + href;
+  return isDev ? withLeadingSlash : basePath + withLeadingSlash;
+};
+
+const getNavAriaCurrent = (href: string) => {
+  if (href.startsWith('http') || href.startsWith('#')) {
+    return undefined;
+  }
+  const currentPath = normalizePath(Astro.url.pathname || '/');
+  const targetPath = normalizePath(getNavHref(href));
+  return currentPath === targetPath ? 'page' : undefined;
 };
 ---
 
@@ -32,29 +48,21 @@ const getNavHref = (href: string) => {
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-
-    <!-- Primary Meta Tags -->
-    <title>{title ? `${title} | ${siteConfig.siteName}` : siteConfig.siteName}</title>
-    <meta name="title" content={title ? `${title} | ${siteConfig.siteName}` : siteConfig.siteName} />
+    <title>{siteTitle}</title>
+    <meta name="title" content={siteTitle} />
     <meta name="description" content={description || siteConfig.description} />
     <meta name="keywords" content={siteConfig.meta.keywords.join(',')} />
     <meta name="author" content={siteConfig.author} />
-
-    <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website" />
     <meta property="og:url" content={siteConfig.siteUrl} />
-    <meta property="og:title" content={title ? `${title} | ${siteConfig.siteName}` : siteConfig.siteName} />
+    <meta property="og:title" content={siteTitle} />
     <meta property="og:description" content={description || siteConfig.description} />
     <meta property="og:image" content={ogImageUrl} />
-
-    <!-- Twitter -->
     <meta property="twitter:card" content="summary_large_image" />
     <meta property="twitter:url" content={siteConfig.siteUrl} />
-    <meta property="twitter:title" content={title ? `${title} | ${siteConfig.siteName}` : siteConfig.siteName} />
+    <meta property="twitter:title" content={siteTitle} />
     <meta property="twitter:description" content={description || siteConfig.description} />
     <meta property="twitter:image" content={ogImageUrl} />
-
-    <!-- Structured Data (JSON-LD) -->
     <script
       type="application/ld+json"
       set:html={JSON.stringify({
@@ -66,7 +74,7 @@ const getNavHref = (href: string) => {
         url: siteConfig.siteUrl,
         sameAs: [
           siteConfig.socials.github.url,
-          siteConfig.socials.qiita.url
+          siteConfig.socials.qiita.url,
         ],
         knowsAbout: [
           'Python',
@@ -77,74 +85,117 @@ const getNavHref = (href: string) => {
           'AWS',
           'Firebase',
           'Data Science',
-          'Machine Learning'
-        ]
+          'Machine Learning',
+        ],
       })}
     />
-
     <meta name="theme-color" content={siteConfig.meta.themeColor} id="meta-theme-color" />
     <link rel="icon" href={iconPath} type="image/svg+xml" />
     <link rel="preload" href={stylesheetPath} as="style" />
     <link rel="stylesheet" href={stylesheetPath} />
   </head>
   <body>
-    <a class="skip-link" href="#main">メインコンテンツへ移動</a>
+    <a class="skip-link" href="#content">メインコンテンツへ移動</a>
 
     <header class="site-header" role="banner">
-      <div class="container header-inner">
-        <a class="brand" href="#home" aria-label="ホーム">{siteConfig.author}</a>
-        <button class="nav-toggle" aria-expanded="false" aria-controls="site-nav" aria-label="メニューを開閉">☰</button>
-        <nav id="site-nav" class="site-nav" role="navigation" aria-label="メインナビゲーション">
-          <ul>
-            {siteConfig.nav.map((item) => (
-              <li>
-                <a 
-                  href={getNavHref(item.href)} 
-                  data-i18n={item.key}
-                  target={item.external ? "_blank" : undefined}
-                  rel={item.external ? "noopener noreferrer" : undefined}
-                  aria-label={item.external ? `${item.label}を開く` : undefined}
-                >
-                  {item.label}
-                </a>
-              </li>
-            ))}
+      <div class="layout-container site-header__inner">
+        <a class="site-header__brand" href={getNavHref('#home')} aria-label="ホーム">
+          <span class="site-header__brand-mark" aria-hidden="true">{siteConfig.author.slice(0, 1)}</span>
+          <span class="site-header__brand-label">{siteConfig.author}</span>
+        </a>
+        <button
+          id="menu-toggle"
+          class="site-header__toggle nav-toggle"
+          type="button"
+          aria-expanded="false"
+          aria-controls="site-nav"
+          aria-label="メニューを開閉"
+        >
+          <span class="site-header__toggle-bar" aria-hidden="true"></span>
+          <span class="site-header__toggle-bar" aria-hidden="true"></span>
+          <span class="site-header__toggle-bar" aria-hidden="true"></span>
+        </button>
+        <nav
+          id="site-nav"
+          class="site-header__nav site-nav"
+          role="navigation"
+          aria-label="メインナビゲーション"
+        >
+          <ul class="site-header__menu">
+            {siteConfig.nav.map((item) => {
+              const href = getNavHref(item.href);
+              return (
+                <li class="site-header__menu-item">
+                  <a
+                    class="site-header__link"
+                    href={href}
+                    data-i18n={item.key}
+                    target={item.external ? '_blank' : undefined}
+                    rel={item.external ? 'noopener noreferrer' : undefined}
+                    aria-label={item.external ? item.label + 'を開く' : undefined}
+                    aria-current={getNavAriaCurrent(item.href)}
+                  >
+                    {item.label}
+                  </a>
+                </li>
+              );
+            })}
           </ul>
           {siteConfig.featureFlags.enableI18n && (
-            <div class="header-controls">
-              <button id="lang-toggle" class="lang-toggle" aria-label="言語を切り替える">🌐 EN</button>
-              <button id="theme-toggle" class="theme-toggle" aria-label="テーマを切り替える">🌓</button>
+            <div class="site-header__controls">
+              <button id="lang-toggle" class="site-header__control" type="button" aria-label="言語を切り替える">
+                <span aria-hidden="true">🌐</span>
+                <span class="site-header__control-label">EN</span>
+              </button>
+              <button id="theme-toggle" class="site-header__control" type="button" aria-label="テーマを切り替える">
+                <span aria-hidden="true">🌓</span>
+                <span class="site-header__control-label">Theme</span>
+              </button>
             </div>
           )}
         </nav>
       </div>
     </header>
 
-    <main id="main" role="main">
+    <div class="layout__sentinel" aria-hidden="true"></div>
+
+    <main id="content" class="site-main" role="main">
       <slot />
     </main>
 
     <footer class="site-footer" role="contentinfo">
-      <div class="container">
-        <div class="footer-content">
-          <div class="footer-section">
-            <h3>お問い合わせ</h3>
-            <p>プロジェクトや技術についてお気軽にご連絡ください。</p>
-            <div class="social-links">
-              {Object.entries(siteConfig.socials).map(([key, social]) => (
-                <a href={social.url} target="_blank" rel="noopener noreferrer" aria-label={social.label}>
-                  {key === 'github' && '📂'}
-                  {key === 'qiita' && '📝'}
-                  {key === 'x' && '🐦'}
-                </a>
-              ))}
-            </div>
+      <div class="layout-container site-footer__inner">
+        <div class="site-footer__brand">
+          <span class="site-footer__brand-name">{siteConfig.author}</span>
+          <p class="site-footer__description">{siteConfig.description}</p>
+        </div>
+        <div class="site-footer__cta">
+          <h2 class="site-footer__title" data-i18n="contact.cta.title">お気軽にお問い合わせください</h2>
+          <p class="site-footer__text" data-i18n="contact.cta.body">
+            お仕事のご相談、技術的な質問、コラボレーションなど、どんなことでもお気軽にご連絡ください。
+          </p>
+          <div class="site-footer__links">
+            {Object.entries(siteConfig.socials).map(([key, social]) => (
+              <a
+                key={key}
+                class="site-footer__link"
+                href={social.url}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                {social.label}
+              </a>
+            ))}
           </div>
         </div>
-        <div class="footer-bottom">
-          <p>&copy; {new Date().getFullYear()} {siteConfig.author}. All rights reserved.</p>
+      </div>
+      <div class="site-footer__bottom">
+        <div class="layout-container site-footer__bottom-inner">
+          <p class="site-footer__copyright">
+            &copy; <span id="year">{new Date().getFullYear()}</span> {siteConfig.author}
+          </p>
           {siteConfig.featureFlags.enableI18n && (
-            <p class="editing-tip">
+            <p class="site-footer__note">
               <small>{siteConfig.editingTips.ja}</small>
             </p>
           )}
@@ -153,7 +204,6 @@ const getNavHref = (href: string) => {
     </footer>
 
     <script is:inline>
-      // Environment check
       window.ENV = { isDev: typeof window !== 'undefined' && window.location.hostname === 'localhost' };
     </script>
     <script src={scriptPath}></script>

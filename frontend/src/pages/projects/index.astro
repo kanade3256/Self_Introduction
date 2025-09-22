@@ -2,117 +2,111 @@
 import { getCollection } from 'astro:content';
 import Base from '../../layouts/Base.astro';
 
-// すべてのプロジェクトを取得
 const allProjects = await getCollection('projects');
 const sortedProjects = allProjects.sort((a, b) => b.data.date.getTime() - a.data.date.getTime());
+
+const isDev = import.meta.env.DEV;
+const basePath = isDev ? '' : '/SelfIntroduction';
+const projectDetailHref = (slug: string) => (isDev ? '/projects/' + slug : basePath + '/projects/' + slug);
+
+const projectSpotlights: Record<string, {
+  metrics: { value: string; label: string }[];
+  notes: string[];
+}> = {
+  'komeda-portal': {
+    metrics: [
+      { value: '▲23%', label: 'シフト作成工数削減' },
+      { value: '9店舗', label: '同時運用' },
+      { value: '24h', label: '自動通知' },
+    ],
+    notes: ['AWS Lambda / Secrets Manager 設計', 'LINE リッチメニュー UI', 'ゼロダウンタイム運用'],
+  },
+  'lab-memo-app': {
+    metrics: [
+      { value: 'Realtime', label: '同期処理' },
+      { value: '100%', label: '認証カバレッジ' },
+      { value: '5+', label: 'ユーザーロール' },
+    ],
+    notes: ['Next.js App Router', 'Firebase Security Rules', 'UXテストによる定着率向上'],
+  },
+  'walking-data-research': {
+    metrics: [
+      { value: '500+', label: '収集サンプル' },
+      { value: 'DTW', label: '距離指標' },
+      { value: '90%', label: '再現精度' },
+    ],
+    notes: ['特徴量エンジニアリングパイプライン', 'クラスタリング手法比較', 'MediaPipe × Python 解析'],
+  },
+};
 ---
 
-<Base title="プロジェクト一覧" description="これまでに手がけた研究・実務・個人開発プロジェクトの一覧">
-  <section class="page-header">
-    <div class="container">
-      <h1 class="page-title reveal">プロジェクト一覧</h1>
-      <p class="page-lead reveal">研究・実務・個人開発で取り組んだプロジェクトをご紹介します。</p>
+<Base title="プロジェクト" description="研究・実務・個人開発で取り組んだプロジェクト一覧">
+  <section class="section section--hero">
+    <div class="layout-container">
+      <header class="section__header">
+        <p class="section__eyebrow">Project Archive</p>
+        <h1 class="section__title">プロジェクト一覧</h1>
+        <p class="section__lead">成果・KPI・運用観点を明確化したプロジェクトカードで、背景と役割を読みやすく整理しています。</p>
+      </header>
     </div>
   </section>
 
   <section class="section">
-    <div class="container">
-      <div class="projects-grid">
-        {sortedProjects.map((project) => (
-          <article class="card reveal">
-            <div class="card-header">
-              <div class={`card-icon ${project.data.category.includes('実務') ? 'business' : project.data.category.includes('研究') ? 'research' : 'personal'}`}>
-                {project.data.category.includes('実務') ? '💼' : project.data.category.includes('研究') ? '🔬' : '🚀'}
+    <div class="layout-container">
+      <div class="project-catalog">
+        {sortedProjects.map((project) => {
+          const spotlight = projectSpotlights[project.slug] ?? { metrics: [], notes: project.data.achievements ?? [] };
+          return (
+            <article class="project-catalog__item card reveal" data-category={project.data.category}>
+              <div class="project-catalog__header">
+                <div class="project-catalog__meta">
+                  <span class="project-catalog__category">{project.data.category}</span>
+                  <span class="project-catalog__date">{project.data.date.toLocaleDateString('ja-JP', { year: 'numeric', month: 'short' })}</span>
+                </div>
+                <h2 class="project-catalog__title">{project.data.title}</h2>
+                <p class="project-catalog__role">{project.data.role}</p>
               </div>
-              <div class="card-title-group">
-                <h2>{project.data.title}</h2>
-                <span class="card-category">{project.data.category}</span>
-              </div>
-            </div>
-            <p>{project.data.summary}</p>
-            
-            <div class="project-meta">
-              <div class="meta-item">
-                <strong>役割:</strong> {project.data.role}
-              </div>
-              <div class="meta-item">
-                <strong>技術:</strong> {project.data.technologies.slice(0, 4).join(', ')}
-                {project.data.technologies.length > 4 && ` ほか${project.data.technologies.length - 4}件`}
-              </div>
-              <div class="meta-item">
-                <strong>期間:</strong> {project.data.date.toLocaleDateString('ja-JP', { year: 'numeric', month: 'long' })}
-              </div>
-            </div>
-            
-            <div class="tags">
-              {project.data.tags.slice(0, 3).map((tag) => (
-                <span class="tag">{tag}</span>
-              ))}
-            </div>
-            
-            <div class="card-actions">
-              {project.data.links?.demo && (
-                <a class="btn small" href={project.data.links.demo} target="_blank" rel="noopener noreferrer">デモサイト</a>
+
+              <p class="project-catalog__summary">{project.data.summary}</p>
+
+              {spotlight.metrics.length > 0 && (
+                <div class="project-catalog__metrics">
+                  {spotlight.metrics.map((metric) => (
+                    <div class="project-catalog__metric">
+                      <span class="project-catalog__metric-value">{metric.value}</span>
+                      <span class="project-catalog__metric-label">{metric.label}</span>
+                    </div>
+                  ))}
+                </div>
               )}
-              {project.data.links?.repo && (
-                <a class="btn small" href={project.data.links.repo} target="_blank" rel="noopener noreferrer">GitHub</a>
+
+              {(spotlight.notes && spotlight.notes.length > 0) && (
+                <ul class="project-catalog__notes" role="list">
+                  {spotlight.notes.map((note) => (
+                    <li role="listitem">{note}</li>
+                  ))}
+                </ul>
               )}
-              <a class="btn small primary" href={`/projects/${project.slug}`}>詳細を見る</a>
-            </div>
-          </article>
-        ))}
+
+              <ul class="project-catalog__tags" role="list">
+                {project.data.tags.slice(0, 6).map((tag) => (
+                  <li class="badge badge--soft" role="listitem">{tag}</li>
+                ))}
+              </ul>
+
+              <div class="project-catalog__actions">
+                {project.data.links?.demo && (
+                  <a class="btn btn--ghost" href={project.data.links.demo} target="_blank" rel="noopener noreferrer">Live</a>
+                )}
+                {project.data.links?.repo && (
+                  <a class="btn btn--ghost" href={project.data.links.repo} target="_blank" rel="noopener noreferrer">Repo</a>
+                )}
+                <a class="btn btn--primary" href={projectDetailHref(project.slug)}>詳細を見る</a>
+              </div>
+            </article>
+          );
+        })}
       </div>
     </div>
   </section>
 </Base>
-
-<style>
-.page-header {
-  padding: 4rem 0 2rem;
-  text-align: center;
-  background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-accent) 100%);
-  color: white;
-}
-
-.page-title {
-  font-size: 2.5rem;
-  margin-bottom: 1rem;
-}
-
-.page-lead {
-  font-size: 1.25rem;
-  opacity: 0.9;
-}
-
-.project-meta {
-  margin: 1.5rem 0;
-  padding: 1rem;
-  background: var(--color-surface);
-  border-radius: 8px;
-  border-left: 4px solid var(--color-primary);
-}
-
-.meta-item {
-  margin-bottom: 0.5rem;
-}
-
-.meta-item:last-child {
-  margin-bottom: 0;
-}
-
-.tags {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.5rem;
-  margin: 1rem 0;
-}
-
-.tag {
-  background: var(--color-primary);
-  color: white;
-  padding: 0.25rem 0.75rem;
-  border-radius: 20px;
-  font-size: 0.875rem;
-  font-weight: 500;
-}
-</style>

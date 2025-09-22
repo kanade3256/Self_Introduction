@@ -1,177 +1,180 @@
-﻿---
+---
 import Base from '../layouts/Base.astro';
-import siteConfig from '../data/site.json';
+
+const timelineStats = [
+  { value: '3', label: '商用運用プロダクト' },
+  { value: '2', label: '研究テーマ' },
+  { value: '5', label: '継続発表・登壇' },
+  { value: '4+', label: 'チーム開発コラボ' },
+];
+
+const timelineGroups = [
+  {
+    year: '2024',
+    subtitle: 'クラウドDXと研究の深化',
+    entries: [
+      {
+        period: '2024.09',
+        title: 'ポートフォリオサイト Astro リニューアル',
+        kind: 'personal',
+        summary: 'Astro + GitHub Pages で高速かつi18n対応のポートフォリオを構築。ダークテーマ／IntersectionObserverによる演出を実装。',
+        bullets: ['静的生成とSEO最適化でLighthouse 90+達成', 'GitHub ActionsでCI/CDを自動化', 'モバイル〜デスクトップでのアクセシビリティ改善'],
+        tags: ['Astro', 'TypeScript', 'CI/CD'],
+      },
+      {
+        period: '2024.06 - 現在',
+        title: '歩行データ時系列クラスタリング研究',
+        kind: 'research',
+        summary: 'MediaPipeで取得した歩行データをDTWとクラスタリングで分析し、特徴量設計から検証まで一貫して担当。',
+        bullets: ['特徴量抽出・正規化パイプラインの構築', 'K-means / 階層クラスタリングの比較評価', '研究発表向けビジュアライゼーションを実装'],
+        tags: ['Python', 'Research', 'DTW'],
+      },
+      {
+        period: '2024.03 - 2024.08',
+        title: 'Komeda Portal - バイトシフトDXシステム',
+        kind: 'development',
+        summary: 'AWS Lambda + LINE APIでシフト調整を自動化。9店舗運用とゼロダウンタイムデプロイを実現。',
+        bullets: ['Secrets Managerで安全な認証情報管理', '通知・承認フローを自動化し工数23%削減', 'CloudWatchとSlackで運用監視ラインを構築'],
+        tags: ['AWS Lambda', 'LINE API', 'Serverless'],
+      },
+    ],
+  },
+  {
+    year: '2023',
+    subtitle: 'フルスタック基盤づくりと学びの強化',
+    entries: [
+      {
+        period: '2023.10 - 2024.02',
+        title: '研究室メモ共有アプリ',
+        kind: 'development',
+        summary: 'Next.js + Firebaseで研究室の知識共有を支えるリアルタイムアプリを開発。認証・RBAC・セキュリティを整備。',
+        bullets: ['Google認証とロールベース権限を実装', 'Firestoreでリアルタイム同期と差分更新', '学習ログ可視化でチーム定着率向上'],
+        tags: ['Next.js', 'Firebase', 'Realtime'],
+      },
+      {
+        period: '2023.04 - 現在',
+        title: 'データサイエンス・機械学習の継続学習',
+        kind: 'learning',
+        summary: '統計・機械学習・データ可視化まで一貫して学び、研究と実務に適用。',
+        bullets: ['PythonエコシステムでETL〜分析を習得', 'scikit-learnで教師あり／なし学習を実装', 'Jupyterで反復的な検証サイクルを構築'],
+        tags: ['Python', 'ML', 'Analytics'],
+      },
+    ],
+  },
+];
+
+const ongoingFocus = [
+  {
+    title: '技術キャッチアップ',
+    description: 'Serverlessアーキテクチャ、Observability、データ契約などの新潮流を検証し、ナレッジ共有を継続。',
+  },
+  {
+    title: '個人プロジェクト',
+    description: '業務課題を抽象化したプロトタイプでユーザー検証を行い、OSSへのコントリビュートも推進。',
+  },
+  {
+    title: 'コミュニティ・発信',
+    description: '勉強会・登壇・ブログでの知見共有と、メンタリング活動を通じたアウトプットを継続。',
+  },
+];
 ---
 
-<Base title="タイムライン・実績" description="学習・開発・研究・受賞・登壇などの歩みを時系列で紹介">
-  <!-- Timeline Hero Section -->
-  <section class="timeline-hero">
-    <div class="container">
-      <div class="timeline-header">
-        <h1 data-i18n="timeline.title">タイムライン・実績</h1>
-        <p class="timeline-summary" data-i18n="timeline.summary">
-          学習・開発・研究・受賞・登壇などの歩みを時系列で紹介します。継続的な成長と挑戦の軌跡をご覧ください。
-        </p>
-        
-        <div class="timeline-stats">
-          <div class="stat-item">
-            <span class="stat-number">3+</span>
-            <span class="stat-label" data-i18n="timeline.stat.projects">プロジェクト</span>
+<Base title="タイムライン" description="学習・開発・研究・受賞・登壇などの歩みを時系列で紹介">
+  <section class="section section--hero timeline-hero">
+    <div class="layout-container">
+      <header class="section__header">
+        <p class="section__eyebrow" data-i18n="timeline.title">タイムライン・実績</p>
+        <h1 class="section__title">成果と成長の軌跡</h1>
+        <p class="section__lead" data-i18n="timeline.summary">学習・開発・研究・受賞・登壇などの歩みを時系列で紹介します。継続的な成長と挑戦の軌跡をご覧ください。</p>
+      </header>
+      <div class="timeline-hero__stats">
+        {timelineStats.map((stat) => (
+          <div class="timeline-hero__stat">
+            <span class="timeline-hero__stat-value">{stat.value}</span>
+            <span class="timeline-hero__stat-label">{stat.label}</span>
           </div>
-          <div class="stat-item">
-            <span class="stat-number">2+</span>
-            <span class="stat-label" data-i18n="timeline.stat.intern">インターン</span>
-          </div>
-          <div class="stat-item">
-            <span class="stat-number">5+</span>
-            <span class="stat-label" data-i18n="timeline.stat.talks">技術発表</span>
-          </div>
-          <div class="stat-item">
-            <span class="stat-number">3+</span>
-            <span class="stat-label" data-i18n="timeline.stat.awards">受賞・認定</span>
-          </div>
-        </div>
+        ))}
       </div>
     </div>
   </section>
 
-  <!-- Timeline Content -->
-  <section class="timeline-content">
-    <div class="container">
-      <!-- 2024年 -->
-      <div class="timeline-year">
-        <div class="year-header">
-          <h2>2024</h2>
-          <p class="year-subtitle">クラウドDXと研究の深化</p>
-        </div>
-        
-        <div class="timeline-events">
-          <article class="timeline-event development">
-            <div class="event-date">2024年9月</div>
-            <div class="event-content">
-              <div class="event-icon">🚀</div>
-              <div class="event-details">
-                <h3>ポートフォリオサイト Astro リニューアル</h3>
-                <p class="event-type">個人開発</p>
-                <p>Astro + GitHub Pages での高パフォーマンスなポートフォリオサイト構築。TypeScript、Markdown、静的サイト生成を活用。</p>
-                <ul class="event-highlights">
-                  <li>Astroによる静的サイト生成とSEO最適化</li>
-                  <li>GitHub Actionsによる自動デプロイパイプライン</li>
-                  <li>レスポンシブデザインとアクセシビリティ対応</li>
-                </ul>
-              </div>
-            </div>
-          </article>
+  <section class="section timeline-section">
+    <div class="layout-container">
+      {timelineGroups.map((group) => (
+        <section class="timeline-group" aria-label={group.year + ' ' + group.subtitle}>
+          <header class="timeline-group__header">
+            <span class="timeline-group__year">{group.year}</span>
+            <p class="timeline-group__subtitle">{group.subtitle}</p>
+          </header>
 
-          <article class="timeline-event research">
-            <div class="event-date">2024年6月 - 現在</div>
-            <div class="event-content">
-              <div class="event-icon">🔬</div>
-              <div class="event-details">
-                <h3>歩行データ時系列クラスタリング研究</h3>
-                <p class="event-type">研究・アカデミック</p>
-                <p>機械学習を用いた歩行パターンの分析・分類研究。DTW（Dynamic Time Warping）とクラスタリング手法を組み合わせた時系列データ解析。</p>
-                <ul class="event-highlights">
-                  <li>Python、scikit-learn、pandasでのデータ前処理</li>
-                  <li>MediaPipeを用いた姿勢推定データの抽出</li>
-                  <li>DTWアルゴリズムによる時系列データの類似度計算</li>
-                </ul>
-              </div>
-            </div>
-          </article>
-
-          <article class="timeline-event development">
-            <div class="event-date">2024年3月 - 8月</div>
-            <div class="event-content">
-              <div class="event-icon">💼</div>
-              <div class="event-details">
-                <h3>Komeda Portal - バイトシフトDXシステム</h3>
-                <p class="event-type">実務・フルスタック開発</p>
-                <p>AWS Lambda + LINE API連携によるシフト管理システム。クラウドネイティブアーキテクチャで業務効率化を実現。</p>
-                <ul class="event-highlights">
-                  <li>AWS Lambda、Secrets Manager、S3の活用</li>
-                  <li>LINE リッチメニューとBot APIの統合</li>
-                  <li>サーバーレスアーキテクチャでの運用コスト最適化</li>
-                </ul>
-              </div>
-            </div>
-          </article>
-        </div>
-      </div>
-
-      <!-- 2023年 -->
-      <div class="timeline-year">
-        <div class="year-header">
-          <h2>2023</h2>
-          <p class="year-subtitle">フルスタック開発の基盤構築</p>
-        </div>
-        
-        <div class="timeline-events">
-          <article class="timeline-event development">
-            <div class="event-date">2023年10月 - 2024年2月</div>
-            <div class="event-content">
-              <div class="event-icon">🚀</div>
-              <div class="event-details">
-                <h3>研究室メモ共有アプリ</h3>
-                <p class="event-type">個人開発・フルスタック</p>
-                <p>Next.js + Firebase による研究室向けナレッジ共有システム。認証・ロール管理・リアルタイム同期を実装。</p>
-                <ul class="event-highlights">
-                  <li>Next.js 13 App Router での SPA 構築</li>
-                  <li>Firebase Authentication + Firestore Database</li>
-                  <li>Tailwind CSS でのレスポンシブデザイン</li>
-                </ul>
-              </div>
-            </div>
-          </article>
-
-          <article class="timeline-event learning">
-            <div class="event-date">2023年4月 - 現在</div>
-            <div class="event-content">
-              <div class="event-icon">📚</div>
-              <div class="event-details">
-                <h3>データサイエンス・機械学習の学習深化</h3>
-                <p class="event-type">スキル向上・学習</p>
-                <p>Python エコシステムでのデータ分析・機械学習手法の習得。統計学・アルゴリズム理論から実装まで体系的に学習。</p>
-                <ul class="event-highlights">
-                  <li>pandas、NumPy、Matplotlib での前処理・可視化</li>
-                  <li>scikit-learn での教師あり・教師なし学習</li>
-                  <li>Jupyter Notebook での探索的データ分析</li>
-                </ul>
-              </div>
-            </div>
-          </article>
-        </div>
-      </div>
-
-      <!-- 継続的な取り組み -->
-      <div class="timeline-ongoing">
-        <h2 data-i18n="timeline.ongoing.title">継続的な取り組み</h2>
-        
-        <div class="ongoing-items">
-          <div class="ongoing-item">
-            <div class="ongoing-icon">📖</div>
-            <div class="ongoing-content">
-              <h3 data-i18n="ongoing.learning.title">技術学習・キャッチアップ</h3>
-              <p data-i18n="ongoing.learning.desc">最新技術トレンドの学習、新しいフレームワーク・ライブラリの習得、技術記事の執筆・共有</p>
-            </div>
+          <div class="timeline-list timeline-list--desktop">
+            <ol>
+              {group.entries.map((entry) => (
+                <li class="timeline-item" data-kind={entry.kind}>
+                  <div class="timeline-item__marker" aria-hidden="true"></div>
+                  <div class="timeline-item__body">
+                    <div class="timeline-item__header">
+                      <span class="timeline-item__period">{entry.period}</span>
+                      <h3 class="timeline-item__title">{entry.title}</h3>
+                    </div>
+                    <p class="timeline-item__summary">{entry.summary}</p>
+                    <ul class="timeline-item__bullets" role="list">
+                      {entry.bullets.map((bullet) => (
+                        <li role="listitem">{bullet}</li>
+                      ))}
+                    </ul>
+                    <div class="timeline-item__tags">
+                      {entry.tags.map((tag) => (
+                        <span class="badge badge--soft">{tag}</span>
+                      ))}
+                    </div>
+                  </div>
+                </li>
+              ))}
+            </ol>
           </div>
-          
-          <div class="ongoing-item">
-            <div class="ongoing-icon">🔧</div>
-            <div class="ongoing-content">
-              <h3 data-i18n="ongoing.project.title">個人プロジェクト開発</h3>
-              <p data-i18n="ongoing.project.desc">課題解決型の個人開発、OSS貢献、実験的なプロトタイプ開発、技術検証</p>
-            </div>
+
+          <div class="timeline-accordion timeline-accordion--mobile">
+            {group.entries.map((entry) => (
+              <details class="timeline-accordion__item" data-kind={entry.kind}>
+                <summary>
+                  <span class="timeline-accordion__period">{entry.period}</span>
+                  <span class="timeline-accordion__title">{entry.title}</span>
+                </summary>
+                <div class="timeline-accordion__content">
+                  <p>{entry.summary}</p>
+                  <ul role="list">
+                    {entry.bullets.map((bullet) => (
+                      <li role="listitem">{bullet}</li>
+                    ))}
+                  </ul>
+                  <div class="timeline-accordion__tags">
+                    {entry.tags.map((tag) => (
+                      <span class="badge badge--soft">{tag}</span>
+                    ))}
+                  </div>
+                </div>
+              </details>
+            ))}
           </div>
-          
-          <div class="ongoing-item">
-            <div class="ongoing-icon">🤝</div>
-            <div class="ongoing-content">
-              <h3 data-i18n="ongoing.community.title">コミュニティ活動</h3>
-              <p data-i18n="ongoing.community.desc">技術勉強会参加、知見共有、メンタリング、技術コミュニティでの交流</p>
-            </div>
-          </div>
-        </div>
+        </section>
+      ))}
+    </div>
+  </section>
+
+  <section class="section section--layer timeline-ongoing">
+    <div class="layout-container">
+      <header class="section__header">
+        <p class="section__eyebrow" data-i18n="timeline.ongoing.title">継続的な取り組み</p>
+        <h2 class="section__title">Focus Now</h2>
+      </header>
+      <div class="timeline-ongoing__grid">
+        {ongoingFocus.map((item) => (
+          <article class="timeline-ongoing__item card">
+            <h3 class="timeline-ongoing__title">{item.title}</h3>
+            <p class="timeline-ongoing__description">{item.description}</p>
+          </article>
+        ))}
       </div>
     </div>
   </section>

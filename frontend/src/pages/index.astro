@@ -1,244 +1,445 @@
-﻿---
+---
 import { getCollection } from 'astro:content';
 import Base from '../layouts/Base.astro';
 import siteConfig from '../data/site.json';
 
-// 注目プロジェクトを取得
 const allProjects = await getCollection('projects');
 const featuredProjects = allProjects
-  .filter(project => project.data.featured)
-  .sort((a, b) => b.data.date.getTime() - a.data.date.getTime())
-  .slice(0, 3);
+  .filter((project) => project.data.featured)
+  .sort((a, b) => b.data.date.getTime() - a.data.date.getTime());
 
-// 環境に応じたパス設定
+const primaryProjects = featuredProjects.slice(0, 3);
+const heroHighlight = primaryProjects[0] ?? featuredProjects[0];
+const researchHighlight = featuredProjects.find((project) => project.data.category.includes('研究')) ?? heroHighlight;
+
 const isDev = import.meta.env.DEV;
 const basePath = isDev ? '' : '/SelfIntroduction';
-const avatarPath = isDev ? siteConfig.hero.avatarImage : `${basePath}${siteConfig.hero.avatarImage}`;
-const projectsHref = isDev ? '/projects' : `${basePath}/projects`;
+const projectsHref = isDev ? '/projects' : basePath + '/projects';
+const timelineHref = isDev ? '/timeline' : basePath + '/timeline';
+const resumeHref = isDev ? '/resume' : basePath + '/resume';
+const contactHref = '#contact';
+
+const heroBadges = [
+  'Serverless',
+  'Data Platform',
+  'TypeScript',
+  'Astro',
+  'AWS',
+  'Line Bot',
+  'Analytics',
+  'Research',
+];
+
+const heroMetrics = [
+  { value: '9店舗運用', label: 'Komeda Portal', description: '飲食チェーンの運用に採用' },
+  { value: '▲23%', label: 'シフト作成時間', description: '自動化で大幅短縮' },
+  { value: '0', label: 'ゼロダウンデプロイ', description: '可観測性と監視で継続運用' },
+];
+
+const heroActions = [
+  { label: 'Resume', href: resumeHref, variant: 'primary', dataKey: 'index.hero.cta.resume' },
+  { label: 'GitHub', href: siteConfig.socials.github.url, variant: 'ghost', external: true, dataKey: 'index.hero.cta.github' },
+  { label: 'Contact', href: contactHref, variant: 'ghost', dataKey: 'index.hero.cta.contact' },
+];
+
+const projectSpotlights: Record<string, {
+  tagline: string;
+  metrics: { value: string; label: string }[];
+  outcomes: string[];
+  mediaLabel: string;
+}> = {
+  'komeda-portal': {
+    tagline: 'Serverless DX for franchise operations',
+    metrics: [
+      { value: '▲23%', label: '工数削減' },
+      { value: '9店舗', label: '同時運用' },
+      { value: '24h', label: '自動通知' },
+    ],
+    outcomes: ['AWS Lambda × LINE API', 'Secrets Manager / S3 設計', 'ゼロダウン運用フロー'],
+    mediaLabel: 'Shift dashboard automations',
+  },
+  'lab-memo-app': {
+    tagline: 'Realtime knowledge base for labs',
+    metrics: [
+      { value: 'リアルタイム', label: 'Collaborative' },
+      { value: '100%', label: 'Auth coverage' },
+      { value: '5+', label: 'ロール管理' },
+    ],
+    outcomes: ['Next.js 14 + Firebase', 'RBAC & Security Rules', 'UX検証で定着率向上'],
+    mediaLabel: 'Realtime collaboration surface',
+  },
+  'walking-data-research': {
+    tagline: 'Gait analytics with time-series ML',
+    metrics: [
+      { value: '500+', label: 'サンプル' },
+      { value: 'DTW', label: '距離計算' },
+      { value: '90%', label: '再現性' },
+    ],
+    outcomes: ['Feature engineering pipeline', 'クラスタリング比較検証', 'Academic presentation ready'],
+    mediaLabel: 'Clustering visualisations',
+  },
+};
+
+const heroSpotlight = heroHighlight ? (projectSpotlights[heroHighlight.slug] ?? projectSpotlights['komeda-portal']) : undefined;
+const researchSpotlight = researchHighlight ? (projectSpotlights[researchHighlight.slug] ?? heroSpotlight ?? projectSpotlights['komeda-portal']) : heroSpotlight;
+
+const timelinePreview = [
+  {
+    period: '2024.03 - 2024.08',
+    title: 'Komeda Portal - バイトシフトDX',
+    summary: '店舗横断で運用されるサーバーレス基盤を構築し、通知と承認を自動化。',
+    tags: ['AWS Lambda', 'LINE API'],
+  },
+  {
+    period: '2024.06 - Now',
+    title: '歩行データ時系列クラスタリング研究',
+    summary: 'MediaPipe × DTWで歩行パターンを解析し、クラスタリング手法を比較検証。',
+    tags: ['Python', 'Research'],
+  },
+  {
+    period: '2023.10 - 2024.02',
+    title: '研究室メモ共有アプリ',
+    summary: 'Next.js + Firebaseでリアルタイムな知識共有基盤を構築。',
+    tags: ['Next.js', 'Firebase'],
+  },
+];
+
+const skillColumns = [
+  {
+    title: 'Daily Stack',
+    items: ['Python / FastAPI', 'TypeScript / Astro', 'AWS Lambda', 'GitHub Actions'],
+  },
+  {
+    title: 'Weekly Collaboration',
+    items: ['データモデリング', 'アーキテクチャレビュー', 'ダッシュボード改善', 'ユーザーヒアリング'],
+  },
+  {
+    title: 'Currently Learning',
+    items: ['Rust for serverless', 'Edge inference', 'Data contracts', 'Observability patterns'],
+  },
+];
+
+const contactLinks = [
+  { label: 'Mail', href: 'mailto:' + siteConfig.contact.email },
+  { label: 'X', href: siteConfig.socials.x.url },
+  { label: 'LinkedIn', href: 'https://www.linkedin.com/in/kanato-murayama' },
+  { label: 'Qiita', href: siteConfig.socials.qiita.url },
+];
 ---
 
 <Base title="ホーム" description={siteConfig.description}>
-  <!-- Hero Section -->
-  <section id="home" class="hero">
-    <div class="container hero-inner">
-      <div class="hero-content">
-        <div class="hero-text">
-          <h1 class="reveal">{siteConfig.hero.title}</h1>
-          <p class="lead reveal">{siteConfig.hero.lead}</p>
-          
-          <div class="achievements reveal">
-            {siteConfig.achievements.map((achievement) => (
-              <div class={`achievement ${achievement.category}`}>
-                <span class="achievement-icon">{achievement.icon}</span>
-                <div class="achievement-content">
-                  <h3 data-i18n={`index.achievements.${achievement.category}.title`}>{achievement.title}</h3>
-                  <p data-i18n={`index.achievements.${achievement.category}.desc`}>{achievement.description}</p>
-                </div>
+  <!-- Hero -------------------------------------------------- -->
+  <section id="home" class="hero section">
+    <div class="layout-container">
+      <div class="hero__grid">
+        <div class="hero__content">
+          <p class="hero__eyebrow reveal" data-i18n="index.hero.eyebrow">Serverless × Data / 実装から運用まで</p>
+          <h1 class="hero__title reveal" data-i18n="index.hero.title">現場に届く“運用される”プロダクトを作る</h1>
+          <p class="hero__lead reveal" data-i18n="index.hero.subtitle">Serverless × Data を軸に、業務現場と研究の双方で成果を出す実装・改善サイクルを回しています。</p>
+
+          <div class="hero__metrics reveal">
+            {heroMetrics.map((metric) => (
+              <div class="hero__metric" role="presentation">
+                <span class="hero__metric-value">{metric.value}</span>
+                <span class="hero__metric-label">{metric.label}</span>
+                <span class="hero__metric-detail">{metric.description}</span>
               </div>
             ))}
           </div>
-        </div>
-        
-        <div class="hero-visual reveal">
-          <img src={avatarPath} alt="Profile Avatar" class="avatar" width="200" height="200" />
-        </div>
-      </div>
-    </div>
-  </section>
 
-  <!-- About Section -->
-  <section id="about" class="section">
-    <div class="container">
-      <h2 class="section-title reveal" data-i18n="index.about.title">自己紹介</h2>
-      <div class="content-wrapper reveal">
-        <p>
-          <strong>データサイエンス × クラウドDX × フルスタック開発</strong> を軸に、課題解決とユーザー価値創出に取り組んでいます。
-        </p>
-        <p>
-          研究では<strong>歩行データの時系列解析</strong>を通じて、AI・データサイエンスの専門性を深めています。
-          実務系開発では<strong>Komeda Portal</strong>や<strong>FastSign構想</strong>を通じて、AWS Lambda・Next.js・Prismaなどモダンなクラウドスタックでの業務効率化を実現。
-        </p>
-        <div class="about-actions">
-          <a href={projectsHref} class="btn primary">詳しい経歴を見る</a>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- Skills Section -->
-  {siteConfig.featureFlags.showSkills && (
-    <section id="skills" class="section skills-section">
-      <div class="container">
-        <h2 class="section-title reveal" data-i18n="index.skills.title">技術スキル</h2>
-        
-        {Object.entries(siteConfig.skills).map(([categoryKey, category]) => (
-          <div class="skill-category reveal">
-            <h3 class="skill-category-title">{category.title}</h3>
-            <div class="skills-grid">
-              {category.items.map((skill) => (
-                <div class={`skill-item ${skill.category}`}>
-                  <div class="skill-header">
-                    <span class="skill-name">{skill.name}</span>
-                    <span class="skill-level">{skill.level}%</span>
-                  </div>
-                  <div class="skill-bar">
-                    <div class="skill-progress" style={`width: ${skill.level}%`}></div>
-                  </div>
-                </div>
-              ))}
-            </div>
+          <div class="hero__actions reveal" role="group" aria-label="主要な行動">
+            {heroActions.map((action) => (
+              <a
+                class={'btn btn--' + action.variant}
+                href={action.href}
+                data-i18n={action.dataKey}
+                target={action.external ? '_blank' : undefined}
+                rel={action.external ? 'noopener noreferrer' : undefined}
+              >
+                {action.label}
+              </a>
+            ))}
           </div>
-        ))}
-      </div>
-    </section>
-  )}
 
-  <!-- Projects Section -->
-  {siteConfig.featureFlags.showProjects && (
-    <section id="projects" class="section">
-      <div class="container">
-        <h2 class="section-title reveal" data-i18n="index.projects.title">主な制作物</h2>
-        
-        <div class="projects-grid">
-          {featuredProjects.map((project) => (
-            <article class="card reveal">
-              <div class="card-header">
-                <div class={`card-icon ${project.data.category.includes('実務') ? 'business' : project.data.category.includes('研究') ? 'research' : 'personal'}`}>
-                  {project.data.category.includes('実務') ? '💼' : project.data.category.includes('研究') ? '🔬' : '🚀'}
-                </div>
-                <div class="card-title-group">
-                  <h3>{project.data.title}</h3>
-                  <span class="card-category">{project.data.category}</span>
-                </div>
+          <div class="hero__badge-track reveal" role="list" aria-label="主な技術スタック">
+            {heroBadges.map((badge) => (
+              <span class="badge badge--pill" role="listitem">{badge}</span>
+            ))}
+          </div>
+        </div>
+
+        {heroHighlight && heroSpotlight && (
+          <aside class="hero__showcase reveal">
+            <article class="hero-card card" data-category={heroHighlight.data.category}>
+              <div class="card__header">
+                <span class="card__eyebrow">{heroHighlight.data.category}</span>
+                <h2 class="card__title">{heroHighlight.data.title}</h2>
+                <p class="card__subtitle">{heroSpotlight.tagline}</p>
               </div>
-              <p>{project.data.summary}</p>
-              <ul class="meta">
-                <li>役割: {project.data.role}</li>
-                <li>技術: {project.data.technologies.slice(0, 3).join(', ')}</li>
-                <li>成果: {project.data.achievements[0]}</li>
+              <p class="card__summary">{heroHighlight.data.summary}</p>
+              <div class="hero-card__metrics">
+                {heroSpotlight.metrics?.map((metric) => (
+                  <div class="hero-card__metric">
+                    <span class="hero-card__metric-value">{metric.value}</span>
+                    <span class="hero-card__metric-label">{metric.label}</span>
+                  </div>
+                ))}
+              </div>
+              <ul class="card__tags" role="list">
+                {heroHighlight.data.technologies.slice(0, 4).map((tech) => (
+                  <li class="badge badge--soft" role="listitem">{tech}</li>
+                ))}
               </ul>
-              <div class="card-actions">
-                {project.data.links?.demo && (
-                  <a class="btn small" href={project.data.links.demo} target="_blank" rel="noopener noreferrer" aria-label="デモサイトを開く">
-                    デモサイト
-                  </a>
-                )}
-                {project.data.links?.repo && (
-                  <a class="btn small" href={project.data.links.repo} target="_blank" rel="noopener noreferrer" aria-label="GitHubリポジトリを開く">
-                    GitHub
-                  </a>
-                )}
-                {project.data.links?.report && (
-                  <a class="btn small" href={project.data.links.report} target="_blank" rel="noopener noreferrer" aria-label="詳細レポートを開く">
-                    レポート
-                  </a>
+              <div class="card__actions">
+                <a class="btn btn--ghost" href={projectsHref}>Case Study</a>
+                {heroHighlight.data.links?.repo && (
+                  <a class="btn btn--ghost" href={heroHighlight.data.links.repo} target="_blank" rel="noopener noreferrer">Repo</a>
                 )}
               </div>
             </article>
+          </aside>
+        )}
+      </div>
+    </div>
+  </section>
+
+  <!-- About ------------------------------------------------- -->
+  <section id="about" class="section section--layer">
+    <div class="layout-container">
+      <header class="section__header">
+        <p class="section__eyebrow" data-i18n="index.about.eyebrow">Who I build for</p>
+        <h2 class="section__title" data-i18n="index.about.title">自己紹介</h2>
+        <p class="section__lead" data-i18n="index.about.lead">データとクラウドを武器に、課題解決から運用改善、リサーチまで横断的に取り組んでいます。</p>
+      </header>
+      <div class="about__grid">
+        <article class="about-card card reveal">
+          <h3 class="about-card__title">現場のDXを前進させる</h3>
+          <p class="about-card__body">Komeda Portal では AWS Lambda と LINE API を組み合わせ、シフト調整の24h自動化と属人業務の削減を実現しました。</p>
+        </article>
+        <article class="about-card card reveal">
+          <h3 class="about-card__title">データから意思決定まで</h3>
+          <p class="about-card__body">歩行データ研究では特徴量設計から評価指標まで一貫して実装し、実データでの妥当性検証を行っています。</p>
+        </article>
+        <article class="about-card card reveal">
+          <h3 class="about-card__title">継続運用を視野にした実装</h3>
+          <p class="about-card__body">モニタリング・アラート・チーム共有まで整備し、リリース後の改善サイクルを前提にしたプロダクト開発を重視しています。</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- Featured Projects ------------------------------------ -->
+  <section id="projects" class="section">
+    <div class="layout-container">
+      <header class="section__header">
+        <p class="section__eyebrow" data-i18n="index.projects.eyebrow">Selected Work</p>
+        <h2 class="section__title" data-i18n="index.projects.title">注目プロジェクト</h2>
+        <p class="section__lead" data-i18n="index.projects.lead">実務・研究・個人開発から厳選した3プロジェクトと研究ハイライト。</p>
+      </header>
+
+      <div class="featured-projects">
+        {primaryProjects.map((project) => {
+          const spotlight = projectSpotlights[project.slug] ?? projectSpotlights['komeda-portal'];
+          const category = project.data.category;
+          return (
+            <article class="project-card card reveal" data-category={category}>
+              <div class="project-card__body">
+                <div class="project-card__meta">
+                  <span class="project-card__category">{category}</span>
+                  <span class="project-card__role">{project.data.role}</span>
+                </div>
+                <h3 class="project-card__title">{project.data.title}</h3>
+                <p class="project-card__summary">{project.data.summary}</p>
+                <div class="project-card__metrics">
+                  {spotlight.metrics.map((metric) => (
+                    <div class="project-card__metric">
+                      <span class="project-card__metric-value">{metric.value}</span>
+                      <span class="project-card__metric-label">{metric.label}</span>
+                    </div>
+                  ))}
+                </div>
+                <ul class="project-card__outcomes" role="list">
+                  {spotlight.outcomes.map((outcome) => (
+                    <li role="listitem">{outcome}</li>
+                  ))}
+                </ul>
+                <ul class="project-card__tags" role="list">
+                  {project.data.technologies.slice(0, 5).map((tech) => (
+                    <li class="badge badge--soft" role="listitem">{tech}</li>
+                  ))}
+                </ul>
+                <div class="project-card__actions">
+                  {project.data.links?.demo && (
+                    <a class="btn btn--ghost" href={project.data.links.demo} target="_blank" rel="noopener noreferrer">Live</a>
+                  )}
+                  {project.data.links?.repo && (
+                    <a class="btn btn--ghost" href={project.data.links.repo} target="_blank" rel="noopener noreferrer">Repo</a>
+                  )}
+                  <a class="btn btn--primary" href={projectsHref}>Case Study</a>
+                </div>
+              </div>
+              <div class="project-card__media" aria-hidden="true">
+                <div class="project-card__preview">
+                  <span>{spotlight.mediaLabel}</span>
+                </div>
+              </div>
+            </article>
+          );
+        })}
+      </div>
+    </div>
+  </section>
+
+  <!-- Research Highlight ----------------------------------- -->
+  {researchHighlight && researchSpotlight && (
+    <section class="section section--layer">
+      <div class="layout-container">
+        <header class="section__header">
+          <p class="section__eyebrow">Research Highlight</p>
+          <h2 class="section__title">{researchHighlight.data.title}</h2>
+          <p class="section__lead">{researchHighlight.data.summary}</p>
+        </header>
+        <article class="research-card card reveal">
+          <div class="research-card__media" aria-hidden="true">
+            <div class="research-card__diagram">
+              <span>{researchSpotlight.mediaLabel}</span>
+            </div>
+          </div>
+          <div class="research-card__body">
+            <h3 class="research-card__title">テーマ</h3>
+            <p class="research-card__summary">{researchSpotlight.tagline}</p>
+            <ul class="research-card__outcomes" role="list">
+              {researchSpotlight.outcomes?.map((outcome) => (
+                <li role="listitem">{outcome}</li>
+              ))}
+            </ul>
+            <div class="research-card__links">
+              <a class="btn btn--ghost" href={projectsHref}>論文・スライド</a>
+              <a class="btn btn--ghost" href={projectsHref}>コードベース</a>
+            </div>
+          </div>
+        </article>
+      </div>
+    </section>
+  )}
+
+  <!-- Timeline Preview ------------------------------------- -->
+  <section id="experience" class="section">
+    <div class="layout-container">
+      <header class="section__header">
+        <p class="section__eyebrow" data-i18n="index.experience.eyebrow">Timeline</p>
+        <h2 class="section__title" data-i18n="index.experience.title">歩み</h2>
+        <p class="section__lead" data-i18n="index.experience.lead">密な出来事を整理し、成果と学習の文脈が一目でわかるタイムライン。</p>
+      </header>
+      <div class="timeline-preview">
+        {timelinePreview.map((item) => (
+          <article class="timeline-preview__item reveal">
+            <div class="timeline-preview__period">{item.period}</div>
+            <div class="timeline-preview__content">
+              <h3>{item.title}</h3>
+              <p>{item.summary}</p>
+              <div class="timeline-preview__tags">
+                {item.tags.map((tag) => (
+                  <span class="badge badge--soft">{tag}</span>
+                ))}
+              </div>
+            </div>
+          </article>
+        ))}
+      </div>
+      <div class="section__footer">
+        <a class="btn btn--primary" href={timelineHref} data-i18n="index.experience.cta">タイムラインを詳しく見る</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Skills ------------------------------------------------ -->
+  {siteConfig.featureFlags.showSkills && (
+    <section id="skills" class="section section--layer">
+      <div class="layout-container">
+        <header class="section__header">
+          <p class="section__eyebrow" data-i18n="index.skills.eyebrow">Skill Radar</p>
+          <h2 class="section__title" data-i18n="index.skills.title">スキル</h2>
+          <p class="section__lead" data-i18n="index.skills.lead">密度を抑えた3レイヤー構成で、日々の実装・協働・学習のフォーカスを整理しています。</p>
+        </header>
+        <div class="skills-grid">
+          {skillColumns.map((column) => (
+            <article class="skills-card card reveal">
+              <h3 class="skills-card__title">{column.title}</h3>
+              <ul class="skills-card__list" role="list">
+                {column.items.map((item) => (
+                  <li role="listitem">{item}</li>
+                ))}
+              </ul>
+            </article>
           ))}
         </div>
-        
-        <div class="section-footer reveal">
-          <a href={projectsHref} class="btn">すべてのプロジェクトを見る</a>
-        </div>
       </div>
     </section>
   )}
 
-  <!-- Experience Section -->
-  {siteConfig.featureFlags.showExperience && (
-    <section id="experience" class="section alt">
-      <div class="container">
-        <h2 class="reveal" data-i18n="index.experience.title">職務経歴</h2>
-        <div class="timeline">
-          <div class="tl-item reveal">
-            <div class="tl-dot"></div>
-            <div class="tl-content">
-              <h3>Komeda Portal - バイトシフトDXシステム</h3>
-              <p class="muted">2024年3月 - 8月</p>
-              <p>AWS Lambda + LINE API を活用したサーバーレスシフト管理システムの設計・開発・運用。運用コスト90%削減、業務効率化を実現。</p>
-            </div>
-          </div>
-          <div class="tl-item reveal">
-            <div class="tl-dot"></div>
-            <div class="tl-content">
-              <h3>歩行データ時系列クラスタリング研究</h3>
-              <p class="muted">2024年6月 - 現在</p>
-              <p>機械学習・時系列解析を用いた歩行パターン分析システムの研究開発。DTWアルゴリズムとクラスタリング手法を組み合わせた新手法を開発。</p>
-            </div>
-          </div>
-          <div class="tl-item reveal">
-            <div class="tl-dot"></div>
-            <div class="tl-content">
-              <h3>研究室メモ共有アプリ</h3>
-              <p class="muted">2023年10月 - 2024年2月</p>
-              <p>Next.js + Firebase での研究室向けナレッジ共有システム。認証・ロール管理・リアルタイム同期を実装し、チーム協業効率化を実現。</p>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-  )}
-
-  <!-- Contact Section -->
+  <!-- Contact ---------------------------------------------- -->
   {siteConfig.featureFlags.showContact && (
-    <section id="contact" class="section contact-section">
-      <div class="container">
-        <h2 class="section-title reveal" data-i18n="index.contact.title">お問い合わせ</h2>
-        
-        <div class="contact-wrapper reveal">
-          <div class="contact-intro">
-            <p>プロジェクトやお仕事のご依頼、技術的なご質問など、お気軽にお問い合わせください。</p>
+    <section id="contact" class="section">
+      <div class="layout-container">
+        <header class="section__header">
+          <p class="section__eyebrow" data-i18n="index.contact.eyebrow">Get in touch</p>
+          <h2 class="section__title" data-i18n="index.contact.title">お問い合わせ</h2>
+          <p class="section__lead" data-i18n="contact.cta.body">お仕事のご相談、技術的な質問、コラボレーションなど、お気軽にどうぞ。</p>
+        </header>
+        <div class="contact">
+          <div class="contact__panel reveal">
+            <h3 class="contact__headline">Direct Links</h3>
+            <ul class="contact__links" role="list">
+              {contactLinks.map((link) => (
+                <li role="listitem">
+                  <a class="contact__link" href={link.href} target={link.href.startsWith('http') ? '_blank' : undefined} rel={link.href.startsWith('http') ? 'noopener noreferrer' : undefined}>
+                    {link.label}
+                  </a>
+                </li>
+              ))}
+            </ul>
           </div>
-          
-          <form class="message-form" aria-label="お問い合わせフォーム">
-            <div class="form-row">
-              <div class="form-group">
-                <label for="contact-name">お名前 <span class="required">*</span></label>
-                <input type="text" id="contact-name" name="name" required aria-describedby="name-error" />
-                <span class="error-message" id="name-error"></span>
+
+          <form class="contact__form message-form reveal" aria-label="お問い合わせフォーム">
+            <div class="form__row">
+              <div class="form__field">
+                <label class="form__label" for="contact-name">お名前</label>
+                <input class="form__input" id="contact-name" name="name" type="text" required aria-describedby="name-error" />
+                <span class="form__error" id="name-error" aria-live="polite"></span>
               </div>
-              <div class="form-group">
-                <label for="contact-email">メールアドレス <span class="required">*</span></label>
-                <input type="email" id="contact-email" name="email" required aria-describedby="email-error" />
-                <span class="error-message" id="email-error"></span>
+              <div class="form__field">
+                <label class="form__label" for="contact-email">メールアドレス</label>
+                <input class="form__input" id="contact-email" name="email" type="email" required aria-describedby="email-error" />
+                <span class="form__error" id="email-error" aria-live="polite"></span>
               </div>
             </div>
-            
-            <div class="form-row">
-              <div class="form-group">
-                <label for="contact-company">組織名</label>
-                <input type="text" id="contact-company" name="company" placeholder="任意" />
+            <div class="form__row">
+              <div class="form__field">
+                <label class="form__label" for="contact-company">組織名</label>
+                <input class="form__input" id="contact-company" name="company" type="text" placeholder="任意" />
               </div>
-              <div class="form-group">
-                <label for="contact-subject">件名 <span class="required">*</span></label>
-                <select id="contact-subject" name="subject" required aria-describedby="subject-error">
+              <div class="form__field">
+                <label class="form__label" for="contact-subject">件名</label>
+                <select class="form__input" id="contact-subject" name="subject" required aria-describedby="subject-error">
                   <option value="">選択してください</option>
                   <option value="プロジェクト相談">プロジェクト相談</option>
                   <option value="技術的質問">技術的質問</option>
                   <option value="転職・採用">転職・採用について</option>
                   <option value="その他">その他</option>
                 </select>
-                <span class="error-message" id="subject-error"></span>
+                <span class="form__error" id="subject-error" aria-live="polite"></span>
               </div>
             </div>
-            
-            <div class="form-group">
-              <label for="contact-message">メッセージ <span class="required">*</span></label>
-              <textarea id="contact-message" name="message" rows="6" required aria-describedby="message-error" placeholder="ご質問やご相談内容をお聞かせください"></textarea>
-              <span class="error-message" id="message-error"></span>
+            <div class="form__field">
+              <label class="form__label" for="contact-message">メッセージ</label>
+              <textarea class="form__textarea" id="contact-message" name="message" rows="5" required aria-describedby="message-error" placeholder="ご質問やご相談内容をお聞かせください"></textarea>
+              <span class="form__error" id="message-error" aria-live="polite"></span>
             </div>
-            
-            <button type="submit" class="btn submit-btn">送信する</button>
+            <button class="btn btn--primary contact__submit submit-btn" type="submit">送信する</button>
           </form>
         </div>
       </div>
     </section>
   )}
 </Base>
-
-
-
-
-
-
