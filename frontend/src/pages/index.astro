@@ -131,6 +131,41 @@ const featuredProjects = allProjects
     </section>
   )}
 
+  <!-- Experience Section -->
+  {siteConfig.featureFlags.showExperience && (
+    <section id="experience" class="section alt">
+      <div class="container">
+        <h2 class="reveal" data-i18n="index.experience.title">職務経歴</h2>
+        <div class="timeline">
+          <div class="tl-item reveal">
+            <div class="tl-dot"></div>
+            <div class="tl-content">
+              <h3>Komeda Portal - バイトシフトDXシステム</h3>
+              <p class="muted">2024年3月 - 8月</p>
+              <p>AWS Lambda + LINE API を活用したサーバーレスシフト管理システムの設計・開発・運用。運用コスト90%削減、業務効率化を実現。</p>
+            </div>
+          </div>
+          <div class="tl-item reveal">
+            <div class="tl-dot"></div>
+            <div class="tl-content">
+              <h3>歩行データ時系列クラスタリング研究</h3>
+              <p class="muted">2024年6月 - 現在</p>
+              <p>機械学習・時系列解析を用いた歩行パターン分析システムの研究開発。DTWアルゴリズムとクラスタリング手法を組み合わせた新手法を開発。</p>
+            </div>
+          </div>
+          <div class="tl-item reveal">
+            <div class="tl-dot"></div>
+            <div class="tl-content">
+              <h3>研究室メモ共有アプリ</h3>
+              <p class="muted">2023年10月 - 2024年2月</p>
+              <p>Next.js + Firebase での研究室向けナレッジ共有システム。認証・ロール管理・リアルタイム同期を実装し、チーム協業効率化を実現。</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  )}
+
   <!-- Contact Section -->
   {siteConfig.featureFlags.showContact && (
     <section id="contact" class="section contact-section">

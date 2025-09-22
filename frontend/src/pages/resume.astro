@@ -1,0 +1,261 @@
+---
+import Base from '../layouts/Base.astro';
+import siteConfig from '../data/site.json';
+---
+
+<Base title="履歴書・職務経歴" description="Kanato Murayamaの詳細な履歴書・職務経歴書">
+  <!-- Resume Hero Section -->
+  <section class="resume-hero">
+    <div class="container">
+      <div class="resume-header">
+        <div class="profile-image">
+          <img src="/assets/avatar.svg" alt="Kanato Murayama" width="120" height="120">
+        </div>
+        <div class="profile-info">
+          <h1>Kanato Murayama</h1>
+          <p class="profile-title">フルスタックエンジニア・データサイエンティスト</p>
+          <p class="profile-summary">
+            データサイエンス × クラウドDX × フルスタック開発を軸に、課題解決とユーザー価値創出に取り組む学生エンジニア。
+            研究・実務・個人開発の経験を通じて、技術的な深さと実装力を両立。
+          </p>
+          
+          <div class="profile-contact">
+            <div class="contact-item">
+              <span class="contact-label">Email:</span>
+              <a href="mailto:contact@example.com">contact@example.com</a>
+            </div>
+            <div class="contact-item">
+              <span class="contact-label">GitHub:</span>
+              <a href="https://github.com/kanade3256" target="_blank">@kanade3256</a>
+            </div>
+            <div class="contact-item">
+              <span class="contact-label">Qiita:</span>
+              <a href="https://qiita.com/kanade3256" target="_blank">@kanade3256</a>
+            </div>
+            <div class="contact-item">
+              <span class="contact-label">Location:</span>
+              <span>京都, 日本</span>
+            </div>
+          </div>
+          
+          <div class="resume-actions">
+            <a href="#" class="btn primary">履歴書PDF</a>
+            <a href="#" class="btn">職務経歴書PDF</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Resume Content -->
+  <section class="resume-content">
+    <div class="container resume-grid">
+      <!-- Main Content -->
+      <div class="resume-main">
+        <!-- Experience Section -->
+        <section class="resume-section">
+          <h2>職務経歴・プロジェクト実績</h2>
+          
+          <div class="experience-timeline">
+            <article class="timeline-item">
+              <div class="timeline-date">2024年3月 - 8月</div>
+              <div class="timeline-content">
+                <h3>Komeda Portal - バイトシフトDXシステム</h3>
+                <p class="timeline-role">フルスタック開発・システム設計</p>
+                <p>AWS Lambda + LINE API を活用したサーバーレスシフト管理システムの設計・開発・運用。</p>
+                <ul class="timeline-achievements">
+                  <li>AWS Lambda、Secrets Manager、S3 を用いたサーバーレスアーキテクチャ設計</li>
+                  <li>LINE Bot API + リッチメニューでのユーザーインターフェース構築</li>
+                  <li>運用コスト月額 90% 削減、シフト作成時間 70% 短縮を実現</li>
+                </ul>
+              </div>
+            </article>
+
+            <article class="timeline-item">
+              <div class="timeline-date">2024年6月 - 現在</div>
+              <div class="timeline-content">
+                <h3>歩行データ時系列クラスタリング研究</h3>
+                <p class="timeline-role">研究員・データサイエンティスト</p>
+                <p>機械学習・時系列解析を用いた歩行パターン分析システムの研究開発。</p>
+                <ul class="timeline-achievements">
+                  <li>MediaPipe を用いた姿勢推定データの前処理パイプライン構築</li>
+                  <li>DTW (Dynamic Time Warping) アルゴリズムによる時系列類似度計算</li>
+                  <li>クラスタリング手法での歩行パターン分類精度向上</li>
+                </ul>
+              </div>
+            </article>
+
+            <article class="timeline-item">
+              <div class="timeline-date">2023年10月 - 2024年2月</div>
+              <div class="timeline-content">
+                <h3>研究室メモ共有アプリ</h3>
+                <p class="timeline-role">個人開発（企画・設計・実装・運用）</p>
+                <p>Next.js + Firebase でのリアルタイム協業システム開発。認証・ロール管理・データ同期を実装。</p>
+                <ul class="timeline-achievements">
+                  <li>Next.js 13 App Router + TypeScript でのSPA構築</li>
+                  <li>Firebase Authentication + Firestore でのリアルタイムデータ同期</li>
+                  <li>Tailwind CSS + Headless UI でのレスポンシブUIデザイン</li>
+                </ul>
+              </div>
+            </article>
+          </div>
+        </section>
+
+        <!-- Technical Skills -->
+        <section class="resume-section">
+          <h2>技術スキル</h2>
+          
+          <div class="skill-group">
+            <h3>プログラミング言語</h3>
+            <div class="skill-items">
+              <div class="skill-item">
+                <div class="skill-name">Python</div>
+                <div class="skill-level expert"></div>
+                <p class="skill-description">データ分析、機械学習、Web API開発。pandas、NumPy、scikit-learnでの実装経験豊富。</p>
+              </div>
+              <div class="skill-item">
+                <div class="skill-name">JavaScript / TypeScript</div>
+                <div class="skill-level advanced"></div>
+                <p class="skill-description">フロントエンド・バックエンド開発。React、Next.js、Node.jsでの実装経験。</p>
+              </div>
+              <div class="skill-item">
+                <div class="skill-name">SQL</div>
+                <div class="skill-level advanced"></div>
+                <p class="skill-description">データベース設計、クエリ最適化。PostgreSQL、Firebase Firestoreでの経験。</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="skill-group">
+            <h3>フレームワーク・ライブラリ</h3>
+            <div class="skill-items">
+              <div class="skill-item">
+                <div class="skill-name">Next.js / React</div>
+                <div class="skill-level advanced"></div>
+                <p class="skill-description">SPA、SSR、App Routerでのモダンフロントエンド開発。状態管理、パフォーマンス最適化。</p>
+              </div>
+              <div class="skill-item">
+                <div class="skill-name">pandas / scikit-learn</div>
+                <div class="skill-level expert"></div>
+                <p class="skill-description">データ前処理、機械学習モデル構築。時系列解析、クラスタリング手法での実装経験。</p>
+              </div>
+              <div class="skill-item">
+                <div class="skill-name">Tailwind CSS</div>
+                <div class="skill-level advanced"></div>
+                <p class="skill-description">ユーティリティファーストなCSSフレームワーク。コンポーネント設計、レスポンシブ対応。</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="skill-group">
+            <h3>クラウド・インフラ</h3>
+            <div class="skill-items">
+              <div class="skill-item">
+                <div class="skill-name">AWS (Lambda, S3, Secrets Manager)</div>
+                <div class="skill-level advanced"></div>
+                <p class="skill-description">サーバーレスアーキテクチャ設計・構築。IAM、CloudWatch での運用監視。</p>
+              </div>
+              <div class="skill-item">
+                <div class="skill-name">Firebase</div>
+                <div class="skill-level advanced"></div>
+                <p class="skill-description">Authentication、Firestore、Hosting でのフルスタック開発。リアルタイムデータ同期。</p>
+              </div>
+              <div class="skill-item">
+                <div class="skill-name">GitHub Actions</div>
+                <div class="skill-level intermediate"></div>
+                <p class="skill-description">CI/CD パイプライン構築。自動テスト、ビルド、デプロイの自動化。</p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Achievements -->
+        <section class="resume-section">
+          <h2>主な実績・成果</h2>
+          
+          <div class="achievements-list">
+            <article class="achievement">
+              <h3>業務効率化による定量的成果</h3>
+              <p><strong>Komeda Portal</strong>: 運用コスト月額90%削減、シフト作成時間70%短縮</p>
+              <p><strong>技術選択</strong>: サーバーレスアーキテクチャによる固定費用ゼロ、従量課金モデルでのコスト最適化</p>
+            </article>
+            
+            <article class="achievement">
+              <h3>研究での技術的貢献</h3>
+              <p><strong>歩行データ解析</strong>: DTWアルゴリズムと機械学習の組み合わせによる新しい時系列クラスタリング手法</p>
+              <p><strong>データ前処理</strong>: MediaPipeを活用した効率的な姿勢推定データパイプライン構築</p>
+            </article>
+            
+            <article class="achievement">
+              <h3>フルスタック開発での実装力</h3>
+              <p><strong>技術スタック</strong>: Next.js + Firebase + Tailwind による認証・リアルタイム同期システム</p>
+              <p><strong>ユーザビリティ</strong>: レスポンシブデザイン、アクセシビリティ対応、セキュリティルール設計</p>
+            </article>
+          </div>
+        </section>
+      </div>
+
+      <!-- Sidebar -->
+      <aside class="resume-sidebar">
+        <!-- Basic Info -->
+        <section class="sidebar-section">
+          <h3>基本情報</h3>
+          <dl class="basic-info">
+            <dt>専攻</dt>
+            <dd>情報科学・データサイエンス</dd>
+            <dt>学年</dt>
+            <dd>学部4年生</dd>
+            <dt>居住地</dt>
+            <dd>京都府</dd>
+            <dt>就業可能時期</dt>
+            <dd>2025年4月〜</dd>
+          </dl>
+        </section>
+
+        <!-- Skill Level Legend -->
+        <section class="sidebar-section">
+          <h3>スキルレベル凡例</h3>
+          <div class="skill-legend">
+            <div class="legend-item">
+              <div class="legend-bar expert"></div>
+              <span>Expert - 業務での主力技術</span>
+            </div>
+            <div class="legend-item">
+              <div class="legend-bar advanced"></div>
+              <span>Advanced - 実装・問題解決可能</span>
+            </div>
+            <div class="legend-item">
+              <div class="legend-bar intermediate"></div>
+              <span>Intermediate - 学習中・経験あり</span>
+            </div>
+            <div class="legend-item">
+              <div class="legend-bar beginner"></div>
+              <span>Beginner - 基礎知識あり</span>
+            </div>
+          </div>
+        </section>
+
+        <!-- Current Learning -->
+        <section class="sidebar-section">
+          <h3>現在の学習</h3>
+          <ul class="learning-list">
+            <li>Go言語でのバックエンドAPI開発</li>
+            <li>Docker・Kubernetesでのコンテナ運用</li>
+            <li>機械学習でのMLOps・モデル運用</li>
+            <li>Rust言語でのシステムプログラミング</li>
+          </ul>
+        </section>
+
+        <!-- Certifications -->
+        <section class="sidebar-section">
+          <h3>資格・認定</h3>
+          <ul class="certifications">
+            <li>TOEIC 800点 (2023年)</li>
+            <li>基本情報技術者試験 (予定)</li>
+            <li>AWS Cloud Practitioner (学習中)</li>
+          </ul>
+        </section>
+      </aside>
+    </div>
+  </section>
+</Base>

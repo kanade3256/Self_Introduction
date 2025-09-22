@@ -77,13 +77,23 @@ import siteConfig from '../data/site.json';
         <nav id="site-nav" class="site-nav" role="navigation" aria-label="メインナビゲーション">
           <ul>
             {siteConfig.nav.map((item) => (
-              <li><a href={item.href} data-i18n={item.key}>{item.label}</a></li>
+              <li>
+                <a 
+                  href={item.href} 
+                  data-i18n={item.key}
+                  target={item.external ? "_blank" : undefined}
+                  rel={item.external ? "noopener noreferrer" : undefined}
+                  aria-label={item.external ? `${item.label}を開く` : undefined}
+                >
+                  {item.label}
+                </a>
+              </li>
             ))}
           </ul>
           {siteConfig.featureFlags.enableI18n && (
-            <div class="language-switcher">
-              <button class="lang-btn" data-lang="ja" aria-label="日本語に切り替え">🇯🇵</button>
-              <button class="lang-btn" data-lang="en" aria-label="Switch to English">🇺🇸</button>
+            <div class="header-controls">
+              <button id="lang-toggle" class="lang-toggle" aria-label="言語を切り替え">� EN</button>
+              <button id="theme-toggle" class="theme-toggle" aria-label="テーマを切り替え">�</button>
             </div>
           )}
         </nav>

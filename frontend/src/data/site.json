@@ -26,9 +26,25 @@
       "key": "nav.experience"
     },
     {
+      "label": "タイムライン",
+      "href": "/timeline",
+      "key": "nav.timeline"
+    },
+    {
+      "label": "履歴書",
+      "href": "/resume",
+      "key": "nav.resume"
+    },
+    {
       "label": "お問い合わせ",
       "href": "#contact",
       "key": "nav.contact"
+    },
+    {
+      "label": "Qiita",
+      "href": "https://qiita.com/kanade3256",
+      "key": "nav.qiita",
+      "external": true
     }
   ],
 
