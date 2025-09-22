@@ -2,22 +2,21 @@ import { defineConfig } from 'astro/config';
 import mdx from '@astrojs/mdx';
 import sitemap from '@astrojs/sitemap';
 
-// 環境変数による設定の切り替え
-const isDev = process.env.NODE_ENV === 'development';
-const isProduction = process.env.NODE_ENV === 'production';
+import siteConfig from './src/data/site.json';
 
-// 本番環境でのみbaseパスを設定
-const getBaseConfig = () => {
-  if (isProduction) {
-    return '/SelfIntroduction';
+const parsedSiteUrl = (() => {
+  try {
+    return new URL(siteConfig.siteUrl);
+  } catch {
+    return new URL('http://localhost/');
   }
-  return undefined; // 開発環境ではbaseパスなし
-};
+})();
+const derivedBase = parsedSiteUrl.pathname === '/' ? undefined : parsedSiteUrl.pathname.replace(/\/$/, '');
 
 // https://astro.build/config
 export default defineConfig({
-  site: 'https://kanade3256.github.io',
-  base: getBaseConfig(),
+  site: parsedSiteUrl.origin + (derivedBase ?? ''),
+  base: derivedBase,
   integrations: [mdx(), sitemap()],
   markdown: {
     shikiConfig: {
