@@ -360,7 +360,22 @@
         console.log('Response status:', response.status);
         console.log('Response headers:', Object.fromEntries(response.headers));
         
-        const result = await response.json();
+        const responseText = await response.text();
+        console.log('Response body:', responseText);
+        let result;
+        if (responseText) {
+          try {
+            result = JSON.parse(responseText);
+          } catch (parseError) {
+            console.warn('Failed to parse JSON response:', parseError, responseText);
+            result = {
+              ok: false,
+              error: responseText || ('HTTP ' + response.status + ' ' + (response.statusText || ''))
+            };
+          }
+        } else {
+          result = { ok: response.ok };
+        }
         console.log('Response data:', result);
         
         // ローディングダイアログを閉じる

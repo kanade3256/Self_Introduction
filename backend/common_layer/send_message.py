@@ -1,7 +1,10 @@
 import requests
 import logging
 import os
-from backend.common_layer.secret_loader import load_secret
+try:
+    from backend.common_layer.secret_loader import load_secret  # type: ignore
+except ImportError:
+    from secret_loader import load_secret
 
 # ロガーの設定
 logger = logging.getLogger()

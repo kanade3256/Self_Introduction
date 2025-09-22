@@ -125,7 +125,9 @@ const getNavAriaCurrent = (href: string) => {
     <header class="site-header" role="banner">
       <div class="layout-container site-header__inner">
         <a class="site-header__brand" href={getNavHref('#home')} aria-label="ホーム">
-          <span class="site-header__brand-mark" aria-hidden="true">{siteConfig.author.slice(0, 1)}</span>
+          <span class="site-header__brand-mark">
+            <img src={iconPath} alt={siteConfig.author + "のアイコン"} width="42" height="42" loading="lazy" decoding="async" />
+          </span>
           <span class="site-header__brand-label">{siteConfig.author}</span>
         </a>
         <button
