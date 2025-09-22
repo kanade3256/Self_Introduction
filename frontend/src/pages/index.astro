@@ -1,7 +1,9 @@
 ---
 import { getCollection } from 'astro:content';
+import { Image } from 'astro:assets';
 import Base from '../layouts/Base.astro';
 import siteConfig from '../data/site.json';
+import profileImage from '../assets/profile.jpg';
 
 const allProjects = await getCollection('projects');
 const featuredProjects = allProjects
@@ -175,11 +177,15 @@ const contactLinks = [
         {heroHighlight && heroSpotlight && (
           <aside class="hero__showcase reveal">
             <div class="hero-card__visual-only">
-              <img 
-                src={joinBase('/assets/profile.jpg')} 
-                alt="プロフィール画像" 
+              <Image 
+                src={profileImage}
+                alt="プロフィール画像"
                 class="hero-card__main-image"
                 loading="eager"
+                width={400}
+                height={400}
+                format="webp"
+                quality={80}
               />
             </div>
           </aside>
