@@ -66,6 +66,10 @@ export default defineConfig({
           // 本番環境でのアセットファイル名を調整
           assetFileNames: (assetInfo) => {
             const extType = assetInfo.name.split('.').at(1);
+            // profile.jpg は常に同じ名前を保持
+            if (assetInfo.name === 'profile.jpg') {
+              return `assets/profile.jpg`;
+            }
             if (/png|jpe?g|svg|gif|tiff|bmp|ico/i.test(extType)) {
               return `assets/[name].[hash][extname]`;
             }
