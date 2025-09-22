@@ -2,7 +2,6 @@
 <html lang="ja">
   <head>
     <meta charset="utf-8" />
-    <meta http-equiv="refresh" content="0; url=./dist/index.html" />
     <title>SelfIntroduction (Astro)</title>
     <style>
       body { font-family: system-ui, -apple-system, 'Segoe UI', sans-serif; margin: 0; padding: 3rem; background: #0b1220; color: #e5e7eb; display: grid; place-items: center; min-height: 100vh; }
@@ -12,6 +11,26 @@
       p { margin: 0 0 1.25rem; line-height: 1.6; }
       code { background: rgba(148, 163, 184, 0.15); padding: 0.15rem 0.35rem; border-radius: 0.35rem; }
     </style>
+    <script>
+      // 環境に応じてリダイレクト先を動的に決定
+      function redirectToApp() {
+        const currentPath = window.location.pathname;
+        const isGitHubPages = window.location.hostname.includes('github.io');
+        
+        if (isGitHubPages && currentPath.includes('/SelfIntroduction/')) {
+          // GitHub Pagesの場合
+          window.location.href = './dist/index.html';
+        } else {
+          // その他の本番環境の場合
+          window.location.href = './dist/index.html';
+        }
+      }
+      
+      // ページ読み込み後に自動リダイレクト
+      window.addEventListener('DOMContentLoaded', function() {
+        setTimeout(redirectToApp, 100);
+      });
+    </script>
   </head>
   <body>
     <div class="card">
