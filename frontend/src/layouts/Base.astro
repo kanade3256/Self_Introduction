@@ -30,6 +30,10 @@ if (isGitHubPages) {
 const basePath = (import.meta.env.BASE_URL ?? '/').replace(/\/$/, '');
 const joinBase = (path: string) => {
   const normalized = path.startsWith('/') ? path : '/' + path;
+  // 本番環境では相対パスを強制使用
+  if (import.meta.env.PROD) {
+    return '.' + normalized;
+  }
   return basePath ? basePath + normalized : normalized;
 };
 
