@@ -7,17 +7,17 @@
 
 :root {
   color-scheme: dark;
-  --bg: #0b1220;
-  --panel: color-mix(in oklab, var(--bg), white 6%);
-  --card: color-mix(in oklab, var(--bg), white 10%);
-  --text: #e5eefb;
-  --muted: #9fb3c8;
-  --primary: #0ea5e9;
-  --primary-strong: #0284c7;
+  --bg: #0f1419;
+  --panel: #1a1f29;
+  --card: #242936;
+  --text: #f0f4f8;
+  --muted: #a8b5c7;
+  --primary: #38bdf8;
+  --primary-strong: #0ea5e9;
   --accent: #7dd3fc;
   --ring: color-mix(in oklab, var(--primary), white 35%);
-  --border: color-mix(in oklab, var(--bg), white 18%);
-  --surface-contrast: color-mix(in oklab, var(--bg), white 22%);
+  --border: #2d3748;
+  --surface-contrast: #374151;
 
   --font-sans-jp: 'Noto Sans JP', 'Hiragino Sans', 'Yu Gothic', system-ui;
   --font-sans: 'Inter', var(--font-sans-jp);
@@ -47,32 +47,33 @@
 }
 
 .theme--dark {
-  --bg: #0b1220;
-  --panel: color-mix(in oklab, var(--bg), white 6%);
-  --card: color-mix(in oklab, var(--bg), white 10%);
-  --text: #e5eefb;
-  --muted: #9fb3c8;
-  --primary: #0ea5e9;
-  --primary-strong: #0284c7;
+  --bg: #0f1419;
+  --panel: #1a1f29;
+  --card: #242936;
+  --text: #f0f4f8;
+  --muted: #a8b5c7;
+  --primary: #38bdf8;
+  --primary-strong: #0ea5e9;
   --accent: #7dd3fc;
   --ring: color-mix(in oklab, var(--primary), white 35%);
-  --border: color-mix(in oklab, var(--bg), white 18%);
+  --border: #2d3748;
 }
 
 [data-theme="light"] {
   color-scheme: light;
-  --bg: #f7f9fb;
+  --bg: #f8fafc;
   --panel: #ffffff;
   --card: #ffffff;
-  --text: #0f172a;
-  --muted: #4b5b72;
-  --primary: #0284c7;
-  --primary-strong: #0369a1;
-  --accent: #0ea5e9;
+  --text: #1e293b;
+  --muted: #475569;
+  --primary: #2563eb;
+  --primary-strong: #1d4ed8;
+  --accent: #3b82f6;
   --ring: color-mix(in oklab, var(--primary), white 50%);
-  --border: color-mix(in oklab, var(--bg), black 12%);
-  --shadow-soft: 0 20px 40px rgba(15, 23, 42, 0.08);
-  --shadow-card: 0 12px 30px rgba(15, 23, 42, 0.12);
+  --border: #cbd5e1;
+  --surface-contrast: #e2e8f0;
+  --shadow-soft: 0 20px 40px rgba(30, 41, 59, 0.10);
+  --shadow-card: 0 8px 25px rgba(30, 41, 59, 0.15);
 }
 
 html {
@@ -128,7 +129,7 @@ button {
   padding: var(--space-2) var(--space-4);
   border-radius: var(--radius-sm);
   background: var(--primary);
-  color: #02131c;
+  color: #0f1419;
   transform: translateY(-120%);
   transition: transform var(--transition-base);
   z-index: 999;
@@ -167,8 +168,8 @@ section[id] {
 
 .section--layer {
   background: var(--panel);
-  border-top: 1px solid rgba(255, 255, 255, 0.04);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
 }
 
 .section--hero {
@@ -267,8 +268,8 @@ section[id] {
 
 .btn--primary {
   background: var(--primary);
-  color: #02131c;
-  box-shadow: 0 12px 26px rgba(14, 165, 233, 0.25);
+  color: #0f1419;
+  box-shadow: 0 12px 26px rgba(56, 189, 248, 0.25);
 }
 
 .btn--primary:hover {
@@ -320,7 +321,7 @@ section[id] {
   background: var(--card);
   border-radius: var(--radius-md);
   padding: var(--space-5);
-  border: 1px solid rgba(255, 255, 255, 0.04);
+  border: 1px solid var(--border);
   box-shadow: var(--shadow-card);
   position: relative;
   overflow: hidden;
@@ -329,8 +330,8 @@ section[id] {
 
 .card:hover {
   transform: translateY(-4px) scale(1.01);
-  box-shadow: 0 30px 56px rgba(8, 12, 25, 0.5);
-  border-color: rgba(125, 211, 252, 0.18);
+  box-shadow: var(--shadow-soft);
+  border-color: var(--primary);
 }
 
 .card__header {
@@ -1556,6 +1557,99 @@ section[id] {
     align-items: flex-start;
     gap: var(--space-2);
   }
+}
+
+/* -----------------------------------------------------------
+   Light Mode Enhancements
+----------------------------------------------------------- */
+[data-theme="light"] .card {
+  border: 1px solid #d1d5db;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05), 0 2px 4px rgba(0, 0, 0, 0.08);
+}
+
+[data-theme="light"] .card:hover {
+  border-color: var(--primary);
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.10), 0 4px 8px rgba(0, 0, 0, 0.12);
+}
+
+[data-theme="light"] .section--layer {
+  border-top: 1px solid #d1d5db;
+  border-bottom: 1px solid #d1d5db;
+  background: #f9fafb;
+}
+
+[data-theme="light"] .site-header {
+  border-bottom: 1px solid #e5e7eb;
+  backdrop-filter: blur(12px);
+  background: rgba(248, 250, 252, 0.95);
+}
+
+[data-theme="light"] .badge--soft {
+  background: rgba(37, 99, 235, 0.08);
+  color: #1e40af;
+  border: 1px solid rgba(37, 99, 235, 0.20);
+}
+
+[data-theme="light"] .badge--pill {
+  background: #f1f5f9;
+  color: #475569;
+  border: 1px solid #e2e8f0;
+}
+
+/* Timeline improvements for light mode */
+[data-theme="light"] .timeline-item__body {
+  background: #ffffff;
+  border: 1px solid #d1d5db;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04), 0 1px 3px rgba(0, 0, 0, 0.06);
+}
+
+[data-theme="light"] .timeline-item__marker {
+  background: var(--primary);
+  box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.15);
+}
+
+[data-theme="light"] .timeline-accordion__item {
+  border: 1px solid #d1d5db;
+  background: #ffffff;
+}
+
+[data-theme="light"] .timeline-accordion__item summary {
+  border-bottom: 1px solid #e5e7eb;
+}
+
+/* Form improvements for light mode */
+[data-theme="light"] .form__input,
+[data-theme="light"] .form__textarea,
+[data-theme="light"] .form__select {
+  border: 1px solid #d1d5db;
+  background: #ffffff;
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+[data-theme="light"] .form__input:focus,
+[data-theme="light"] .form__textarea:focus,
+[data-theme="light"] .form__select:focus {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1), inset 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+[data-theme="light"] .form__input::placeholder,
+[data-theme="light"] .form__textarea::placeholder {
+  color: #9ca3af;
+}
+
+/* Additional UI improvements for light mode */
+[data-theme="light"] .project-card,
+[data-theme="light"] .hero-card {
+  border: 1px solid #e5e7eb;
+  background: #ffffff;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05), 0 1px 3px rgba(0, 0, 0, 0.08);
+}
+
+[data-theme="light"] .project-card:hover,
+[data-theme="light"] .hero-card:hover {
+  border-color: var(--primary);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.08), 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
 /* -----------------------------------------------------------
