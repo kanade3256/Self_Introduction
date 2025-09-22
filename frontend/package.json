@@ -6,11 +6,9 @@
   "scripts": {
     "dev": "cross-env NODE_ENV=development astro dev",
     "start": "cross-env NODE_ENV=development astro dev",
-    "generate-content": "tsx scripts/generate-projects.ts",
-    "prebuild": "npm run generate-content",
     "build": "cross-env NODE_ENV=production astro build",
-    "build:github": "npm run generate-content && cross-env NODE_ENV=production GITHUB_PAGES=true astro build",
-    "build:prod": "npm run generate-content && cross-env NODE_ENV=production DEPLOY_TARGET=production astro build",
+    "build:github": "cross-env NODE_ENV=production GITHUB_PAGES=true astro build",
+    "build:prod": "cross-env NODE_ENV=production DEPLOY_TARGET=production astro build",
     "preview": "cross-env NODE_ENV=production astro preview",
     "astro": "astro"
   },
@@ -21,8 +19,7 @@
   },
   "devDependencies": {
     "@types/node": "^22.7.5",
-    "cross-env": "^7.0.3",
-    "tsx": "^4.20.5"
+    "cross-env": "^7.0.3"
   },
   "engines": {
     "node": ">=18.14.1"

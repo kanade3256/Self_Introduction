@@ -3,24 +3,33 @@ import Base from '../layouts/Base.astro';
 import { timelineData, timelineStats, ongoingFocus, groupTimelineByYear } from '../data/timeline.js';
 
 // データをグループ化
+const heroImageSrc = '/assets/profile.jpg';
+const heroImageAlt = 'ポートフォリオ作成者のイメージ写真';
 const timelineGroups = groupTimelineByYear(timelineData);
 ---
 
 <Base title="タイムライン" description="学習・開発・研究・受賞・登壇などの歩みを時系列で紹介">
   <section class="section section--hero timeline-hero">
     <div class="layout-container">
-      <header class="section__header">
-        <p class="section__eyebrow" data-i18n="timeline.title">タイムライン・実績</p>
-        <h1 class="section__title">成果と成長の軌跡</h1>
-        <p class="section__lead" data-i18n="timeline.summary">学習・開発・研究・受賞・登壇などの歩みを時系列で紹介します。継続的な成長と挑戦の軌跡をご覧ください。</p>
-      </header>
-      <div class="timeline-hero__stats">
-        {timelineStats.map((stat) => (
-          <div class="timeline-hero__stat">
-            <span class="timeline-hero__stat-value">{stat.value}</span>
-            <span class="timeline-hero__stat-label">{stat.label}</span>
+      <div class="timeline-hero__layout">
+        <div class="timeline-hero__content">
+          <header class="section__header">
+            <p class="section__eyebrow" data-i18n="timeline.title">タイムライン・実績</p>
+            <h1 class="section__title">成果と成長の軌跡</h1>
+            <p class="section__lead" data-i18n="timeline.summary">学習�E開発・研究・受賞�E登壁E��どの歩みを時系列で紹介します。継続的な成長と挑戦の軌跡をご覧ください、E/p>
+          </header>
+          <div class="timeline-hero__stats">
+            {timelineStats.map((stat) => (
+              <div class="timeline-hero__stat">
+                <span class="timeline-hero__stat-value">{stat.value}</span>
+                <span class="timeline-hero__stat-label">{stat.label}</span>
+              </div>
+            ))}
           </div>
-        ))}
+        </div>
+        <figure class="timeline-hero__profile">
+          <img src={heroImageSrc} alt={heroImageAlt} loading="lazy" decoding="async" />
+        </figure>
       </div>
     </div>
   </section>

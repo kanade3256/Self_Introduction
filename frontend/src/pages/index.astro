@@ -174,33 +174,14 @@ const contactLinks = [
 
         {heroHighlight && heroSpotlight && (
           <aside class="hero__showcase reveal">
-            <article class="hero-card card" data-category={heroHighlight.data.category}>
-              <div class="card__header">
-                <span class="card__eyebrow">{heroHighlight.data.category}</span>
-                <h2 class="card__title">{heroHighlight.data.title}</h2>
-                <p class="card__subtitle">{heroSpotlight.tagline}</p>
-              </div>
-              <p class="card__summary">{heroHighlight.data.summary}</p>
-              <div class="hero-card__metrics">
-                {heroSpotlight.metrics?.map((metric) => (
-                  <div class="hero-card__metric">
-                    <span class="hero-card__metric-value">{metric.value}</span>
-                    <span class="hero-card__metric-label">{metric.label}</span>
-                  </div>
-                ))}
-              </div>
-              <ul class="card__tags" role="list">
-                {heroHighlight.data.technologies.slice(0, 4).map((tech) => (
-                  <li class="badge badge--soft" role="listitem">{tech}</li>
-                ))}
-              </ul>
-              <div class="card__actions">
-                <a class="btn btn--ghost" href={projectsHref}>Case Study</a>
-                {heroHighlight.data.links?.repo && (
-                  <a class="btn btn--ghost" href={heroHighlight.data.links.repo} target="_blank" rel="noopener noreferrer">Repo</a>
-                )}
-              </div>
-            </article>
+            <div class="hero-card__visual-only">
+              <img 
+                src={joinBase('/assets/profile.jpg')} 
+                alt="プロフィール画像" 
+                class="hero-card__main-image"
+                loading="eager"
+              />
+            </div>
           </aside>
         )}
       </div>
