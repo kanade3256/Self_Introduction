@@ -14,9 +14,9 @@
   const i18n = {
     ja: {
       'nav.about': '自己紹介',
-      'nav.skills': 'スキル',
       'nav.projects': '制作物',
       'nav.experience': '経歴',
+      'nav.skills': 'スキル',
       'nav.timeline': 'タイムライン',
       'nav.resume': '履歴書',
       'nav.contact': '連絡',
@@ -50,9 +50,9 @@
     },
     en: {
       'nav.about': 'About',
-      'nav.skills': 'Skills',
       'nav.projects': 'Projects',
       'nav.experience': 'Experience',
+      'nav.skills': 'Skills',
       'nav.timeline': 'Timeline',
       'nav.resume': 'Resume',
       'nav.contact': 'Contact',
@@ -413,6 +413,166 @@
         submitBtn.disabled = false;
       }
     });
+  }
+
+  // プロジェクト横スライダー機能
+  const projectsSlider = document.getElementById('projects-slider');
+  if (projectsSlider) {
+    const track = document.getElementById('projects-track');
+    const prevBtn = document.getElementById('projects-prev');
+    const nextBtn = document.getElementById('projects-next');
+    const indicators = document.getElementById('projects-indicators');
+    const slides = track?.querySelectorAll('.projects-horizontal-slide');
+    
+    if (track && slides && slides.length > 0) {
+      let currentSlide = 0;
+      const totalSlides = slides.length;
+
+      // スライダー状態を更新
+      const updateSlider = () => {
+        // トラックの位置を更新
+        track.style.transform = `translateX(-${currentSlide * 100}%)`;
+        
+        // インジケータを更新
+        if (indicators) {
+          indicators.querySelectorAll('.projects-horizontal-slider__indicator').forEach((indicator, index) => {
+            indicator.classList.toggle('active', index === currentSlide);
+          });
+        }
+        
+        // ナビゲーションボタンの状態を更新
+        if (prevBtn) prevBtn.disabled = currentSlide === 0;
+        if (nextBtn) nextBtn.disabled = currentSlide === totalSlides - 1;
+      };
+
+      // 前のスライドに移動
+      const goToPrevSlide = () => {
+        if (currentSlide > 0) {
+          currentSlide--;
+          updateSlider();
+        }
+      };
+
+      // 次のスライドに移動
+      const goToNextSlide = () => {
+        if (currentSlide < totalSlides - 1) {
+          currentSlide++;
+          updateSlider();
+        }
+      };
+
+      // 特定のスライドに移動
+      const goToSlide = (slideIndex) => {
+        if (slideIndex >= 0 && slideIndex < totalSlides) {
+          currentSlide = slideIndex;
+          updateSlider();
+        }
+      };
+
+      // イベントリスナーを設定
+      prevBtn?.addEventListener('click', goToPrevSlide);
+      nextBtn?.addEventListener('click', goToNextSlide);
+
+      // インジケータクリック
+      indicators?.addEventListener('click', (e) => {
+        const indicator = e.target.closest('.projects-horizontal-slider__indicator');
+        if (indicator) {
+          const slideIndex = parseInt(indicator.dataset.slide);
+          goToSlide(slideIndex);
+        }
+      });
+
+      // キーボードナビゲーション
+      projectsSlider.addEventListener('keydown', (e) => {
+        if (e.key === 'ArrowLeft') {
+          e.preventDefault();
+          goToPrevSlide();
+        } else if (e.key === 'ArrowRight') {
+          e.preventDefault();
+          goToNextSlide();
+        }
+      });
+
+      // タッチ/スワイプサポート
+      let startX = 0;
+      let currentX = 0;
+      let isDragging = false;
+      let startTime = 0;
+
+      const handleTouchStart = (e) => {
+        startX = e.touches ? e.touches[0].clientX : e.clientX;
+        currentX = startX;
+        isDragging = true;
+        startTime = Date.now();
+        track.style.transition = 'none';
+      };
+
+      const handleTouchMove = (e) => {
+        if (!isDragging) return;
+        
+        currentX = e.touches ? e.touches[0].clientX : e.clientX;
+        const deltaX = currentX - startX;
+        const currentTransform = -currentSlide * 100;
+        const newTransform = currentTransform + (deltaX / track.offsetWidth) * 100;
+        
+        track.style.transform = `translateX(${newTransform}%)`;
+      };
+
+      const handleTouchEnd = () => {
+        if (!isDragging) return;
+        
+        isDragging = false;
+        track.style.transition = 'transform 240ms ease';
+        
+        const deltaX = currentX - startX;
+        const deltaTime = Date.now() - startTime;
+        const velocity = Math.abs(deltaX) / deltaTime;
+        
+        // スワイプ判定（距離または速度）
+        const threshold = track.offsetWidth * 0.2; // 20%の距離
+        const velocityThreshold = 0.5; // px/ms
+        
+        if (Math.abs(deltaX) > threshold || velocity > velocityThreshold) {
+          if (deltaX > 0) {
+            goToPrevSlide();
+          } else {
+            goToNextSlide();
+          }
+        } else {
+          updateSlider(); // 元の位置に戻す
+        }
+      };
+
+      // タッチイベント
+      track.addEventListener('touchstart', handleTouchStart, { passive: true });
+      track.addEventListener('touchmove', handleTouchMove, { passive: true });
+      track.addEventListener('touchend', handleTouchEnd);
+
+      // マウスイベント（デスクトップでのドラッグ）
+      track.addEventListener('mousedown', (e) => {
+        e.preventDefault();
+        handleTouchStart(e);
+      });
+      
+      document.addEventListener('mousemove', (e) => {
+        if (isDragging) {
+          e.preventDefault();
+          handleTouchMove(e);
+        }
+      });
+      
+      document.addEventListener('mouseup', () => {
+        if (isDragging) {
+          handleTouchEnd();
+        }
+      });
+
+      // 初期状態を設定
+      updateSlider();
+
+      // スライダーをフォーカス可能にする
+      projectsSlider.setAttribute('tabindex', '0');
+    }
   }
 
 })();

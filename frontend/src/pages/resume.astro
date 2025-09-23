@@ -15,9 +15,23 @@ const avatarSrc = asset(siteConfig.hero.avatarImage);
 ---
 
 <Base title="履歴書・職務経歴" description="Kanato Murayamaの詳細な履歴書・職務経歴書">
+  <!-- Breadcrumb Navigation -->
+  <nav class="breadcrumb-nav">
+    <div class="layout-container">
+      <ol class="breadcrumb-list">
+        <li class="breadcrumb-item">
+          <a href="./" class="breadcrumb-link" data-i18n="breadcrumb.home">ホーム</a>
+        </li>
+        <li class="breadcrumb-item breadcrumb-item--current" aria-current="page">
+          <span class="breadcrumb-current">履歴書</span>
+        </li>
+      </ol>
+    </div>
+  </nav>
+
   <!-- Resume Hero Section -->
-  <section class="resume-hero">
-    <div class="container">
+  <section id="about" class="resume-hero">
+    <div class="layout-container">
       <div class="resume-header">
         <div class="profile-image">
           <img src={avatarSrc} alt="Kanato Murayama" width="120" height="120" />
@@ -60,11 +74,11 @@ const avatarSrc = asset(siteConfig.hero.avatarImage);
 
   <!-- Resume Content -->
   <section class="resume-content">
-    <div class="container resume-grid">
+    <div class="layout-container resume-grid">
       <!-- Main Content -->
       <div class="resume-main">
         <!-- Experience Section -->
-        <section class="resume-section">
+        <section id="experience" class="resume-section">
           <h2>職務経歴・プロジェクト実績</h2>
           
           <div class="experience-timeline">
@@ -113,7 +127,7 @@ const avatarSrc = asset(siteConfig.hero.avatarImage);
         </section>
 
         <!-- Technical Skills -->
-        <section class="resume-section">
+        <section id="skills" class="resume-section">
           <h2>テクニカルスキル</h2>
           
           <div class="skill-group">
@@ -160,7 +174,7 @@ const avatarSrc = asset(siteConfig.hero.avatarImage);
         </section>
 
         <!-- Achievements -->
-        <section class="resume-section">
+        <section id="projects" class="resume-section">
           <h2>主な実績・成果</h2>
           
           <div class="achievements-list">
@@ -181,6 +195,28 @@ const avatarSrc = asset(siteConfig.hero.avatarImage);
               <p><strong>技術スタック</strong>: Next.js + Firebase + Tailwind による認証・リアルタイム同期システム</p>
               <p><strong>ユーザビリティ</strong>: レスポンシブデザイン、アクセシビリティ対応、セキュリティルール設計</p>
             </article>
+          </div>
+        </section>
+
+        <!-- Contact Section -->
+        <section id="contact" class="resume-section">
+          <h2>お問い合わせ</h2>
+          <div class="contact-section">
+            <p>お仕事のご相談、技術的な質問、コラボレーションなど、どんなことでもお気軽にご連絡ください。</p>
+            <div class="contact-methods">
+              <div class="contact-method">
+                <h4>Email</h4>
+                <a href="mailto:contact@example.com">contact@example.com</a>
+              </div>
+              <div class="contact-method">
+                <h4>GitHub</h4>
+                <a href="https://github.com/kanade3256" target="_blank" rel="noopener noreferrer">@kanade3256</a>
+              </div>
+              <div class="contact-method">
+                <h4>Qiita</h4>
+                <a href="https://qiita.com/kanade3256" target="_blank" rel="noopener noreferrer">@kanade3256</a>
+              </div>
+            </div>
           </div>
         </section>
       </div>

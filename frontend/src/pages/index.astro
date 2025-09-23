@@ -175,7 +175,7 @@ const contactLinks = [
         <aside class="hero__showcase reveal">
           <div class="hero-card__visual-only">
             <img 
-              src="/assets/profile.jpg"
+              src={joinBase('/assets/profile.jpg')}
               alt="プロフィール画像"
               class="hero-card__main-image"
               loading="eager"
@@ -219,58 +219,82 @@ const contactLinks = [
       <header class="section__header">
         <p class="section__eyebrow" data-i18n="index.projects.eyebrow">Selected Work</p>
         <h2 class="section__title" data-i18n="index.projects.title">注目プロジェクト</h2>
-        <p class="section__lead" data-i18n="index.projects.lead">実務・研究・個人開発から厳選した3プロジェクトと研究ハイライト。</p>
+        <p class="section__lead" data-i18n="index.projects.lead">実務・研究・個人開発から厳選したプロジェクト一覧。</p>
       </header>
 
-      <div class="featured-projects">
-        {primaryProjects.map((project) => {
-          const spotlight = projectSpotlights[project.slug] ?? projectSpotlights['komeda-portal'];
-          const category = project.data.category;
-          return (
-            <article class="project-card card reveal" data-category={category}>
-              <div class="project-card__body">
-                <div class="project-card__meta">
-                  <span class="project-card__category">{category}</span>
-                  <span class="project-card__role">{project.data.role}</span>
+      <div class="projects-horizontal-slider" id="projects-slider">
+        <div class="projects-horizontal-slider__container">
+          <div class="projects-horizontal-slider__track" id="projects-track">
+            {(() => {
+              // プロジェクトを3個ずつのグループに分割
+              const projectsPerSlide = 3;
+              const projectGroups = [];
+              for (let i = 0; i < allProjects.length; i += projectsPerSlide) {
+                projectGroups.push(allProjects.slice(i, i + projectsPerSlide));
+              }
+              
+              return projectGroups.map((group, slideIndex) => (
+                <div class="projects-horizontal-slide" data-slide={slideIndex}>
+                  <div class="projects-row">
+                    {group.map((project) => (
+                      <article class="project-row-card card reveal" data-category={project.data.category}>
+                        <div class="project-row-card__header">
+                          <span class="project-row-card__category">{project.data.category}</span>
+                          <h3 class="project-row-card__title">{project.data.title}</h3>
+                        </div>
+                        
+                        <div class="project-row-card__content">
+                          <p class="project-row-card__summary">{project.data.summary}</p>
+                          
+                          <div class="project-row-card__tech">
+                            <h4>主要技術</h4>
+                            <ul class="project-row-card__tags" role="list">
+                              {project.data.technologies.slice(0, 4).map((tech) => (
+                                <li class="badge badge--soft" role="listitem">{tech}</li>
+                              ))}
+                            </ul>
+                          </div>
+                        </div>
+
+                        <div class="project-row-card__actions">
+                          {project.data.links?.demo && (
+                            <a class="btn btn--ghost btn--sm" href={project.data.links.demo} target="_blank" rel="noopener noreferrer">Live</a>
+                          )}
+                          {project.data.links?.repo && (
+                            <a class="btn btn--ghost btn--sm" href={project.data.links.repo} target="_blank" rel="noopener noreferrer">Repo</a>
+                          )}
+                          <a class="btn btn--primary btn--sm" href={joinBase(`/projects/${project.slug}`)}>詳細</a>
+                        </div>
+                      </article>
+                    ))}
+                  </div>
                 </div>
-                <h3 class="project-card__title">{project.data.title}</h3>
-                <p class="project-card__summary">{project.data.summary}</p>
-                <div class="project-card__metrics">
-                  {spotlight.metrics.map((metric) => (
-                    <div class="project-card__metric">
-                      <span class="project-card__metric-value">{metric.value}</span>
-                      <span class="project-card__metric-label">{metric.label}</span>
-                    </div>
-                  ))}
-                </div>
-                <ul class="project-card__outcomes" role="list">
-                  {spotlight.outcomes.map((outcome) => (
-                    <li role="listitem">{outcome}</li>
-                  ))}
-                </ul>
-                <ul class="project-card__tags" role="list">
-                  {project.data.technologies.slice(0, 5).map((tech) => (
-                    <li class="badge badge--soft" role="listitem">{tech}</li>
-                  ))}
-                </ul>
-                <div class="project-card__actions">
-                  {project.data.links?.demo && (
-                    <a class="btn btn--ghost" href={project.data.links.demo} target="_blank" rel="noopener noreferrer">Live</a>
-                  )}
-                  {project.data.links?.repo && (
-                    <a class="btn btn--ghost" href={project.data.links.repo} target="_blank" rel="noopener noreferrer">Repo</a>
-                  )}
-                  <a class="btn btn--primary" href={projectsHref}>Case Study</a>
-                </div>
-              </div>
-              <div class="project-card__media" aria-hidden="true">
-                <div class="project-card__preview">
-                  <span>{spotlight.mediaLabel}</span>
-                </div>
-              </div>
-            </article>
-          );
-        })}
+              ));
+            })()}
+          </div>
+        </div>
+        
+        {/* スライダーコントロール（3つ以上の場合のみ表示） */}
+        {allProjects.length > 3 && (
+          <div class="projects-horizontal-slider__controls">
+            <button class="projects-horizontal-slider__nav projects-horizontal-slider__nav--prev" id="projects-prev" aria-label="前のスライド">
+              <span>‹</span>
+            </button>
+            <div class="projects-horizontal-slider__indicators" id="projects-indicators">
+              {(() => {
+                const totalSlides = Math.ceil(allProjects.length / 3);
+                return Array.from({ length: totalSlides }, (_, i) => (
+                  <button class="projects-horizontal-slider__indicator" data-slide={i} aria-label={`スライド ${i + 1}`}>
+                    {i + 1}
+                  </button>
+                ));
+              })()}
+            </div>
+            <button class="projects-horizontal-slider__nav projects-horizontal-slider__nav--next" id="projects-next" aria-label="次のスライド">
+              <span>›</span>
+            </button>
+          </div>
+        )}
       </div>
     </div>
   </section>

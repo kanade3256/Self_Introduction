@@ -9,6 +9,20 @@ const timelineGroups = groupTimelineByYear(timelineData);
 ---
 
 <Base title="タイムライン" description="学習・開発・研究・受賞・登壇などの歩みを時系列で紹介">
+  <!-- Breadcrumb Navigation -->
+  <nav class="breadcrumb-nav">
+    <div class="layout-container">
+      <ol class="breadcrumb-list">
+        <li class="breadcrumb-item">
+          <a href="./" class="breadcrumb-link" data-i18n="breadcrumb.home">ホーム</a>
+        </li>
+        <li class="breadcrumb-item breadcrumb-item--current" aria-current="page">
+          <span class="breadcrumb-current">タイムライン</span>
+        </li>
+      </ol>
+    </div>
+  </nav>
+
   <section class="section section--hero timeline-hero">
     <div class="layout-container">
       <div class="timeline-hero__layout">
@@ -16,7 +30,7 @@ const timelineGroups = groupTimelineByYear(timelineData);
           <header class="section__header">
             <p class="section__eyebrow" data-i18n="timeline.title">タイムライン・実績</p>
             <h1 class="section__title">成果と成長の軌跡</h1>
-            <p class="section__lead" data-i18n="timeline.summary">学習�E開発・研究・受賞�E登壁E��どの歩みを時系列で紹介します。継続的な成長と挑戦の軌跡をご覧ください、E/p>
+            <p class="section__lead" data-i18n="timeline.summary">学習・開発・研究・受賞・登壇などの歩みを時系列で紹介します。継続的な成長と挑戦の軌跡をご覧ください。</p>
           </header>
           <div class="timeline-hero__stats">
             {timelineStats.map((stat) => (
