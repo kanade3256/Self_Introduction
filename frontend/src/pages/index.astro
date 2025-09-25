@@ -175,7 +175,7 @@ const contactLinks = [
         <aside class="hero__showcase reveal">
           <div class="hero-card__visual-only">
             <img 
-              src={joinBase('/assets/profile.jpg')}
+              src={import.meta.env.PROD ? './assets/profile.jpg' : joinBase('/assets/profile.jpg')}
               alt="プロフィール画像"
               class="hero-card__main-image"
               loading="eager"

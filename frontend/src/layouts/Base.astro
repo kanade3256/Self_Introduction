@@ -39,7 +39,8 @@ const joinBase = (path: string) => {
 
 const stylesheetPath = joinBase('/css/style.css');
 const scriptPath = joinBase('/js/main.js');
-const iconPath = joinBase('/assets/profile.jpg');
+// プロフィール画像のパスを修正 - 本番時は相対パス、開発時はベースパス含む
+const iconPath = import.meta.env.PROD ? './assets/profile.jpg' : joinBase('/assets/profile.jpg');
 const ogImageUrl = new URL('assets/og-image.png', siteConfig.siteUrl).toString();
 const siteTitle = title ? title + ' | ' + siteConfig.siteName : siteConfig.siteName;
 

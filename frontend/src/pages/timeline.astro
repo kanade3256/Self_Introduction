@@ -3,7 +3,8 @@ import Base from '../layouts/Base.astro';
 import { timelineData, timelineStats, ongoingFocus, groupTimelineByYear } from '../data/timeline.js';
 
 // データをグループ化
-const heroImageSrc = '/assets/profile.jpg';
+const heroImageSrc = import.meta.env.PROD ? './assets/profile.jpg' : 
+  (import.meta.env.BASE_URL ? (import.meta.env.BASE_URL + 'assets/profile.jpg').replace(/\/+/g, '/') : '/assets/profile.jpg');
 const heroImageAlt = 'ポートフォリオ作成者のイメージ写真';
 const timelineGroups = groupTimelineByYear(timelineData);
 ---

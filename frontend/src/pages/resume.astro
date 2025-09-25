@@ -9,9 +9,14 @@ const asset = (path: string) => {
   if (!normalized) {
     return baseUrl;
   }
-  return `./${normalized}`;
+  // 本番環境では相対パス、開発環境ではベースパス含む
+  if (import.meta.env.PROD) {
+    return `./${normalized}`;
+  } else {
+    return baseUrl === '/' ? `/${normalized}` : `${baseUrl}${normalized}`;
+  }
 };
-const avatarSrc = asset(siteConfig.hero.avatarImage);
+const avatarSrc = asset('assets/profile.jpg');
 ---
 
 <Base title="履歴書・職務経歴" description="Kanato Murayamaの詳細な履歴書・職務経歴書">
