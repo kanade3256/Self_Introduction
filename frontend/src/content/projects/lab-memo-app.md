@@ -1,14 +1,14 @@
 ---
 title: "研究室メモ共有アプリ"
-date: 2023-10-01
+date: 2025-4
 summary: "Next.js + Firebase + Tailwind による研究室向けメモ共有システム。認証・ロール管理・リアルタイム同期・セキュリティルールを実装し、研究室内での定着率向上を達成。"
 category: "個人開発・フルスタック"
 role: "個人開発（企画→設計→実装→運用）"
 technologies: ["Next.js", "Firebase", "Tailwind CSS", "TypeScript", "Firestore", "Firebase Auth"]
 tags: ["Next.js", "Firebase", "React", "TypeScript"]
 achievements: ["5+ロール管理システム実装", "リアルタイム同期機能実現", "UX検証で研究室内利用率向上"]
-period: "2023.10 - 2024.02"
-status: "completed"
+period: "2025.4 - Now"
+status: "ongoing"
 featured: true
 cover: "/assets/projects/lab-memo-app-cover.jpg"
 ---
@@ -19,7 +19,7 @@ cover: "/assets/projects/lab-memo-app-cover.jpg"
 ## プロジェクト概要
 
 **目的**: 研究室内でのメモ・議事録・プロジェクト進捗の効率的共有  
-**期間**: 2023.10 - 2024.02 (4ヶ月)  
+**期間**: 2023.10 - 2024.02 
 **利用者**: 研究室メンバー約15名
 
 ## 主な機能・成果

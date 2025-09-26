@@ -1,13 +1,13 @@
 ---
 title: "歩行データ時系列クラスタリング研究"
-date: 2024-06-01
+date: "2025-04"
 summary: "MediaPipeで取得した歩行データをDTWとクラスタリングで分析し、500+サンプルで特徴量設計から検証まで一貫して担当。学会発表準備中。"
 category: "研究・アカデミック"
-role: "研究員（データ分析・アルゴリズム実装）"
+role: "研究員（Trans Media Tech Lab所属)"
 technologies: ["Python", "MediaPipe", "scikit-learn", "pandas", "numpy", "matplotlib", "DTW"]
 tags: ["Python", "Research", "DTW", "Machine Learning"]
 achievements: ["500+サンプルのデータセット構築", "DTW距離アルゴリズム実装", "90%の再現性でクラスタリング結果を達成"]
-period: "2024.06 - 現在"
+period: "2025.04 - 現在"
 status: "ongoing"
 featured: true
 cover: "/assets/projects/walking-data-research-cover.jpg"
@@ -19,7 +19,7 @@ MediaPipe Poseを活用した歩行動作解析システムの研究開発。時
 ## 研究概要
 
 **テーマ**: 歩行時系列データに対する距離計算手法の比較検証  
-**期間**: 2024.06 - 現在 (継続中)  
+**期間**: 2025.04 - 現在 (継続中)  
 **データセット**: 500+サンプル（被験者20名）
 
 ## 研究の背景・目的

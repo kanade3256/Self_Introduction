@@ -7,7 +7,7 @@ import siteConfig from '../data/site.json';
 const allProjects = await getCollection('projects');
 const featuredProjects = allProjects
   .filter((project) => project.data.featured)
-  .sort((a, b) => b.data.date.getTime() - a.data.date.getTime());
+  .sort((a, b) => b.data.date.localeCompare(a.data.date));
 
 const primaryProjects = featuredProjects.slice(0, 3);
 const heroHighlight = primaryProjects[0] ?? featuredProjects[0];
@@ -344,7 +344,7 @@ const contactLinks = [
       <header class="section__header">
         <p class="section__eyebrow" data-i18n="index.experience.eyebrow">Timeline</p>
         <h2 class="section__title" data-i18n="index.experience.title">歩み</h2>
-        <p class="section__lead" data-i18n="index.experience.lead">密な出来事を整理し、成果と学習の文脈が一目でわかるタイムライン。</p>
+        <p class="section__lead" data-i18n="index.experience.lead">成果と学習の過程を時系列で整理し、一目で理解できるタイムライン。</p>
       </header>
       <div class="timeline-preview">
         {timelinePreview.map((item) => (

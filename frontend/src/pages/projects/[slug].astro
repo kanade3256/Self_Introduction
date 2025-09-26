@@ -32,7 +32,7 @@ const structuredData = {
     "url": "https://github.com/kanade3256"
   },
   "url": canonicalURL.toString(),
-  "datePublished": data.date.toISOString().split('T')[0],
+  "datePublished": data.date + "-01",
   "keywords": data.technologies?.join(", "),
   "about": data.category
 };
@@ -90,7 +90,7 @@ if (data.links?.repo || data.links?.github) {
               </span>
             )}
             {project.data.period && (
-              <time class="project-hero__period" datetime={project.data.date.toISOString()}>
+              <time class="project-hero__period" datetime={project.data.date}>
                 {project.data.period}
               </time>
             )}

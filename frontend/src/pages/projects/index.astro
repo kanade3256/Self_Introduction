@@ -4,7 +4,7 @@ import Base from '../../layouts/Base.astro';
 import Bubbles from '../../components/Bubbles.astro';
 
 const allProjects = await getCollection('projects');
-const sortedProjects = allProjects.sort((a, b) => b.data.date.getTime() - a.data.date.getTime());
+const sortedProjects = allProjects.sort((a, b) => b.data.date.localeCompare(a.data.date));
 
 const basePath = (import.meta.env.BASE_URL ?? '/').replace(/\/$/, '');
 const joinBase = (path: string) => {

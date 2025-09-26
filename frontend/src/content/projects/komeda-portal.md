@@ -1,14 +1,14 @@
 ---
 title: "Komeda Portal - バイトシフトDX"
-date: 2024-03-01
+date: 2025-02
 summary: "AWS Lambda + Secrets Manager + S3 + LINE リッチメニュー連携によるバイトシフト管理システム。クラウドで業務効率化を実現し、9店舗で運用された実績あり。"
 category: "実務・クラウドDX"
 role: "フルスタック開発・運用"
 technologies: ["AWS Lambda", "Secrets Manager", "S3", "LINE API", "MySQL", "CloudWatch"]
 tags: ["AWS", "Serverless", "LINE API", "DX"]
-achievements: ["9店舗で同時運用を達成", "シフト作成時間4時間から3時間に短縮", "24時間自動通知システム実現"]
-period: "2024.03 - 2024.08"
-status: "completed"
+achievements: ["9店舗で同時運用を達成", "シフト作成時間8時間から3時間に短縮", "24時間自動通知システム実現"]
+period: "2025.02 - Now"
+status: "ongoing"
 featured: true
 cover: "/assets/projects/komeda-portal-cover.jpg"
 ---
@@ -19,13 +19,15 @@ cover: "/assets/projects/komeda-portal-cover.jpg"
 ## プロジェクト概要
 
 **目的**: 店舗横断でのシフト管理業務の完全自動化  
-**期間**: 2024.03 - 2024.08 (5ヶ月)  
+**期間**: 2025.02 - Now (ユーザー体験向上のために現在も開発中)
 **適用範囲**: 9店舗同時運用
+**メンバー**: 4人
+**役割**: 主にバックエンドの担当。LINE Messageing APIを用いた通知システムやリッチメニューの管理などユーザー体験向上のために活躍
 
 ## 主な成果・実績
 
 ### 業務効率化
-- **シフト作成時間**: 4時間 → 3時間 (25%減)
+- **シフト作成時間**: 8時間 → 3時間 (約63%削減)
 - **承認フロー**: 手作業から完全自動化
 - **通知タイミング**: 24時間自動通知実現
 
@@ -48,7 +50,7 @@ API Gateway + Lambda
 ```
 
 ### 技術スタック
-- **バックエンド**: AWS Lambda (Node.js)
+- **バックエンド**: AWS Lambda (Node.js, python)
 - **データベース**: MySQL + S3
 - **認証**: AWS Secrets Manager
 - **通知**: LINE Messaging API

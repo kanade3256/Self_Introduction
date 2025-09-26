@@ -16,7 +16,7 @@ const projects = defineCollection({
   type: 'content',
   schema: z.object({
     title: z.string(),
-    date: z.date(),
+    date: z.string(), // 年月形式（YYYY-MM）をサポート
     summary: z.string(),
     category: z.string(),
     role: z.string(),
