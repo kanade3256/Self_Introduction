@@ -17,3 +17,5 @@
 *.jpeg binary
 *.gif binary
 *.ico binary
+
+* text=auto eol=lf

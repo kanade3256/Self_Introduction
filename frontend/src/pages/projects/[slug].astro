@@ -1,6 +1,7 @@
 ---
-import { getCollection } from 'astro:content';
+import { getCollection, getEntry } from 'astro:content';
 import Base from '../../layouts/Base.astro';
+import Bubbles from '../../components/Bubbles.astro';
 
 // 静的ルート生成のためのgetStaticPaths
 export async function getStaticPaths() {
@@ -13,317 +14,235 @@ export async function getStaticPaths() {
 
 const { project } = Astro.props;
 const { Content } = await project.render();
+const { data } = project;
+
+// SEO用のmeta descriptionとcanonical URL
+const metaDescription = data.summary || `${data.title}のプロジェクト詳細。技術スタック、成果、成果物の紹介。`;
+const canonicalURL = new URL(`/projects/${project.slug}/`, Astro.site || 'https://example.com');
+
+// 構造化データ用のデータ準備
+const structuredData = {
+  "@context": "https://schema.org",
+  "@type": "CreativeWork",
+  "name": data.title,
+  "description": metaDescription,
+  "author": {
+    "@type": "Person",
+    "name": "Kanato Murayama",
+    "url": "https://github.com/kanade3256"
+  },
+  "url": canonicalURL.toString(),
+  "datePublished": data.date + "-01",
+  "keywords": data.technologies?.join(", "),
+  "about": data.category
+};
+
+// リンクがある場合は追加
+if (data.links?.demo) {
+  (structuredData as any).sameAs = data.links.demo;
+}
+if (data.links?.repo || data.links?.github) {
+  (structuredData as any).codeRepository = data.links.repo || data.links.github;
+}
 ---
 
-<Base title={project.data.title} description={project.data.summary}>
-  <article class="project-detail">
+<Base 
+  title={data.title} 
+  description={metaDescription}
+  canonicalURL={canonicalURL.toString()}
+  structuredData={structuredData}
+>
+  <!-- ブレッドクラム -->
+  <nav class="breadcrumb-nav">
+    <div class="layout-container">
+      <ol class="breadcrumb-list">
+        <li class="breadcrumb-item">
+          <a href="/" class="breadcrumb-link">ホーム</a>
+        </li>
+        <li class="breadcrumb-item">
+          <a href="/projects" class="breadcrumb-link">プロジェクト</a>
+        </li>
+        <li class="breadcrumb-item">
+          <span class="breadcrumb-current">{project.data.title}</span>
+        </li>
+      </ol>
+    </div>
+  </nav>
+
+  <!-- プロジェクト詳細記事 -->
+  <article class="project-detail on-deep" style="position: relative; min-height: 100vh;">
+    <!-- バブルエフェクトを追加 -->
+    <Bubbles count={8} />
+
     <!-- プロジェクトヘッダー -->
-    <header class="project-header">
-      <div class="container">
-        <div class="project-header-content">
-          <div class="project-meta-info">
-            <span class="project-category">{project.data.category}</span>
-            <time class="project-date" datetime={project.data.date.toISOString()}>
-              {project.data.date.toLocaleDateString('ja-JP', { year: 'numeric', month: 'long' })}
-            </time>
+    <section class="section section--hero project-hero">
+      <div class="layout-container">
+        <div class="project-hero__content">
+          <!-- メタ情報 -->
+          <div class="project-hero__meta">
+            <span class="badge badge--soft" data-category={project.data.category}>
+              {project.data.category}
+            </span>
+            {project.data.status && (
+              <span class="badge badge--pill" data-status={project.data.status}>
+                {project.data.status === 'ongoing' ? '進行中' : 
+                 project.data.status === 'completed' ? '完了' : '一時停止'}
+              </span>
+            )}
+            {project.data.period && (
+              <time class="project-hero__period" datetime={project.data.date}>
+                {project.data.period}
+              </time>
+            )}
           </div>
-          
-          <h1 class="project-title reveal">{project.data.title}</h1>
-          <p class="project-summary reveal">{project.data.summary}</p>
-          
-          <!-- プロジェクト情報カード -->
-          <div class="project-info-cards reveal">
-            <div class="info-card">
-              <h3>役割</h3>
-              <p>{project.data.role}</p>
-            </div>
-            
-            <div class="info-card">
-              <h3>主要技術</h3>
-              <div class="tech-tags">
-                {project.data.technologies.map((tech) => (
-                  <span class="tech-tag">{tech}</span>
-                ))}
-              </div>
-            </div>
-            
-            <div class="info-card">
-              <h3>主な成果</h3>
-              <ul class="achievements-list">
-                {project.data.achievements.map((achievement) => (
-                  <li>{achievement}</li>
-                ))}
-              </ul>
-            </div>
-          </div>
-          
+
+          <h1 class="project-hero__title reveal">{project.data.title}</h1>
+          <p class="project-hero__summary reveal">{project.data.summary}</p>
+
           <!-- アクションボタン -->
-          {project.data.links && (
-            <div class="project-actions reveal">
+          {project.data.links && Object.keys(project.data.links).length > 0 && (
+            <div class="project-hero__actions reveal">
               {project.data.links.demo && (
-                <a href={project.data.links.demo} target="_blank" rel="noopener noreferrer" class="btn primary">
-                  デモサイトを見る
+                <a href={project.data.links.demo} target="_blank" rel="noopener noreferrer prefetch" class="btn btn--primary">
+                  <span>デモを見る</span>
                 </a>
               )}
               {project.data.links.repo && (
-                <a href={project.data.links.repo} target="_blank" rel="noopener noreferrer" class="btn secondary">
-                  GitHubで見る
+                <a href={project.data.links.repo} target="_blank" rel="noopener noreferrer prefetch" class="btn btn--ghost">
+                  <span>GitHub</span>
                 </a>
               )}
-              {project.data.links.architecture && (
-                <a href={project.data.links.architecture} target="_blank" rel="noopener noreferrer" class="btn secondary">
-                  アーキテクチャ図
+              {project.data.links.github && (
+                <a href={project.data.links.github} target="_blank" rel="noopener noreferrer prefetch" class="btn btn--ghost">
+                  <span>GitHub</span>
+                </a>
+              )}
+              {project.data.links.pdf && (
+                <a href={project.data.links.pdf} target="_blank" rel="noopener noreferrer prefetch" class="btn btn--ghost">
+                  <span>論文・資料</span>
                 </a>
               )}
             </div>
           )}
         </div>
       </div>
-    </header>
+    </section>
 
-    <!-- プロジェクト詳細コンテンツ -->
-    <section class="project-content">
-      <div class="container">
-        <div class="content-wrapper reveal">
-          <Content />
+    <!-- 技術・成果情報カード -->
+    <section class="section">
+      <div class="layout-container">
+        <div class="grid-12">
+          <!-- 役割・期間 -->
+          <div class="col-span-4">
+            <div class="card card-glass reveal">
+              <h3 class="card__title">プロジェクト概要</h3>
+              <div class="project-detail__info">
+                <div class="info-item">
+                  <dt>役割</dt>
+                  <dd>{project.data.role}</dd>
+                </div>
+                {project.data.period && (
+                  <div class="info-item">
+                    <dt>期間</dt>
+                    <dd>{project.data.period}</dd>
+                  </div>
+                )}
+                <div class="info-item">
+                  <dt>カテゴリ</dt>
+                  <dd>{project.data.category}</dd>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 技術スタック -->
+          <div class="col-span-4">
+            <div class="card card-glass reveal">
+              <h3 class="card__title">技術スタック</h3>
+              <ul class="card__tags" role="list">
+                {project.data.technologies.map((tech) => (
+                  <li class="badge badge--soft" role="listitem">{tech}</li>
+                ))}
+              </ul>
+            </div>
+          </div>
+
+          <!-- 主な成果 -->
+          <div class="col-span-4">
+            <div class="card card-glass reveal">
+              <h3 class="card__title">主な成果</h3>
+              <ul class="achievement-list" role="list">
+                {project.data.achievements.map((achievement) => (
+                  <li role="listitem">{achievement}</li>
+                ))}
+              </ul>
+            </div>
+          </div>
         </div>
       </div>
     </section>
 
-    <!-- 関連タグ -->
-    <section class="project-tags-section">
-      <div class="container">
-        <h3 class="reveal">関連技術・タグ</h3>
-        <div class="tags-grid reveal">
-          {project.data.tags.map((tag) => (
-            <span class="tag">{tag}</span>
-          ))}
+    <!-- メインコンテンツ -->
+    <section class="section">
+      <div class="layout-container">
+        <div class="project-content">
+          <div class="card-glass card-glass--roomy reveal content-wrapper">
+            <!-- カバー画像 -->
+            {project.data.cover && (
+              <picture>
+                <source srcset={project.data.cover.replace('.jpg', '.avif')} type="image/avif" />
+                <source srcset={project.data.cover.replace('.jpg', '.webp')} type="image/webp" />
+                <img 
+                  src={project.data.cover} 
+                  alt={`${project.data.title}のカバー画像`}
+                  width="900" 
+                  height="506" 
+                  loading="lazy"
+                  decoding="async"
+                  style="width:100%;height:auto;border-radius:12px;margin:2rem 0;"
+                />
+              </picture>
+            )}
+            
+            <!-- Markdown コンテンツ -->
+            <Content />
+          </div>
         </div>
       </div>
     </section>
+
+    <!-- タグ・キーワード -->
+    {project.data.tags.length > 0 && (
+      <section class="section section--layer">
+        <div class="layout-container">
+          <div class="section__header">
+            <h3 class="section__title">関連技術・キーワード</h3>
+          </div>
+          <div class="card-glass card-glass--tight reveal">
+            <ul class="card__tags" role="list">
+              {project.data.tags.map((tag) => (
+                <li class="badge badge--pill" role="listitem">{tag}</li>
+              ))}
+            </ul>
+          </div>
+        </div>
+      </section>
+    )}
 
     <!-- ナビゲーション -->
-    <nav class="project-navigation">
-      <div class="container">
-        <div class="nav-links reveal">
-          <a href="/projects" class="btn secondary">← プロジェクト一覧に戻る</a>
-          <a href="/#contact" class="btn primary">このプロジェクトについて相談する</a>
-        </div>
+    <section class="section">
+      <div class="layout-container">
+        <nav class="project-navigation reveal" aria-label="プロジェクトナビゲーション">
+          <div class="nav-actions">
+            <a href="/projects" class="btn btn--ghost">
+              <span>← プロジェクト一覧</span>
+            </a>
+            <a href="/#contact" rel="prefetch" class="btn btn--primary">
+              <span>このプロジェクトについて相談する</span>
+            </a>
+          </div>
+        </nav>
       </div>
-    </nav>
+    </section>
   </article>
 </Base>
-
-<style>
-.project-detail {
-  line-height: 1.7;
-}
-
-.project-header {
-  background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-accent) 100%);
-  color: white;
-  padding: 4rem 0;
-}
-
-.project-meta-info {
-  display: flex;
-  gap: 1rem;
-  margin-bottom: 2rem;
-  align-items: center;
-}
-
-.project-category {
-  background: rgba(255, 255, 255, 0.2);
-  padding: 0.5rem 1rem;
-  border-radius: 20px;
-  font-weight: 500;
-  font-size: 0.875rem;
-}
-
-.project-date {
-  font-size: 0.875rem;
-  opacity: 0.9;
-}
-
-.project-title {
-  font-size: 3rem;
-  margin-bottom: 1.5rem;
-  line-height: 1.2;
-}
-
-.project-summary {
-  font-size: 1.5rem;
-  margin-bottom: 3rem;
-  opacity: 0.95;
-  line-height: 1.4;
-}
-
-.project-info-cards {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: 2rem;
-  margin-bottom: 3rem;
-}
-
-.info-card {
-  background: rgba(255, 255, 255, 0.1);
-  padding: 2rem;
-  border-radius: 12px;
-  backdrop-filter: blur(10px);
-}
-
-.info-card h3 {
-  font-size: 1.125rem;
-  margin-bottom: 1rem;
-  color: var(--color-accent-light);
-}
-
-.tech-tags {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.5rem;
-}
-
-.tech-tag {
-  background: rgba(255, 255, 255, 0.2);
-  padding: 0.25rem 0.75rem;
-  border-radius: 15px;
-  font-size: 0.875rem;
-  font-weight: 500;
-}
-
-.achievements-list {
-  list-style: none;
-  padding: 0;
-}
-
-.achievements-list li {
-  position: relative;
-  padding-left: 1.5rem;
-  margin-bottom: 0.5rem;
-}
-
-.achievements-list li::before {
-  content: "✓";
-  position: absolute;
-  left: 0;
-  color: var(--color-accent-light);
-  font-weight: bold;
-}
-
-.project-actions {
-  display: flex;
-  gap: 1rem;
-  flex-wrap: wrap;
-}
-
-.project-content {
-  padding: 4rem 0;
-}
-
-.content-wrapper {
-  max-width: 800px;
-  margin: 0 auto;
-}
-
-.content-wrapper :global(h1),
-.content-wrapper :global(h2), 
-.content-wrapper :global(h3) {
-  margin-top: 2.5rem;
-  margin-bottom: 1rem;
-}
-
-.content-wrapper :global(h2) {
-  font-size: 2rem;
-  color: var(--color-primary);
-  border-bottom: 2px solid var(--color-primary);
-  padding-bottom: 0.5rem;
-}
-
-.content-wrapper :global(h3) {
-  font-size: 1.5rem;
-  color: var(--color-text-secondary);
-}
-
-.content-wrapper :global(pre) {
-  background: var(--color-surface);
-  padding: 1.5rem;
-  border-radius: 8px;
-  overflow-x: auto;
-  margin: 2rem 0;
-}
-
-.content-wrapper :global(blockquote) {
-  border-left: 4px solid var(--color-primary);
-  padding-left: 2rem;
-  margin: 2rem 0;
-  font-style: italic;
-  color: var(--color-text-secondary);
-}
-
-.project-tags-section {
-  padding: 3rem 0;
-  background: var(--color-surface);
-}
-
-.project-tags-section h3 {
-  text-align: center;
-  margin-bottom: 2rem;
-  font-size: 1.5rem;
-}
-
-.tags-grid {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 1rem;
-  justify-content: center;
-}
-
-.tag {
-  background: var(--color-primary);
-  color: white;
-  padding: 0.5rem 1rem;
-  border-radius: 25px;
-  font-weight: 500;
-  transition: all 0.3s ease;
-}
-
-.tag:hover {
-  background: var(--color-accent);
-  transform: translateY(-2px);
-}
-
-.project-navigation {
-  padding: 3rem 0;
-  border-top: 1px solid var(--color-border);
-}
-
-.nav-links {
-  display: flex;
-  justify-content: space-between;
-  gap: 1rem;
-  flex-wrap: wrap;
-}
-
-@media (max-width: 768px) {
-  .project-title {
-    font-size: 2rem;
-  }
-  
-  .project-summary {
-    font-size: 1.25rem;
-  }
-  
-  .project-info-cards {
-    grid-template-columns: 1fr;
-  }
-  
-  .nav-links {
-    flex-direction: column;
-  }
-  
-  .project-actions {
-    justify-content: center;
-  }
-}
-</style>

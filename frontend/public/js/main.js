@@ -6,9 +6,12 @@
   const metaTheme = document.getElementById('meta-theme-color');
   const navToggle = document.querySelector('.nav-toggle');
   const siteNav = document.getElementById('site-nav');
-  const themeBtn = document.getElementById('theme-toggle');
   const langBtn = document.getElementById('lang-toggle');
   const yearEl = document.getElementById('year');
+  
+  // ライトモードを強制設定
+  root.setAttribute('data-theme', 'light');
+  if (metaTheme) metaTheme.setAttribute('content', '#0ea5e9');
 
   // 簡易 i18n 定義（必要に応じて拡張）
   const i18n = {
@@ -17,7 +20,7 @@
       'nav.projects': '制作物',
       'nav.experience': '経歴',
       'nav.skills': 'スキル',
-      'nav.timeline': 'タイムライン',
+      'nav.timeline': '経歴',
       'nav.resume': '履歴書',
       'nav.contact': '連絡',
       'breadcrumb.home': 'ホーム',
@@ -34,8 +37,8 @@
       'index.projects.title': '注目プロジェクト',
       'index.projects.lead': '実務・研究・個人開発から厳選した3プロジェクトと研究ハイライト。',
       'index.experience.eyebrow': 'Timeline',
-      'index.experience.title': '歩み',
-      'index.experience.lead': '密な出来事を整理し、成果と学習の文脈が一目でわかるタイムライン。',
+      'index.experience.title': '経歴',
+      'index.experience.lead': '成果と学習の過程を時系列で整理し、一目で理解できるタイムライン。',
       'index.experience.cta': 'タイムラインを詳しく見る',
       'index.skills.eyebrow': 'Skill Radar',
       'index.skills.title': 'スキル',
@@ -53,7 +56,7 @@
       'nav.projects': 'Projects',
       'nav.experience': 'Experience',
       'nav.skills': 'Skills',
-      'nav.timeline': 'Timeline',
+      'nav.timeline': 'Experience',
       'nav.resume': 'Resume',
       'nav.contact': 'Contact',
       'breadcrumb.home': 'Home',
@@ -109,22 +112,6 @@
 
   // 年の自動更新
   if (yearEl) yearEl.textContent = String(new Date().getFullYear());
-
-  // テーマ制御
-  const getSystemTheme = () => (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
-  const savedTheme = localStorage.getItem('theme');
-  const applyTheme = (theme) => {
-    root.setAttribute('data-theme', theme);
-    if (metaTheme) metaTheme.setAttribute('content', theme === 'dark' ? '#0b1220' : '#0ea5e9');
-    if (themeBtn) themeBtn.setAttribute('aria-label', `テーマを${theme === 'dark' ? 'ライト' : 'ダーク'}に切り替え`);
-  };
-  applyTheme(savedTheme || getSystemTheme());
-  themeBtn?.addEventListener('click', () => {
-    const current = root.getAttribute('data-theme') || getSystemTheme();
-    const next = current === 'dark' ? 'light' : 'dark';
-    localStorage.setItem('theme', next);
-    applyTheme(next);
-  });
 
   // 言語制御の初期化
   const savedLang = localStorage.getItem('language') || 'ja';
@@ -574,5 +561,62 @@
       projectsSlider.setAttribute('tabindex', '0');
     }
   }
+
+  // ===== Phase4: Scroll-Depth Effects (rAF + CSS variables) =====
+  (function(){
+    if (document.documentElement.dataset.depth === 'off') return;
+
+    const layer = document.querySelector('.depth-layer');
+    const light = layer?.querySelector('.depth-layer__light');
+
+    if (!layer || !light) return;
+
+    const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    let ticking = false;
+
+    function update() {
+      ticking = false;
+
+      const doc = document.documentElement;
+      const max = Math.max(1, doc.scrollHeight - window.innerHeight);
+      const p = Math.min(1, Math.max(0, window.scrollY / max)); // 0→1
+
+      // カーブは"浅くゆっくり → 深く急に"の非線形で自然に
+      const ease = (t) => 1 - Math.pow(1 - t, 1.8); // 好みで調整
+
+      const t = ease(p);
+
+      // 目安の範囲（必要なら微調整）
+      const brightness = 1 - 0.45 * t;   // 1 → ~0.55
+      const saturate   = 1 - 0.25 * t;   // 1 → ~0.75
+      const blurPx     = 2 * t;          // 0 → 2px
+      const lightB     = 1 - 0.4 * t;    // 1 → ~0.6
+
+      // reduced motion の場合はJS更新を穏やかに
+      if (prefersReduced) {
+        layer.style.setProperty('--depth-brightness', String(Math.max(0.8, brightness)));
+        layer.style.setProperty('--depth-saturate',   String(Math.max(0.85, saturate)));
+        layer.style.setProperty('--depth-blur',       `${Math.min(1.2, blurPx)}px`);
+        light.style.setProperty('--light-brightness', String(Math.max(0.75, lightB)));
+      } else {
+        layer.style.setProperty('--depth-brightness', String(brightness));
+        layer.style.setProperty('--depth-saturate',   String(saturate));
+        layer.style.setProperty('--depth-blur',       `${blurPx}px`);
+        light.style.setProperty('--light-brightness', String(lightB));
+      }
+    }
+
+    function onScroll(){
+      if (!ticking) {
+        ticking = true;
+        requestAnimationFrame(update);
+      }
+    }
+
+    // 初期適用 & 監視
+    update();
+    window.addEventListener('scroll', onScroll, { passive: true });
+    window.addEventListener('resize', onScroll, { passive: true });
+  })();
 
 })();

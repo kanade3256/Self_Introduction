@@ -2,9 +2,11 @@
 export interface Props {
   title?: string;
   description?: string;
+  canonicalURL?: string;
+  structuredData?: any;
 }
 
-const { title, description } = Astro.props;
+const { title, description, canonicalURL, structuredData } = Astro.props;
 
 // 環境に応じて設定ファイルを選択
 const isProduction = import.meta.env.PROD;
@@ -89,6 +91,15 @@ const getNavAriaCurrent = (href: string) => {
     <meta property="twitter:title" content={siteTitle} />
     <meta property="twitter:description" content={description || siteConfig.description} />
     <meta property="twitter:image" content={ogImageUrl} />
+    
+    <!-- Canonical URL -->
+    {canonicalURL && <link rel="canonical" href={canonicalURL} />}
+    
+    <!-- Structured Data -->
+    {structuredData && (
+      <script type="application/ld+json" set:html={JSON.stringify(structuredData)} />
+    )}
+    
     <script
       type="application/ld+json"
       set:html={JSON.stringify({
@@ -119,9 +130,45 @@ const getNavAriaCurrent = (href: string) => {
     <link rel="icon" href={iconPath} type="image/jpeg" />
     <link rel="preload" href={stylesheetPath} as="style" />
     <link rel="stylesheet" href={stylesheetPath} />
+    
+    <!-- Hero画像プリロード（First Paint高速化） -->
+    <link rel="preload" as="image" href={joinBase('/assets/profile.jpg')} />
+    
+    <!-- フォント最適化：Google Fonts preconnect -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   </head>
   <body>
     <a class="skip-link" href="#content">メインコンテンツへ移動</a>
+
+    <!-- ✅ 一度だけ読み込む水面の揺らめきフィルタ -->
+    <svg width="0" height="0" aria-hidden="true" style="position:absolute">
+      <filter id="water-caustics-filter">
+        <!-- 波状ノイズ（時間で変化） -->
+        <feTurbulence type="fractalNoise" baseFrequency="0.01 0.015" numOctaves="2" seed="3" result="noise">
+          <animate attributeName="baseFrequency" dur="12s" values="0.010 0.013;0.009 0.017;0.010 0.015" repeatCount="indefinite"/>
+        </feTurbulence>
+        <!-- 屈折っぽいゆがみ -->
+        <feDisplacementMap in="SourceGraphic" in2="noise" scale="24" xChannelSelector="R" yChannelSelector="G"/>
+      </filter>
+    </svg>
+
+    <!-- ✅ 上部にだけ効かせるオーバーレイ。背景の上・コンテンツの下に配置 -->
+    <div class="ocean-overlay" aria-hidden="true">
+      <svg width="100%" height="100%" preserveAspectRatio="none" class="ocean-overlay__svg">
+        <defs>
+          <!-- きらめき用の粒パターン（視覚効果を強化） -->
+          <pattern id="ripples" x="0" y="0" width=".12" height=".12" patternUnits="objectBoundingBox">
+            <circle cx="0.1" cy="0.1" r="0.08" fill="rgba(255,255,255,0.65)" />
+            <circle cx="0.5" cy="0.2" r="0.06" fill="rgba(255,255,255,0.45)" />
+            <circle cx="0.8" cy="0.6" r="0.05" fill="rgba(255,255,255,0.35)" />
+            <circle cx="0.3" cy="0.7" r="0.04" fill="rgba(255,255,255,0.25)" />
+            <circle cx="0.7" cy="0.4" r="0.07" fill="rgba(255,255,255,0.55)" />
+          </pattern>
+        </defs>
+        <rect x="0" y="0" width="100%" height="100%" fill="url(#ripples)"/>
+      </svg>
+    </div>
 
     <header class="site-header" role="banner">
       <div class="layout-container site-header__inner">
@@ -175,10 +222,6 @@ const getNavAriaCurrent = (href: string) => {
                 <span aria-hidden="true">🌐</span>
                 <span class="site-header__control-label">EN</span>
               </button>
-              <button id="theme-toggle" class="site-header__control" type="button" aria-label="テーマを切り替える">
-                <span aria-hidden="true">🌓</span>
-                <span class="site-header__control-label">Theme</span>
-              </button>
             </div>
           )}
         </nav>
@@ -186,6 +229,11 @@ const getNavAriaCurrent = (href: string) => {
     </header>
 
     <div class="layout__sentinel" aria-hidden="true"></div>
+
+    <!-- ✅ スクロール深度レイヤー（本文より手前に常駐） -->
+    <div class="depth-layer" aria-hidden="true">
+      <div class="depth-layer__light"></div>
+    </div>
 
     <main id="content" class="site-main" role="main">
       <slot />
@@ -231,9 +279,21 @@ const getNavAriaCurrent = (href: string) => {
       </div>
     </footer>
 
+    <!-- ✅ reduced-motion を尊重して光量を下げる -->
+    <script is:inline>
+      const mql = window.matchMedia('(prefers-reduced-motion: reduce)');
+      const el = document.querySelector('.ocean-overlay');
+      if (mql.matches && el) el.style.opacity = '0.35';
+    </script>
+
     <script is:inline>
       window.ENV = { isDev: typeof window !== 'undefined' && window.location.hostname === 'localhost' };
     </script>
-    <script src={scriptPath}></script>
+    <script is:inline define:vars={{ scriptSrc: joinBase('/js/main.js') }}>
+      const script = document.createElement('script');
+      script.src = scriptSrc;
+      script.defer = true;
+      document.head.appendChild(script);
+    </script>
   </body>
 </html>

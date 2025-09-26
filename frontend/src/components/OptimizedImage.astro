@@ -1,0 +1,96 @@
+---
+// OptimizedImage.astro - S3移行を想定した柔軟な画像コンポーネント
+export interface Props {
+  src: string;
+  alt: string;
+  width?: number;
+  height?: number;
+  loading?: 'lazy' | 'eager';
+  decoding?: 'async' | 'sync' | 'auto';
+  class?: string;
+  priority?: boolean; // プリロード指定
+  fallbackExtension?: string; // デフォルト拡張子
+  enableModernFormats?: boolean; // AVIF/WEBP対応
+}
+
+const { 
+  src, 
+  alt, 
+  width, 
+  height, 
+  loading = 'lazy', 
+  decoding = 'async', 
+  class: className = '',
+  priority = false,
+  fallbackExtension = 'jpg',
+  enableModernFormats = true
+} = Astro.props;
+
+// 環境に応じたパス生成
+const basePath = (import.meta.env.BASE_URL ?? '/').replace(/\/$/, '');
+const joinBase = (path: string) => {
+  if (path.startsWith('http') || path.startsWith('//')) {
+    return path; // 外部URL（S3など）はそのまま
+  }
+  if (path.startsWith('/')) {
+    return basePath + path;
+  }
+  return basePath + '/' + path;
+};
+
+// 本番環境でのパス調整
+const getImageSrc = (path: string, extension?: string) => {
+  let imagePath = path;
+  
+  // 拡張子変更が指定されている場合
+  if (extension && path.includes('.')) {
+    imagePath = path.replace(/\.[^.]+$/, `.${extension}`);
+  }
+  
+  // 本番環境の特別な処理（GitHub Pages対応）
+  if (import.meta.env.PROD && !imagePath.startsWith('http')) {
+    return './' + imagePath.replace(/^\/+/, '');
+  }
+  
+  return joinBase(imagePath);
+};
+
+// 画像のベースパス（拡張子除去）
+const baseImagePath = src.replace(/\.[^.]+$/, '');
+const srcWithBase = getImageSrc(src);
+---
+
+{enableModernFormats ? (
+  <picture>
+    <!-- 外部URL（S3など）の場合はAVIF/WEBP変換をスキップ -->
+    {!src.startsWith('http') && (
+      <>
+        <source srcset={getImageSrc(baseImagePath + '.avif')} type="image/avif" />
+        <source srcset={getImageSrc(baseImagePath + '.webp')} type="image/webp" />
+      </>
+    )}
+    <img 
+      src={srcWithBase}
+      alt={alt}
+      width={width}
+      height={height}
+      loading={loading}
+      decoding={decoding}
+      class={className}
+    />
+  </picture>
+) : (
+  <img 
+    src={srcWithBase}
+    alt={alt}
+    width={width}
+    height={height}
+    loading={loading}
+    decoding={decoding}
+    class={className}
+  />
+)}
+
+{priority && (
+  <link rel="preload" as="image" href={srcWithBase} slot="head" />
+)}

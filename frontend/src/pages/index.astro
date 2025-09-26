@@ -1,12 +1,13 @@
 ---
 import { getCollection } from 'astro:content';
 import Base from '../layouts/Base.astro';
+import Bubbles from '../components/Bubbles.astro';
 import siteConfig from '../data/site.json';
 
 const allProjects = await getCollection('projects');
 const featuredProjects = allProjects
   .filter((project) => project.data.featured)
-  .sort((a, b) => b.data.date.getTime() - a.data.date.getTime());
+  .sort((a, b) => b.data.date.localeCompare(a.data.date));
 
 const primaryProjects = featuredProjects.slice(0, 3);
 const heroHighlight = primaryProjects[0] ?? featuredProjects[0];
@@ -133,7 +134,9 @@ const contactLinks = [
 
 <Base title="ホーム" description={siteConfig.description}>
   <!-- Hero -------------------------------------------------- -->
-  <section id="home" class="hero section">
+  <section id="home" class="hero section" style="position: relative;">
+    <!-- 泡エフェクトをHeroセクション内に表示 -->
+    <Bubbles count={22} />
     <div class="layout-container">
       <div class="hero__grid">
         <div class="hero__content">
@@ -181,6 +184,7 @@ const contactLinks = [
               loading="eager"
               width="400"
               height="400"
+              decoding="async"
             />
           </div>
         </aside>
@@ -189,7 +193,7 @@ const contactLinks = [
   </section>
 
   <!-- About ------------------------------------------------- -->
-  <section id="about" class="section section--layer">
+  <section id="about" class="section section--layer section-lazy">
     <div class="layout-container">
       <header class="section__header">
         <p class="section__eyebrow" data-i18n="index.about.eyebrow">Who I build for</p>
@@ -214,7 +218,9 @@ const contactLinks = [
   </section>
 
   <!-- Featured Projects ------------------------------------ -->
-  <section id="projects" class="section">
+  <section id="projects" class="section section-lazy large" style="position: relative;">
+    <!-- より控えめな泡エフェクトをProjectsセクションに -->
+    <Bubbles count={12} />
     <div class="layout-container">
       <header class="section__header">
         <p class="section__eyebrow" data-i18n="index.projects.eyebrow">Selected Work</p>
@@ -333,12 +339,12 @@ const contactLinks = [
   )}
 
   <!-- Timeline Preview ------------------------------------- -->
-  <section id="experience" class="section">
+  <section id="experience" class="section section-lazy">
     <div class="layout-container">
       <header class="section__header">
         <p class="section__eyebrow" data-i18n="index.experience.eyebrow">Timeline</p>
         <h2 class="section__title" data-i18n="index.experience.title">歩み</h2>
-        <p class="section__lead" data-i18n="index.experience.lead">密な出来事を整理し、成果と学習の文脈が一目でわかるタイムライン。</p>
+        <p class="section__lead" data-i18n="index.experience.lead">成果と学習の過程を時系列で整理し、一目で理解できるタイムライン。</p>
       </header>
       <div class="timeline-preview">
         {timelinePreview.map((item) => (
@@ -364,7 +370,8 @@ const contactLinks = [
 
   <!-- Skills ------------------------------------------------ -->
   {siteConfig.featureFlags.showSkills && (
-    <section id="skills" class="section section--layer">
+      <!-- Skills --------------------------------------------- -->
+  <section id="skills" class="section section--layer section-lazy">
       <div class="layout-container">
         <header class="section__header">
           <p class="section__eyebrow" data-i18n="index.skills.eyebrow">Skill Radar</p>
@@ -389,7 +396,7 @@ const contactLinks = [
 
   <!-- Contact ---------------------------------------------- -->
   {siteConfig.featureFlags.showContact && (
-    <section id="contact" class="section">
+    <section id="contact" class="section section-lazy">
       <div class="layout-container">
         <header class="section__header">
           <p class="section__eyebrow" data-i18n="index.contact.eyebrow">Get in touch</p>
