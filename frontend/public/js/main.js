@@ -6,9 +6,12 @@
   const metaTheme = document.getElementById('meta-theme-color');
   const navToggle = document.querySelector('.nav-toggle');
   const siteNav = document.getElementById('site-nav');
-  const themeBtn = document.getElementById('theme-toggle');
   const langBtn = document.getElementById('lang-toggle');
   const yearEl = document.getElementById('year');
+  
+  // ライトモードを強制設定
+  root.setAttribute('data-theme', 'light');
+  if (metaTheme) metaTheme.setAttribute('content', '#0ea5e9');
 
   // 簡易 i18n 定義（必要に応じて拡張）
   const i18n = {
@@ -109,22 +112,6 @@
 
   // 年の自動更新
   if (yearEl) yearEl.textContent = String(new Date().getFullYear());
-
-  // テーマ制御
-  const getSystemTheme = () => (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
-  const savedTheme = localStorage.getItem('theme');
-  const applyTheme = (theme) => {
-    root.setAttribute('data-theme', theme);
-    if (metaTheme) metaTheme.setAttribute('content', theme === 'dark' ? '#0b1220' : '#0ea5e9');
-    if (themeBtn) themeBtn.setAttribute('aria-label', `テーマを${theme === 'dark' ? 'ライト' : 'ダーク'}に切り替え`);
-  };
-  applyTheme(savedTheme || getSystemTheme());
-  themeBtn?.addEventListener('click', () => {
-    const current = root.getAttribute('data-theme') || getSystemTheme();
-    const next = current === 'dark' ? 'light' : 'dark';
-    localStorage.setItem('theme', next);
-    applyTheme(next);
-  });
 
   // 言語制御の初期化
   const savedLang = localStorage.getItem('language') || 'ja';

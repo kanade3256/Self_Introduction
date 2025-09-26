@@ -1,23 +1,41 @@
 /* -----------------------------------------------------------
    Global Design Tokens
 ----------------------------------------------------------- */
+
+/* Web Font Optimization with font-display: swap */
+@font-face {
+  font-family: 'Inter-fallback';
+  font-style: normal;
+  font-weight: 100 900;
+  font-display: swap;
+  src: local('system-ui'), local('-apple-system');
+}
+
+@font-face {
+  font-family: 'Noto Sans JP-fallback';
+  font-style: normal;
+  font-weight: 100 900;
+  font-display: swap;
+  src: local('Hiragino Kaku Gothic ProN'), local('Yu Gothic');
+}
+
 *, *::before, *::after {
   box-sizing: border-box;
 }
 
 :root {
-  color-scheme: dark;
-  --bg: #0f1419;
-  --panel: #1a1f29;
-  --card: #242936;
-  --text: #f0f4f8;
-  --muted: #a8b5c7;
-  --primary: #38bdf8;
-  --primary-strong: #0ea5e9;
-  --accent: #7dd3fc;
-  --ring: color-mix(in oklab, var(--primary), white 35%);
-  --border: #2d3748;
-  --surface-contrast: #374151;
+  color-scheme: light;
+  --bg: #ffffff;
+  --panel: #f8fafc;
+  --card: #ffffff;
+  --text: #1e293b;
+  --muted: #64748b;
+  --primary: #2563eb;
+  --primary-strong: #1d4ed8;
+  --accent: #3b82f6;
+  --ring: color-mix(in oklab, var(--primary), white 50%);
+  --border: #e2e8f0;
+  --surface-contrast: #f1f5f9;
 
   /* Ocean gradient palette (surface to deep) */
   --sea-surface-0: #cfefff; /* 0% surface gleam */
@@ -27,11 +45,14 @@
   --sea-deep-0:    #0b345f; /* 70% deep approach */
   --sea-deep-1:    #081d3a; /* 100% deep ocean */
 
-  --ocean-text: color-mix(in srgb, var(--text) 65%, #ffffff 35%);
+  --ocean-text: color-mix(in srgb, var(--text) 90%, #000000 10%);
 
-  --font-sans-jp: 'Noto Sans JP', 'Hiragino Sans', 'Yu Gothic', system-ui;
-  --font-sans: 'Inter', var(--font-sans-jp);
-  --font-mono: 'JetBrains Mono', 'SFMono-Regular', Consolas, monospace;
+  --font-sans-jp: system-ui, 'Hiragino Kaku Gothic ProN', 'Hiragino Sans', 'Yu Gothic UI', 'Yu Gothic', 'Noto Sans JP', sans-serif;
+  --font-sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, var(--font-sans-jp);
+  --font-mono: ui-monospace, 'SF Mono', 'Monaco', 'Cascadia Code', 'JetBrains Mono', 'Consolas', 'SFMono-Regular', monospace;
+
+  --shadow-soft: 0 20px 40px rgba(30, 41, 59, 0.15);
+  --shadow-card: 0 8px 25px rgba(30, 41, 59, 0.20);
 
   --space-1: 0.25rem;
   --space-2: 0.5rem;
@@ -49,6 +70,10 @@
   --radius-lg: 24px;
 
   --shadow-soft: 0 24px 60px rgba(5, 9, 20, 0.35);
+  
+  /* Performance: Content Visibility Optimization */
+  --intrinsic-height-section: 800px;
+  --intrinsic-height-large: 1200px;
   --shadow-card: 0 16px 40px rgba(8, 13, 28, 0.38);
   --shadow-focus: 0 0 0 4px color-mix(in oklab, var(--ring), transparent 55%);
 
@@ -68,24 +93,6 @@
   --ring: color-mix(in oklab, var(--primary), white 35%);
   --border: #2d3748;
   --ocean-text: color-mix(in srgb, var(--text) 65%, #ffffff 35%);
-}
-
-[data-theme="light"] {
-  color-scheme: light;
-  --bg: #f8fafc;
-  --panel: #ffffff;
-  --card: #ffffff;
-  --text: #1e293b;
-  --muted: #475569;
-  --primary: #2563eb;
-  --primary-strong: #1d4ed8;
-  --accent: #3b82f6;
-  --ring: color-mix(in oklab, var(--primary), white 50%);
-  --border: #cbd5e1;
-  --surface-contrast: #e2e8f0;
-  --shadow-soft: 0 20px 40px rgba(30, 41, 59, 0.10);
-  --shadow-card: 0 8px 25px rgba(30, 41, 59, 0.15);
-  --ocean-text: color-mix(in srgb, var(--text) 35%, #ffffff 65%);
 }
 
 html {
@@ -120,6 +127,87 @@ body {
   color: var(--ocean-text);
   max-width: 100%;
   overflow-x: hidden; /* prevent horizontal scroll due to effects */
+}
+
+/* Performance: Content Visibility for off-screen sections */
+.section-lazy {
+  content-visibility: auto;
+  contain-intrinsic-size: var(--intrinsic-height-section);
+}
+
+.section-lazy.large {
+  contain-intrinsic-size: var(--intrinsic-height-large);
+}
+
+/* Reduce filter effects for performance */
+.filter-minimal {
+  backdrop-filter: blur(8px) saturate(1.8);
+}
+
+.filter-reduced {
+  backdrop-filter: blur(4px) saturate(1.4);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .filter-minimal,
+  .filter-reduced {
+    backdrop-filter: blur(2px) saturate(1.1);
+  }
+}
+
+/* Accessibility: Enhanced Focus Visibility */
+:focus-visible {
+  outline: 3px solid var(--primary);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+/* High contrast focus for interactive elements */
+a:focus-visible,
+button:focus-visible,
+[tabindex]:focus-visible {
+  outline: 3px solid #7fd1ff;
+  outline-offset: 3px;
+  box-shadow: 0 0 0 1px var(--bg), 0 0 8px rgba(127, 209, 255, 0.4);
+}
+
+/* Focus for form elements */
+input:focus-visible,
+textarea:focus-visible,
+select:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 1px;
+}
+
+/* Better contrast for deep ocean sections */
+.on-deep {
+  color: #ffffff;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+.card-glass {
+  background: rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+/* Skip link improvements */
+.skip-link {
+  position: absolute;
+  top: -40px;
+  left: 6px;
+  z-index: 1000;
+  padding: 8px;
+  background: var(--primary);
+  color: #ffffff;
+  text-decoration: none;
+  border-radius: 4px;
+  font-weight: 600;
+  transition: top 0.2s ease;
+}
+
+.skip-link:focus {
+  top: 6px;
 }
 
 
@@ -392,11 +480,11 @@ section[id] {
    Card Primitive
 ----------------------------------------------------------- */
 .card {
-  background: color-mix(in srgb, var(--card) 85%, transparent 15%);
+  background: color-mix(in srgb, #ffffff 75%, transparent 25%);
   border-radius: var(--radius-md);
   padding: var(--space-5);
-  border: 1px solid color-mix(in srgb, var(--border) 50%, transparent 50%);
-  box-shadow: var(--shadow-card);
+  border: 1px solid rgba(209, 213, 219, 0.5);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03), 0 2px 4px rgba(0, 0, 0, 0.05);
   position: relative;
   overflow: hidden;
   transition: transform var(--transition-base), box-shadow var(--transition-base), border-color var(--transition-base);
@@ -708,18 +796,18 @@ section[id] {
     top: 100%;
     flex-direction: column;
     align-items: stretch;
-    background: var(--panel);
+    background: rgba(255, 255, 255, 0.95);
     border: 1px solid var(--border);
     border-radius: var(--radius-md);
     margin: 0.75rem auto 0;
     width: calc(100% - 2rem);
     padding: var(--space-5);
-    box-shadow: var(--shadow-card);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12), 0 2px 8px rgba(0, 0, 0, 0.08);
     opacity: 0;
     pointer-events: none;
     transform: translateY(-12px);
     transition: opacity var(--transition-base), transform var(--transition-base);
-    backdrop-filter: blur(16px);
+    backdrop-filter: blur(20px);
   }
 
   .site-header__nav.open {
@@ -3465,6 +3553,347 @@ html[data-caustics="off"] .ocean-overlay { display: none !important; }
 
 /* 必要ならページ単位でOFFにできる */
 html[data-depth="off"] .depth-layer { display: none !important; }
+
+/* ===== プロジェクト詳細ページ用スタイル ===== */
+
+.project-detail__info {
+  display: grid;
+  gap: var(--space-3);
+}
+
+.info-item {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: var(--space-2);
+  align-items: baseline;
+}
+
+.info-item dt {
+  font-weight: 600;
+  color: var(--accent);
+  font-size: 0.9rem;
+  min-width: 4rem;
+}
+
+.info-item dd {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.95rem;
+}
+
+.achievement-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: var(--space-2);
+}
+
+.achievement-list li {
+  position: relative;
+  padding-left: 1.2rem;
+  color: var(--muted);
+  font-size: 0.9rem;
+  line-height: 1.5;
+}
+
+.achievement-list li::before {
+  content: '✓';
+  position: absolute;
+  left: 0;
+  color: var(--accent);
+  font-weight: 600;
+}
+
+.project-hero__meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+  margin-bottom: var(--space-4);
+  align-items: center;
+}
+
+.project-hero__period {
+  color: var(--muted);
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+.project-hero__title {
+  margin: 0 0 var(--space-4);
+  font-size: clamp(2.5rem, 4vw, 3.2rem);
+  letter-spacing: -0.02em;
+  text-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+}
+
+.project-hero__summary {
+  margin: 0 0 var(--space-6);
+  font-size: 1.15rem;
+  line-height: 1.6;
+  color: var(--muted);
+  max-width: 48rem;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+}
+
+.project-hero__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+}
+
+.project-navigation {
+  margin-top: var(--space-6);
+}
+
+.nav-actions {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--space-4);
+  flex-wrap: wrap;
+}
+
+.project-content {
+  max-width: 65ch;
+  margin: 0 auto;
+}
+
+.content-wrapper :global(h2) {
+  font-size: 1.8rem;
+  margin-top: var(--space-6);
+  margin-bottom: var(--space-4);
+  color: var(--text);
+  border-bottom: 2px solid var(--primary);
+  padding-bottom: var(--space-2);
+}
+
+.content-wrapper :global(h3) {
+  font-size: 1.4rem;
+  margin-top: var(--space-5);
+  margin-bottom: var(--space-3);
+  color: var(--text);
+}
+
+.content-wrapper :global(p) {
+  margin-bottom: var(--space-4);
+  line-height: 1.7;
+  color: var(--muted);
+}
+
+.content-wrapper :global(ul), 
+.content-wrapper :global(ol) {
+  margin-bottom: var(--space-4);
+  padding-left: var(--space-5);
+}
+
+.content-wrapper :global(li) {
+  margin-bottom: var(--space-2);
+  line-height: 1.6;
+  color: var(--muted);
+}
+
+.content-wrapper :global(pre) {
+  background: color-mix(in oklab, var(--card), transparent 10%);
+  padding: var(--space-4);
+  border-radius: var(--radius-sm);
+  overflow-x: auto;
+  margin: var(--space-4) 0;
+  border: 1px solid var(--border);
+}
+
+.content-wrapper :global(code) {
+  background: color-mix(in oklab, var(--card), transparent 50%);
+  padding: 0.2em 0.4em;
+  border-radius: 3px;
+  font-size: 0.9em;
+  color: var(--primary);
+}
+
+.content-wrapper :global(pre code) {
+  background: transparent;
+  padding: 0;
+  color: var(--text);
+}
+
+.content-wrapper :global(blockquote) {
+  border-left: 4px solid var(--primary);
+  padding-left: var(--space-4);
+  margin: var(--space-4) 0;
+  font-style: italic;
+  color: var(--muted);
+  background: color-mix(in oklab, var(--primary), transparent 95%);
+  padding: var(--space-4);
+  border-radius: var(--radius-sm);
+}
+
+.content-wrapper :global(table) {
+  width: 100%;
+  border-collapse: collapse;
+  margin: var(--space-4) 0;
+  background: var(--card);
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+}
+
+.content-wrapper :global(th),
+.content-wrapper :global(td) {
+  padding: var(--space-3);
+  text-align: left;
+  border-bottom: 1px solid var(--border);
+}
+
+.content-wrapper :global(th) {
+  background: var(--surface-contrast);
+  font-weight: 600;
+  color: var(--text);
+}
+
+.content-wrapper :global(td) {
+  color: var(--muted);
+}
+
+/* ===== プロジェクト一覧ページ用スタイル ===== */
+
+.project-catalog {
+  display: grid;
+  gap: var(--space-6);
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.project-catalog__item {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  transition: transform var(--transition-base), box-shadow var(--transition-base);
+}
+
+.project-catalog__header {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.project-catalog__meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+  align-items: center;
+  margin-bottom: var(--space-2);
+}
+
+.project-catalog__period {
+  font-size: 0.9rem;
+  color: var(--muted);
+  font-weight: 500;
+}
+
+.project-catalog__title {
+  margin: 0;
+  font-size: 1.6rem;
+  letter-spacing: -0.01em;
+  line-height: 1.3;
+}
+
+.project-catalog__role {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.95rem;
+  font-style: italic;
+}
+
+.project-catalog__summary {
+  margin: 0;
+  color: var(--muted);
+  line-height: 1.6;
+}
+
+.project-catalog__achievements {
+  margin-top: var(--space-3);
+}
+
+.project-catalog__achievements h4 {
+  margin: 0 0 var(--space-2);
+  font-size: 0.95rem;
+  color: var(--text);
+  font-weight: 600;
+}
+
+.project-catalog__tech {
+  margin-top: var(--space-3);
+}
+
+.project-catalog__tech h4 {
+  margin: 0 0 var(--space-2);
+  font-size: 0.95rem;
+  color: var(--text);
+  font-weight: 600;
+}
+
+.project-catalog__tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.project-catalog__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+  margin-top: auto;
+  padding-top: var(--space-4);
+  border-top: 1px solid color-mix(in oklab, var(--border), transparent 70%);
+}
+
+/* カテゴリ別色分け */
+.project-catalog__item[data-category*="研究"] .badge--soft {
+  background: color-mix(in oklab, #facc15, transparent 85%);
+  color: #f59e0b;
+  border-color: color-mix(in oklab, #facc15, transparent 70%);
+}
+
+.project-catalog__item[data-category*="実務"] .badge--soft {
+  background: color-mix(in oklab, #34d399, transparent 85%);
+  color: #10b981;
+  border-color: color-mix(in oklab, #34d399, transparent 70%);
+}
+
+.project-catalog__item[data-category*="個人"] .badge--soft {
+  background: color-mix(in oklab, #f472b6, transparent 85%);
+  color: #ec4899;
+  border-color: color-mix(in oklab, #f472b6, transparent 70%);
+}
+
+/* レスポンシブ調整 */
+@media (max-width: 768px) {
+  .project-catalog__actions {
+    flex-direction: column;
+  }
+  
+  .project-catalog__meta {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--space-2);
+  }
+}
+
+/* レスポンシブ調整 */
+@media (max-width: 768px) {
+  .nav-actions {
+    flex-direction: column;
+  }
+  
+  .project-hero__actions {
+    justify-content: center;
+  }
+  
+  .project-hero__meta {
+    justify-content: center;
+    text-align: center;
+  }
+}
 
 /* Print and high-contrast fallback */
 @media print {

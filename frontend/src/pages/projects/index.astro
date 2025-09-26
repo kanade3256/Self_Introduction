@@ -1,6 +1,7 @@
 ---
 import { getCollection } from 'astro:content';
 import Base from '../../layouts/Base.astro';
+import Bubbles from '../../components/Bubbles.astro';
 
 const allProjects = await getCollection('projects');
 const sortedProjects = allProjects.sort((a, b) => b.data.date.getTime() - a.data.date.getTime());
@@ -11,60 +12,57 @@ const joinBase = (path: string) => {
   return basePath ? basePath + normalized : normalized;
 };
 const projectDetailHref = (slug: string) => joinBase('/projects/' + slug);
-
-const projectSpotlights: Record<string, {
-  metrics: { value: string; label: string }[];
-  notes: string[];
-}> = {
-  'komeda-portal': {
-    metrics: [
-      { value: '▲23%', label: 'シフト作成工数削減' },
-      { value: '9店舗', label: '同時運用' },
-      { value: '24h', label: '自動通知' },
-    ],
-    notes: ['AWS Lambda / Secrets Manager 設計', 'LINE リッチメニュー UI', 'ゼロダウンタイム運用'],
-  },
-  'lab-memo-app': {
-    metrics: [
-      { value: 'Realtime', label: '同期処理' },
-      { value: '100%', label: '認証カバレッジ' },
-      { value: '5+', label: 'ユーザーロール' },
-    ],
-    notes: ['Next.js App Router', 'Firebase Security Rules', 'UXテストによる定着率向上'],
-  },
-  'walking-data-research': {
-    metrics: [
-      { value: '500+', label: '収集サンプル' },
-      { value: 'DTW', label: '距離指標' },
-      { value: '90%', label: '再現精度' },
-    ],
-    notes: ['特徴量エンジニアリングパイプライン', 'クラスタリング手法比較', 'MediaPipe × Python 解析'],
-  },
-};
 ---
 
-<Base title="プロジェクト" description="研究・実務・個人開発で取り組んだプロジェクト一覧">
-  <section class="section section--hero">
+<Base title="プロジェクト一覧" description="研究・実務・個人開発で取り組んだプロジェクト一覧。成果とKPIを明確化したプロダクト開発の軌跡。">
+  <!-- ブレッドクラム -->
+  <nav class="breadcrumb-nav">
     <div class="layout-container">
-      <header class="section__header">
-        <p class="section__eyebrow">Project Archive</p>
-        <h1 class="section__title">プロジェクト一覧</h1>
-        <p class="section__lead">成果・KPI・運用観点を明確化したプロジェクトカードで、背景と役割を読みやすく整理しています。</p>
-      </header>
+      <ol class="breadcrumb-list">
+        <li class="breadcrumb-item">
+          <a href="/" class="breadcrumb-link">ホーム</a>
+        </li>
+        <li class="breadcrumb-item">
+          <span class="breadcrumb-current">プロジェクト</span>
+        </li>
+      </ol>
     </div>
-  </section>
+  </nav>
 
-  <section class="section">
-    <div class="layout-container">
-      <div class="project-catalog">
-        {sortedProjects.map((project) => {
-          const spotlight = projectSpotlights[project.slug] ?? { metrics: [], notes: project.data.achievements ?? [] };
-          return (
-            <article class="project-catalog__item card reveal" data-category={project.data.category}>
+  <!-- プロジェクト一覧ページ -->
+  <div class="on-deep" style="position: relative; min-height: 100vh;">
+    <!-- バブルエフェクトを追加 -->
+    <Bubbles count={14} />
+
+    <section class="section section--hero">
+      <div class="layout-container">
+        <header class="section__header">
+          <p class="section__eyebrow">Project Archive</p>
+          <h1 class="section__title">プロジェクト一覧</h1>
+          <p class="section__lead">研究・実務・個人開発で取り組んだプロジェクト。成果・KPI・技術スタックを明確化し、背景と学びを整理しています。</p>
+        </header>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="layout-container">
+        <div class="project-catalog">
+          {sortedProjects.map((project) => (
+            <article class="project-catalog__item card-glass card-glass--roomy reveal" data-category={project.data.category}>
               <div class="project-catalog__header">
                 <div class="project-catalog__meta">
-                  <span class="project-catalog__category">{project.data.category}</span>
-                  <span class="project-catalog__date">{project.data.date.toLocaleDateString('ja-JP', { year: 'numeric', month: 'short' })}</span>
+                  <span class="badge badge--soft" data-category={project.data.category}>
+                    {project.data.category}
+                  </span>
+                  {project.data.period && (
+                    <span class="project-catalog__period">{project.data.period}</span>
+                  )}
+                  {project.data.status && (
+                    <span class="badge badge--pill" data-status={project.data.status}>
+                      {project.data.status === 'ongoing' ? '進行中' : 
+                       project.data.status === 'completed' ? '完了' : '一時停止'}
+                    </span>
+                  )}
                 </div>
                 <h2 class="project-catalog__title">{project.data.title}</h2>
                 <p class="project-catalog__role">{project.data.role}</p>
@@ -72,44 +70,70 @@ const projectSpotlights: Record<string, {
 
               <p class="project-catalog__summary">{project.data.summary}</p>
 
-              {spotlight.metrics.length > 0 && (
-                <div class="project-catalog__metrics">
-                  {spotlight.metrics.map((metric) => (
-                    <div class="project-catalog__metric">
-                      <span class="project-catalog__metric-value">{metric.value}</span>
-                      <span class="project-catalog__metric-label">{metric.label}</span>
-                    </div>
-                  ))}
+              {/* 主な成果 */}
+              {project.data.achievements && project.data.achievements.length > 0 && (
+                <div class="project-catalog__achievements">
+                  <h4>主な成果</h4>
+                  <ul class="achievement-list" role="list">
+                    {project.data.achievements.slice(0, 3).map((achievement) => (
+                      <li role="listitem">{achievement}</li>
+                    ))}
+                  </ul>
                 </div>
               )}
 
-              {(spotlight.notes && spotlight.notes.length > 0) && (
-                <ul class="project-catalog__notes" role="list">
-                  {spotlight.notes.map((note) => (
-                    <li role="listitem">{note}</li>
+              {/* 技術スタック */}
+              <div class="project-catalog__tech">
+                <h4>技術スタック</h4>
+                <ul class="project-catalog__tags" role="list">
+                  {project.data.technologies.slice(0, 6).map((tech) => (
+                    <li class="badge badge--pill" role="listitem">{tech}</li>
                   ))}
                 </ul>
-              )}
-
-              <ul class="project-catalog__tags" role="list">
-                {project.data.tags.slice(0, 6).map((tag) => (
-                  <li class="badge badge--soft" role="listitem">{tag}</li>
-                ))}
-              </ul>
+              </div>
 
               <div class="project-catalog__actions">
                 {project.data.links?.demo && (
-                  <a class="btn btn--ghost" href={project.data.links.demo} target="_blank" rel="noopener noreferrer">Live</a>
+                  <a class="btn btn--ghost btn--sm" href={project.data.links.demo} target="_blank" rel="noopener noreferrer prefetch">
+                    <span>Live Demo</span>
+                  </a>
                 )}
                 {project.data.links?.repo && (
-                  <a class="btn btn--ghost" href={project.data.links.repo} target="_blank" rel="noopener noreferrer">Repo</a>
+                  <a class="btn btn--ghost btn--sm" href={project.data.links.repo} target="_blank" rel="noopener noreferrer prefetch">
+                    <span>GitHub</span>
+                  </a>
                 )}
-                <a class="btn btn--primary" href={projectDetailHref(project.slug)}>詳細を見る</a>
+                {project.data.links?.github && (
+                  <a class="btn btn--ghost btn--sm" href={project.data.links.github} target="_blank" rel="noopener noreferrer prefetch">
+                    <span>GitHub</span>
+                  </a>
+                )}
+                {project.data.links?.pdf && (
+                  <a class="btn btn--ghost btn--sm" href={project.data.links.pdf} target="_blank" rel="noopener noreferrer prefetch">
+                    <span>論文・資料</span>
+                  </a>
+                )}
+                <a class="btn btn--primary btn--sm" href={projectDetailHref(project.slug)} rel="prefetch">
+                  <span>詳細を見る</span>
+                </a>
               </div>
             </article>
-          );
-        })}
+          ))}
+        </div>
+
+        {/* 追加プロジェクト予定 */}
+        <div class="section__footer">
+          <div class="card-glass card-glass--tight reveal" style="text-align: center;">
+            <h3 style="margin: 0 0 1rem;">現在開発中・計画中のプロジェクト</h3>
+            <p style="margin: 0 0 1.5rem; color: var(--muted);">
+              新しいプロジェクトや継続中の研究開発について、近日中にアップデート予定です。
+            </p>
+            <a href="/#contact" class="btn btn--ghost" rel="prefetch">
+              <span>プロジェクトについて相談する</span>
+            </a>
+          </div>
+        </div>
       </div>
-    </div>
-  </section>
+    </section>
+  </div>
 </Base>
