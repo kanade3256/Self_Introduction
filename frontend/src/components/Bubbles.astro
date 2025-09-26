@@ -1,0 +1,21 @@
+---
+const count = Number(Astro.props.count ?? 22);
+function rand(min: number, max: number) {
+  return Math.random() * (max - min) + min;
+}
+const bubbles = Array.from({ length: count }).map(() => ({
+  left: `${rand(0, 100).toFixed(2)}%`,
+  size: rand(6, 22),            // 直径px（6〜22）
+  duration: rand(12, 22),       // 上昇秒数（12〜22s）
+  delay: rand(0, 10),           // 開始ディレイ（0〜10s）
+  xDrift: rand(-12, 12),        // 微小な左右揺れ量（-12〜12px）
+}));
+---
+<div class="bubbles" aria-hidden="true">
+  {bubbles.map((b, i) => (
+    <span
+      class="bubble"
+      style={`left:${b.left};width:${b.size}px;height:${b.size}px;--dur:${b.duration}s;--delay:${b.delay}s;--xdrift:${b.xDrift}px;`}
+    />
+  ))}
+</div>

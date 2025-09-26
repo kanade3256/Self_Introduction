@@ -1,6 +1,7 @@
 ---
 import { getCollection } from 'astro:content';
 import Base from '../layouts/Base.astro';
+import Bubbles from '../components/Bubbles.astro';
 import siteConfig from '../data/site.json';
 
 const allProjects = await getCollection('projects');
@@ -133,7 +134,9 @@ const contactLinks = [
 
 <Base title="ホーム" description={siteConfig.description}>
   <!-- Hero -------------------------------------------------- -->
-  <section id="home" class="hero section">
+  <section id="home" class="hero section" style="position: relative;">
+    <!-- 泡エフェクトをHeroセクション内に表示 -->
+    <Bubbles count={22} />
     <div class="layout-container">
       <div class="hero__grid">
         <div class="hero__content">
@@ -214,7 +217,9 @@ const contactLinks = [
   </section>
 
   <!-- Featured Projects ------------------------------------ -->
-  <section id="projects" class="section">
+  <section id="projects" class="section" style="position: relative;">
+    <!-- より控えめな泡エフェクトをProjectsセクションに -->
+    <Bubbles count={12} />
     <div class="layout-container">
       <header class="section__header">
         <p class="section__eyebrow" data-i18n="index.projects.eyebrow">Selected Work</p>

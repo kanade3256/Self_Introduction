@@ -19,6 +19,16 @@
   --border: #2d3748;
   --surface-contrast: #374151;
 
+  /* Ocean gradient palette (surface to deep) */
+  --sea-surface-0: #cfefff; /* 0% surface gleam */
+  --sea-surface-1: #9bdaf3; /* 12% bright shallows */
+  --sea-mid-0:     #3a91c7; /* 28% transition to midwater */
+  --sea-mid-1:     #175b92; /* 48% calm midwater */
+  --sea-deep-0:    #0b345f; /* 70% deep approach */
+  --sea-deep-1:    #081d3a; /* 100% deep ocean */
+
+  --ocean-text: color-mix(in srgb, var(--text) 65%, #ffffff 35%);
+
   --font-sans-jp: 'Noto Sans JP', 'Hiragino Sans', 'Yu Gothic', system-ui;
   --font-sans: 'Inter', var(--font-sans-jp);
   --font-mono: 'JetBrains Mono', 'SFMono-Regular', Consolas, monospace;
@@ -57,6 +67,7 @@
   --accent: #7dd3fc;
   --ring: color-mix(in oklab, var(--primary), white 35%);
   --border: #2d3748;
+  --ocean-text: color-mix(in srgb, var(--text) 65%, #ffffff 35%);
 }
 
 [data-theme="light"] {
@@ -74,24 +85,43 @@
   --surface-contrast: #e2e8f0;
   --shadow-soft: 0 20px 40px rgba(30, 41, 59, 0.10);
   --shadow-card: 0 8px 25px rgba(30, 41, 59, 0.15);
+  --ocean-text: color-mix(in srgb, var(--text) 35%, #ffffff 65%);
 }
 
 html {
   font-size: 16px;
   -webkit-text-size-adjust: 100%;
   scroll-behavior: smooth;
+  background:
+    radial-gradient(1200px 600px at 50% -10%, rgba(255, 255, 255, 0.06), rgba(0, 0, 0, 0) 60%),
+    radial-gradient(1px 1px at 25% 40%, rgba(255, 255, 255, 0.02), transparent 60%),
+    radial-gradient(1px 1px at 60% 20%, rgba(0, 0, 0, 0.02), transparent 60%),
+    linear-gradient(
+      to bottom,
+      var(--sea-surface-0) 0%,
+      var(--sea-surface-1) 12%,
+      var(--sea-mid-0)     28%,
+      var(--sea-mid-1)     48%,
+      var(--sea-deep-0)    70%,
+      var(--sea-deep-1)    100%
+    );
+  background-repeat: no-repeat;
+  background-attachment: scroll;
 }
+
+html, body { min-height: 100%; }
 
 body {
   margin: 0;
   font-family: var(--font-sans);
   line-height: 1.6;
-  background: var(--bg);
-  color: var(--text);
-  min-height: 100vh;
+  /* Allow the ocean gradient applied to html to show through */
+  background: transparent;
+  color: var(--ocean-text);
   max-width: 100%;
-  overflow-x: hidden;
+  overflow-x: hidden; /* prevent horizontal scroll due to effects */
 }
+
 
 img, svg {
   display: block;
@@ -120,6 +150,44 @@ button {
   border: none;
   color: inherit;
   cursor: pointer;
+}
+
+.on-deep { color: #ffffff; } /* Limited helper for copy that must sit on deep hues */
+.on-deep a { color: #d8f2ff; text-decoration-color: rgba(216, 242, 255, 0.6); }
+.on-deep a:hover { text-decoration-color: rgba(216, 242, 255, 0.9); }
+
+.card-glass {
+  backdrop-filter: blur(10px);
+  background: color-mix(in hsl, white 18%, transparent);
+  border: 1px solid color-mix(in hsl, white 28%, transparent);
+  border-radius: 16px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+}
+
+.card-glass--tight {
+  padding: 1rem;
+}
+
+.card-glass--roomy {
+  padding: 2rem;
+}
+
+/* Link contrast helper tailored for darker ocean sections */
+.is-on-ocean a {
+  color: color-mix(in hsl, white 20%, #7fd1ff);
+  text-decoration-color: color-mix(in hsl, white 30%, #7fd1ff);
+}
+.is-on-ocean a:hover {
+  color: #a9e0ff;
+  text-decoration-color: #a9e0ff;
+}
+
+/* Keep structural wrappers transparent so the gradient stays visible */
+:where(main, header, footer, section, article, aside) {
+  background-color: transparent;
+}
+:where(.page, .page-container, .content, .container, .panel, .wrapper) {
+  background-color: transparent !important;
 }
 
 .skip-link {
@@ -167,9 +235,11 @@ section[id] {
 }
 
 .section--layer {
-  background: var(--panel);
-  border-top: 1px solid var(--border);
-  border-bottom: 1px solid var(--border);
+  /* Completely transparent background to maintain gradient */
+  background: transparent;
+  border-top: 1px solid color-mix(in srgb, var(--border) 25%, transparent 75%);
+  border-bottom: 1px solid color-mix(in srgb, var(--border) 25%, transparent 75%);
+  backdrop-filter: none;
 }
 
 .section--hero {
@@ -179,6 +249,8 @@ section[id] {
 .section__header {
   max-width: 720px;
   margin-bottom: var(--space-6);
+  position: relative;
+  z-index: 2;
 }
 
 .section__eyebrow {
@@ -187,12 +259,14 @@ section[id] {
   letter-spacing: 0.18em;
   color: var(--accent);
   margin: 0 0 var(--space-2);
+  text-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
 }
 
 .section__title {
   margin: 0 0 var(--space-3);
   font-size: clamp(2.25rem, 2.8vw, 2.8rem);
   letter-spacing: -0.02em;
+  text-shadow: 0 3px 10px rgba(0, 0, 0, 0.4);
 }
 
 .section__lead {
@@ -318,10 +392,10 @@ section[id] {
    Card Primitive
 ----------------------------------------------------------- */
 .card {
-  background: var(--card);
+  background: color-mix(in srgb, var(--card) 85%, transparent 15%);
   border-radius: var(--radius-md);
   padding: var(--space-5);
-  border: 1px solid var(--border);
+  border: 1px solid color-mix(in srgb, var(--border) 50%, transparent 50%);
   box-shadow: var(--shadow-card);
   position: relative;
   overflow: hidden;
@@ -352,6 +426,7 @@ section[id] {
   margin: 0;
   font-size: clamp(1.5rem, 2vw, 1.9rem);
   letter-spacing: -0.01em;
+  text-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
 }
 
 .card__subtitle {
@@ -433,11 +508,12 @@ section[id] {
 .site-header {
   position: sticky;
   top: 0;
-  z-index: 50;
-  background: color-mix(in oklab, var(--bg), transparent 15%);
-  backdrop-filter: blur(16px);
-  border-bottom: 1px solid transparent;
+  z-index: 100;
+  background: color-mix(in oklab, var(--bg) 90%, transparent 10%);
+  backdrop-filter: blur(20px);
+  border-bottom: 1px solid color-mix(in oklab, var(--border) 70%, transparent 30%);
   transition: background-color var(--transition-base), border-color var(--transition-base), transform var(--transition-base);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
 }
 
 .site-header__inner {
@@ -455,6 +531,8 @@ section[id] {
   font-weight: 700;
   letter-spacing: -0.02em;
   font-size: 1rem;
+  color: var(--text);
+  text-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
 }
 
 .site-header__brand-mark {
@@ -542,10 +620,11 @@ section[id] {
 .site-header__link {
   font-size: 0.92rem;
   font-weight: 500;
-  color: var(--muted);
+  color: var(--text);
   padding: 0.4rem 0;
   position: relative;
   transition: color var(--transition-fast);
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
 }
 
 .site-header__link::after {
@@ -736,6 +815,8 @@ section[id] {
   display: flex;
   flex-direction: column;
   gap: var(--space-5);
+  position: relative;
+  z-index: 2;
 }
 
 .hero__eyebrow {
@@ -744,12 +825,15 @@ section[id] {
   color: var(--accent);
   letter-spacing: 0.18em;
   text-transform: uppercase;
+  text-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
 }
 
 .hero__title {
   margin: 0;
   font-size: clamp(2.5rem, 4vw, 3.4rem);
   letter-spacing: -0.02em;
+  color: var(--text);
+  text-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
 }
 
 .hero__lead {
@@ -757,6 +841,7 @@ section[id] {
   color: var(--muted);
   font-size: 1.08rem;
   max-width: 32rem;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
 }
 
 .hero__metrics {
@@ -766,8 +851,8 @@ section[id] {
 }
 
 .hero__metric {
-  background: color-mix(in oklab, var(--card), transparent 20%);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: color-mix(in oklab, var(--card), transparent 50%);
+  border: 1px solid rgba(255, 255, 255, 0.05);
   border-radius: var(--radius-sm);
   padding: var(--space-4);
 }
@@ -868,7 +953,7 @@ section[id] {
 }
 
 .hero-card__metric {
-  background: color-mix(in oklab, var(--panel), transparent 25%);
+  background: color-mix(in oklab, var(--panel), transparent 60%);
   border-radius: var(--radius-sm);
   padding: var(--space-3);
   text-align: center;
@@ -947,8 +1032,9 @@ section[id] {
   flex-direction: column;
   padding: var(--space-5);
   height: 100%;
-  background: var(--card);
+  background: color-mix(in srgb, var(--card) 80%, transparent 20%);
   border-radius: var(--radius-md);
+  border: 1px solid color-mix(in srgb, var(--border) 40%, transparent 60%);
   transition: transform var(--transition-base), box-shadow var(--transition-base);
   min-height: 400px;
 }
@@ -1117,8 +1203,9 @@ section[id] {
   flex-direction: column;
   padding: var(--space-5);
   height: 100%;
-  background: var(--card);
+  background: color-mix(in srgb, var(--card) 80%, transparent 20%);
   border-radius: var(--radius-md);
+  border: 1px solid color-mix(in srgb, var(--border) 40%, transparent 60%);
   transition: transform var(--transition-base), box-shadow var(--transition-base);
   min-height: 320px;
 }
@@ -1238,8 +1325,9 @@ section[id] {
   flex-direction: column;
   padding: var(--space-4);
   height: 100%;
-  background: var(--card);
+  background: color-mix(in srgb, var(--card) 80%, transparent 20%);
   border-radius: var(--radius-md);
+  border: 1px solid color-mix(in srgb, var(--border) 40%, transparent 60%);
   transition: transform var(--transition-base), box-shadow var(--transition-base);
 }
 
@@ -1583,8 +1671,8 @@ section[id] {
   gap: var(--space-4);
   padding: var(--space-4);
   border-radius: var(--radius-md);
-  background: color-mix(in oklab, var(--card), transparent 25%);
-  border: 1px solid rgba(255, 255, 255, 0.06);
+  background: color-mix(in oklab, var(--card), transparent 60%);
+  border: 1px solid rgba(255, 255, 255, 0.03);
 }
 
 .timeline-preview__period {
@@ -1650,10 +1738,10 @@ section[id] {
   display: flex;
   flex-direction: column;
   gap: var(--space-4);
-  background: color-mix(in oklab, var(--panel), transparent 10%);
+  background: color-mix(in oklab, var(--panel), transparent 70%);
   border-radius: var(--radius-md);
   padding: var(--space-5);
-  border: 1px solid rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.03);
 }
 
 .contact__headline {
@@ -2157,8 +2245,8 @@ section[id] {
    Footer
 ----------------------------------------------------------- */
 .site-footer {
-  background: color-mix(in oklab, var(--bg), black 8%);
-  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  background: color-mix(in oklab, var(--bg), transparent 30%);
+  border-top: 1px solid rgba(255, 255, 255, 0.04);
   padding-top: var(--space-section-desktop);
 }
 
@@ -2492,8 +2580,9 @@ section[id] {
    Light Mode Enhancements
 ----------------------------------------------------------- */
 [data-theme="light"] .card {
-  border: 1px solid #d1d5db;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05), 0 2px 4px rgba(0, 0, 0, 0.08);
+  border: 1px solid rgba(209, 213, 219, 0.5);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03), 0 2px 4px rgba(0, 0, 0, 0.05);
+  background: color-mix(in srgb, #ffffff 75%, transparent 25%);
 }
 
 [data-theme="light"] .card:hover {
@@ -2502,9 +2591,9 @@ section[id] {
 }
 
 [data-theme="light"] .section--layer {
-  border-top: 1px solid #d1d5db;
-  border-bottom: 1px solid #d1d5db;
-  background: #f9fafb;
+  border-top: 1px solid rgba(209, 213, 219, 0.3);
+  border-bottom: 1px solid rgba(209, 213, 219, 0.3);
+  background: transparent;
 }
 
 [data-theme="light"] .site-header {
@@ -2583,8 +2672,8 @@ section[id] {
 }
 
 [data-theme="light"] .breadcrumb-nav {
-  background: #f9fafb;
-  border-bottom-color: #e5e7eb;
+  background: color-mix(in srgb, #f9fafb, transparent 50%);
+  border-bottom-color: rgba(229, 231, 235, 0.5);
 }
 
 [data-theme="light"] .breadcrumb-link {
@@ -2627,15 +2716,15 @@ section[id] {
 /* Additional UI improvements for light mode */
 [data-theme="light"] .project-card,
 [data-theme="light"] .hero-card {
-  border: 1px solid #e5e7eb;
-  background: #ffffff;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05), 0 1px 3px rgba(0, 0, 0, 0.08);
+  border: 1px solid rgba(229, 231, 235, 0.7);
+  background: color-mix(in srgb, #ffffff 80%, transparent 20%);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.03), 0 1px 3px rgba(0, 0, 0, 0.05);
 }
 
 [data-theme="light"] .project-card:hover,
 [data-theme="light"] .hero-card:hover {
   border-color: var(--primary);
-  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.08), 0 4px 6px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.05), 0 4px 6px rgba(0, 0, 0, 0.07);
 }
 
 /* -----------------------------------------------------------
@@ -2643,8 +2732,8 @@ section[id] {
 ----------------------------------------------------------- */
 .breadcrumb-nav {
   padding: var(--space-4) 0;
-  background: var(--bg);
-  border-bottom: 1px solid var(--border);
+  background: color-mix(in srgb, var(--bg), transparent 40%);
+  border-bottom: 1px solid color-mix(in srgb, var(--border), transparent 50%);
 }
 
 .breadcrumb-list {
@@ -3204,4 +3293,181 @@ section[id] {
   .hero-card {
     transition: none;
   }
+  
+  /* 水面オーバーレイのアニメーションも停止 */
+  .ocean-overlay__svg {
+    animation: none !important;
+    filter: none !important;
+  }
+  .ocean-overlay {
+    opacity: 0.4 !important;
+  }
 }
+
+/* Example usage (do not remove):
+<div class="card-glass card-glass--roomy">Content</div>
+*/
+
+/* ===== 水面オーバーレイ（Phase2） ===== */
+
+/* オーバーレイは背景の上・本文の下に固定。クリックを邪魔しない */
+.ocean-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 0;              /* 背景より前、本文より後ろにしたいので本文側に z-index:1 を与える */
+  pointer-events: none;
+  mix-blend-mode: overlay;  /* より視覚的に分かりやすいブレンドモード */
+  opacity: 0.70;           /* 視覚効果を強化 */
+  /* 上だけに効かせるフェード（下方向へ自然に消える） */
+  -webkit-mask-image: linear-gradient(to bottom, black 0%, black 35vh, transparent 60vh);
+  mask-image: linear-gradient(to bottom, black 0%, black 35vh, transparent 60vh);
+  will-change: transform, opacity, filter;
+}
+
+/* フィルタは SVG 全面に適用（屈折っぽいゆらぎ） */
+.ocean-overlay__svg {
+  width: 100%;
+  height: 100%;
+  filter: url(#water-caustics-filter);
+  animation: causticsDrift 10s ease-in-out infinite;
+}
+
+@keyframes causticsDrift {
+  0%   { transform: translate3d(0, 0, 0) }
+  50%  { transform: translate3d(0, -1.5%, 0) }
+  100% { transform: translate3d(0, 0, 0) }
+}
+
+/* 本文はオーバーレイより手前に置く（洗い流され防止） */
+body { position: relative; z-index: 1; }
+
+/* ダーク/ライト両方で過剰にならないよう少し抑える */
+@media (max-width: 768px) {
+  .ocean-overlay { opacity: 0.7; }
+}
+
+/* ハイコントラスト/印刷では抑制 */
+@media print {
+  .ocean-overlay { display: none !important; }
+}
+
+/* オプション（ページごとにON/OFF） */
+html[data-caustics="off"] .ocean-overlay { display: none !important; }
+
+/* ===== Phase3: Bubbles (CSS-only animation) ===== */
+
+.bubbles {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0; /* 背景より前、コンテンツより後ろ */
+}
+
+.bubble {
+  position: absolute;
+  bottom: -12vh;              /* 画面外の下から湧く */
+  border-radius: 9999px;
+  background: radial-gradient(ellipse at 30% 30%,
+              rgba(255,255,255,.9),
+              rgba(255,255,255,.15) 60%,
+              rgba(255,255,255,0) 70%);
+  box-shadow: inset 0 0 10px rgba(255,255,255,.7);
+  filter: blur(.2px);
+  opacity: 0;                 /* 最初は透明 */
+  animation:
+    bubble-rise var(--dur, 16s) linear var(--delay, 0s) infinite,
+    bubble-drift calc(var(--dur, 16s) * 0.8) ease-in-out var(--delay, 0s) infinite;
+}
+
+@keyframes bubble-rise {
+  0%   { transform: translate3d(0, 0, 0) scale(.65); opacity: 0; }
+  8%   { opacity: .95; }
+  100% { transform: translate3d(0, -120vh, 0) scale(1.05); opacity: 0; }
+}
+
+/* 微小な左右揺れ（リアル寄り。やり過ぎない） */
+@keyframes bubble-drift {
+  0%   { transform: translateX(0) }
+  50%  { transform: translateX(var(--xdrift, 8px)) }
+  100% { transform: translateX(0) }
+}
+
+/* 中層だけ泡を出す（オプション） */
+.bubbles--mid {
+  -webkit-mask-image: linear-gradient(
+    to bottom,
+    transparent 10vh, black 40vh, black 70vh, transparent 90vh
+  );
+  mask-image: linear-gradient(
+    to bottom,
+    transparent 10vh, black 40vh, black 70vh, transparent 90vh
+  );
+}
+
+/* モバイルでは密度を少し抑える印象に */
+@media (max-width: 768px) {
+  .bubble { filter: blur(.3px); }
+}
+
+/* 低モーション環境では泡を減速/停止 */
+@media (prefers-reduced-motion: reduce) {
+  .bubble {
+    animation-duration: 30s !important;
+    animation-iteration-count: infinite;
+    opacity: .35;
+  }
+}
+
+/* ===== Phase4: Scroll-Depth Effects ===== */
+
+/* 深度レイヤー（本文の上に極薄で重ねる） */
+.depth-layer {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 2;               /* 背景:0 / オーバーレイ:0〜1 / 本文:1 / ← その上に2 */
+  /* フィルタは CSS 変数で制御（JSが更新） */
+  --depth-brightness: 1;    /* 1 → 0.55 程度へ */
+  --depth-saturate:  1;     /* 1 → 0.75 程度へ */
+  --depth-blur:      0px;   /* 0px → 2px 程度へ */
+  filter:
+    brightness(var(--depth-brightness))
+    saturate(var(--depth-saturate))
+    blur(var(--depth-blur));
+  transition: filter 0.06s linear; /* スクロールの微振動を馴染ませる */
+}
+
+/* 上部ライト（水面からの光） */
+.depth-layer__light {
+  position: absolute;
+  inset: 0;
+  /* 上から差すライト（上強→下弱） */
+  background: radial-gradient(1200px 600px at 50% -10%,
+              rgba(255,255,255,0.25), rgba(0,0,0,0) 60%);
+  mix-blend-mode: overlay;
+  /* これも CSS 変数で制御 */
+  --light-brightness: 1; /* 1 → 0.6 程度へ */
+  filter: brightness(var(--light-brightness));
+}
+
+/* 低モーション / 印刷などのフォールバック */
+@media (prefers-reduced-motion: reduce) {
+  .depth-layer {
+    --depth-brightness: 0.85;
+    --depth-saturate: 0.9;
+    --depth-blur: 1px;
+  }
+  .depth-layer__light { --light-brightness: 0.8; }
+}
+@media print {
+  .depth-layer { display: none !important; }
+}
+
+/* 必要ならページ単位でOFFにできる */
+html[data-depth="off"] .depth-layer { display: none !important; }
+
+/* Print and high-contrast fallback */
+@media print {
+  body { background: #ffffff !important; color: #111 !important; }
+}
+
