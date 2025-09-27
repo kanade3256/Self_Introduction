@@ -1,4 +1,6 @@
 ---
+import Bubbles from '../components/Bubbles.astro';
+
 export interface Props {
   title?: string;
   description?: string;
@@ -230,10 +232,13 @@ const getNavAriaCurrent = (href: string) => {
 
     <div class="layout__sentinel" aria-hidden="true"></div>
 
-    <!-- ✅ スクロール深度レイヤー（本文より手前に常駐） -->
+    <!-- スクロール深度レイヤー（本文より手前に常駐） -->
     <div class="depth-layer" aria-hidden="true">
       <div class="depth-layer__light"></div>
     </div>
+
+    <!-- 動的泡エフェクト用コンテナ -->
+    <div id="foam-container" class="foam-container" aria-hidden="true"></div>
 
     <main id="content" class="site-main" role="main">
       <slot />

@@ -336,39 +336,47 @@
         
         console.log('Sending data:', data);
         
+        // タイムアウト付きのfetch
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 10000); // 10秒でタイムアウト
+        
         const response = await fetch(LAMBDA_FUNCTION_URL, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify(data)
+          body: JSON.stringify(data),
+          signal: controller.signal
+        }).finally(() => {
+          clearTimeout(timeoutId);
         });
         
         console.log('Response status:', response.status);
-        console.log('Response headers:', Object.fromEntries(response.headers));
         
-        const responseText = await response.text();
-        console.log('Response body:', responseText);
-        let result;
-        if (responseText) {
+        let result = {};
+        const contentType = response.headers.get('content-type');
+        
+        if (contentType && contentType.includes('application/json')) {
           try {
-            result = JSON.parse(responseText);
+            result = await response.json();
           } catch (parseError) {
-            console.warn('Failed to parse JSON response:', parseError, responseText);
-            result = {
-              ok: false,
-              error: responseText || ('HTTP ' + response.status + ' ' + (response.statusText || ''))
-            };
+            console.warn('Failed to parse JSON response:', parseError);
+            result = { ok: false, error: 'Invalid JSON response' };
           }
         } else {
-          result = { ok: response.ok };
+          const responseText = await response.text();
+          result = {
+            ok: response.ok,
+            message: responseText || (response.ok ? '送信完了' : 'エラーが発生しました')
+          };
         }
+        
         console.log('Response data:', result);
         
         // ローディングダイアログを閉じる
         CustomDialog.hide(loadingDialog);
         
-        if (response.ok && result.ok) {
+        if (response.ok && (result.ok !== false)) {
           // 成功
           CustomDialog.success(
             '送信完了',
@@ -377,7 +385,7 @@
           contactForm.reset();
         } else {
           // エラー
-          const errorMessage = result.error || `送信に失敗しました (${response.status})`;
+          const errorMessage = result.error || result.message || `送信に失敗しました (${response.status})`;
           CustomDialog.error('送信失敗', errorMessage);
           console.error('Server error:', result);
         }
@@ -388,10 +396,16 @@
         // ローディングダイアログを閉じる
         CustomDialog.hide(loadingDialog);
         
-        // ネットワークエラーかその他のエラーかを判定
-        const errorMessage = error.name === 'TypeError' && error.message.includes('fetch')
-          ? 'ネットワークエラーが発生しました。インターネット接続を確認してください。'
-          : `予期しないエラーが発生しました: ${error.message}`;
+        // エラーメッセージを判定
+        let errorMessage = '予期しないエラーが発生しました';
+        
+        if (error.name === 'AbortError') {
+          errorMessage = 'リクエストがタイムアウトしました。もう一度お試しください。';
+        } else if (error.name === 'TypeError' && error.message.includes('fetch')) {
+          errorMessage = 'ネットワークエラーが発生しました。インターネット接続を確認してください。';
+        } else {
+          errorMessage = `エラー: ${error.message}`;
+        }
           
         CustomDialog.error('送信エラー', errorMessage);
       } finally {
@@ -617,6 +631,116 @@
     update();
     window.addEventListener('scroll', onScroll, { passive: true });
     window.addEventListener('resize', onScroll, { passive: true });
+  })();
+
+  // ===== 動的泡エフェクト (リアルタイム生成) =====
+  (function() {
+    const foamContainer = document.getElementById('foam-container');
+    if (!foamContainer) return;
+
+    let foams = [];
+    let clientWidth = document.documentElement.clientWidth;
+    let clientHeight = document.documentElement.clientHeight;
+    let isRunning = true;
+    let animationId = null;
+
+    // リサイズ対応
+    window.addEventListener('resize', () => {
+      clientWidth = document.documentElement.clientWidth;
+      clientHeight = document.documentElement.clientHeight;
+    });
+
+    // パフォーマンス調整のため、reduced-motion設定を考慮
+    const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const foamInterval = prefersReduced ? 200 : 80; // 生成間隔（ms）
+    const maxFoams = prefersReduced ? 15 : 35; // 最大泡数
+
+    // 泡の生成
+    function createFoam() {
+      if (foams.length >= maxFoams) return;
+
+      const positionX = Math.floor(Math.random() * (clientWidth - 80)) + 40;
+      const positionY = Math.floor(Math.random() * 100); // 下部から開始
+      const size = Math.floor(Math.random() * 20) + 8; // 8-28px
+      const opacity = Math.random() * 0.6 + 0.3; // 0.3-0.9
+
+      const foam = document.createElement('div');
+      foam.className = 'dynamic-bubble motion-okay';
+      foam.style.cssText = `
+        width: ${size}px;
+        height: ${size}px;
+        left: ${positionX}px;
+        bottom: ${positionY}px;
+        opacity: ${opacity};
+        --size: ${size}px;
+      `;
+
+      foamContainer.appendChild(foam);
+      foams.push({
+        el: foam,
+        x: positionX,
+        y: positionY,
+        size: size,
+        speed: Math.random() * 3 + 2, // 2-5px/frame
+        drift: (Math.random() - 0.5) * 0.8, // 左右のゆらめき
+        life: 0, // 生存時間
+        maxLife: Math.random() * 300 + 200 // ライフサイクル
+      });
+    }
+
+    // 泡の動きを更新
+    function updateFoams() {
+      if (!isRunning) return;
+
+      foams.forEach((foam, index) => {
+        foam.life++;
+        foam.y += foam.speed;
+        foam.x += foam.drift * Math.sin(foam.life * 0.02); // 左右の揺れ
+
+        // 位置を更新
+        foam.el.style.transform = `translate(${foam.x - foam.el.offsetLeft}px, -${foam.y}px) scale(${1 + foam.life * 0.002})`;
+        
+        // 透明度の変化（ライフサイクル）
+        const lifeRatio = foam.life / foam.maxLife;
+        let alpha = 1;
+        if (lifeRatio > 0.8) {
+          alpha = 1 - (lifeRatio - 0.8) * 5; // フェードアウト
+        }
+        foam.el.style.opacity = foam.el.style.opacity * alpha;
+
+        // 画面外に出るか、寿命が尽きたら削除
+        if (foam.y > clientHeight + 100 || foam.life > foam.maxLife) {
+          foam.el.remove();
+          foams.splice(index, 1);
+        }
+      });
+
+      animationId = requestAnimationFrame(updateFoams);
+    }
+
+    // ページの可視性変更時の制御
+    document.addEventListener('visibilitychange', () => {
+      if (document.hidden) {
+        isRunning = false;
+        if (animationId) cancelAnimationFrame(animationId);
+      } else {
+        isRunning = true;
+        updateFoams();
+      }
+    });
+
+    // 初期化
+    updateFoams();
+    const foamGenerator = setInterval(createFoam, foamInterval);
+
+    // クリーンアップ（ページアンロード時）
+    window.addEventListener('beforeunload', () => {
+      isRunning = false;
+      clearInterval(foamGenerator);
+      if (animationId) cancelAnimationFrame(animationId);
+      foams = [];
+    });
+
   })();
 
 })();

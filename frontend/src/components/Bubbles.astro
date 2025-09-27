@@ -1,21 +1,22 @@
 ---
-const count = Number(Astro.props.count ?? 22);
+const count = Number(Astro.props.count ?? 25);
 function rand(min: number, max: number) {
   return Math.random() * (max - min) + min;
 }
-const bubbles = Array.from({ length: count }).map(() => ({
-  left: `${rand(0, 100).toFixed(2)}%`,
-  size: rand(6, 22),            // 直径px（6〜22）
-  duration: rand(12, 22),       // 上昇秒数（12〜22s）
-  delay: rand(0, 10),           // 開始ディレイ（0〜10s）
-  xDrift: rand(-12, 12),        // 微小な左右揺れ量（-12〜12px）
+const bubbles = Array.from({ length: count }).map((_, i) => ({
+  left: `${rand(5, 95).toFixed(2)}%`,           // 画面端を避ける
+  size: rand(8, 28),                            // 直径px（8〜28）より大きく
+  duration: rand(12, 24),                       // 上昇秒数（12〜24s）短縮
+  delay: rand(0, 8),                           // 開始ディレイ（0〜8s）短縮
+  xDrift: rand(-12, 12),                       // 左右揺れ量（-12〜12px）
+  opacity: rand(0.6, 0.9),                     // 最大透明度を高く設定
 }));
 ---
-<div class="bubbles" aria-hidden="true">
+<div class="bubbles motion-okay" aria-hidden="true">
   {bubbles.map((b, i) => (
     <span
-      class="bubble"
-      style={`left:${b.left};width:${b.size}px;height:${b.size}px;--dur:${b.duration}s;--delay:${b.delay}s;--xdrift:${b.xDrift}px;`}
+      class="bubble motion-okay"
+      style={`left:${b.left};width:${b.size}px;height:${b.size}px;--dur:${b.duration}s;--delay:${b.delay}s;--xdrift:${b.xDrift}px;--max-opacity:${b.opacity};`}
     />
   ))}
 </div>

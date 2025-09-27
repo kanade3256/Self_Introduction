@@ -1,4 +1,4 @@
-/* -----------------------------------------------------------
+﻿/* -----------------------------------------------------------
    Global Design Tokens
 ----------------------------------------------------------- */
 
@@ -21,6 +21,10 @@
 
 *, *::before, *::after {
   box-sizing: border-box;
+}
+
+/* Allow specific components to keep motion even in reduced motion environments. */
+.motion-okay {
 }
 
 :root {
@@ -325,8 +329,8 @@ section[id] {
 .section--layer {
   /* Completely transparent background to maintain gradient */
   background: transparent;
-  border-top: 1px solid color-mix(in srgb, var(--border) 25%, transparent 75%);
-  border-bottom: 1px solid color-mix(in srgb, var(--border) 25%, transparent 75%);
+  /* Remove borders to eliminate white lines between sections */
+  border: none;
   backdrop-filter: none;
 }
 
@@ -2685,8 +2689,8 @@ section[id] {
 }
 
 [data-theme="light"] .section--layer {
-  border-top: 1px solid rgba(209, 213, 219, 0.3);
-  border-bottom: 1px solid rgba(209, 213, 219, 0.3);
+  /* Remove borders to eliminate white lines between sections */
+  border: none;
   background: transparent;
 }
 
@@ -3374,11 +3378,22 @@ section[id] {
    Motion Preferences
 ----------------------------------------------------------- */
 @media (prefers-reduced-motion: reduce) {
-  *, *::before, *::after {
+  *:not(.motion-okay), *:not(.motion-okay)::before, *:not(.motion-okay)::after {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
+  }
+
+  /* Exception: keep bubble animations for visual design even in reduced motion.
+     We still minimize other animations to respect user preference. */
+  .bubble,
+  .bubbles .bubble,
+  .bubble-item {
+    animation: bubble-rise var(--dur, 20s) linear var(--delay, 0s) infinite,
+               bubble-drift calc(var(--dur, 20s) * 0.7) ease-in-out var(--delay, 0s) infinite,
+               bubble-shimmer calc(var(--dur, 20s) * 0.3) ease-in-out var(--delay, 0s) infinite !important;
+    animation-fill-mode: both !important;
   }
   .btn,
   .card,
@@ -3451,50 +3466,118 @@ html[data-caustics="off"] .ocean-overlay { display: none !important; }
 /* ===== Phase3: Bubbles (CSS-only animation) ===== */
 
 .bubbles {
-  position: absolute;
-  inset: 0;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
   pointer-events: none;
-  z-index: 0; /* 背景より前、コンテンツより後ろ */
+  z-index: 1; /* コンテンツを妨害しないように下げる */
+  overflow: hidden;
+}
+
+/* ===== 動的泡エフェクト (JavaScript制御) ===== */
+
+.foam-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  pointer-events: none;
+  z-index: 1;
+  overflow: hidden;
+}
+
+.dynamic-bubble {
+  position: absolute;
+  border-radius: 50%;
+  background: radial-gradient(ellipse at 30% 30%,
+              rgba(135,206,235,.9),
+              rgba(255,255,255,.7) 35%,
+              rgba(135,206,235,.4) 70%,
+              rgba(255,255,255,.1) 85%,
+              rgba(0,0,0,0) 95%);
+  box-shadow: 
+    inset 0 0 calc(var(--size) * 0.4) rgba(135,206,235,.6),
+    0 0 calc(var(--size) * 0.6) rgba(135,206,235,.3),
+    0 0 calc(var(--size) * 1.2) rgba(255,255,255,.15);
+  border: 1px solid rgba(135,206,235,.2);
+  will-change: transform, opacity;
+  transition: opacity 0.3s ease-out;
 }
 
 .bubble {
   position: absolute;
-  bottom: -12vh;              /* 画面外の下から湧く */
-  border-radius: 9999px;
+  bottom: -10vh;              /* 画面外の下から湧く */
+  border-radius: 50%;
   background: radial-gradient(ellipse at 30% 30%,
-              rgba(255,255,255,.9),
-              rgba(255,255,255,.15) 60%,
-              rgba(255,255,255,0) 70%);
-  box-shadow: inset 0 0 10px rgba(255,255,255,.7);
-  filter: blur(.2px);
-  opacity: 0;                 /* 最初は透明 */
+              rgba(255,255,255,.95),
+              rgba(135,206,235,.7) 40%,
+              rgba(255,255,255,.4) 70%,
+              rgba(255,255,255,0) 90%);
+  box-shadow: 
+    inset 0 0 12px rgba(255,255,255,.8),
+    0 0 8px rgba(135,206,235,.6),
+    0 0 16px rgba(255,255,255,.3);
+  filter: blur(.05px);
+  opacity: 0.6;                 /* 初期で見えるように */
   animation:
-    bubble-rise var(--dur, 16s) linear var(--delay, 0s) infinite,
-    bubble-drift calc(var(--dur, 16s) * 0.8) ease-in-out var(--delay, 0s) infinite;
+    bubble-rise var(--dur, 20s) linear var(--delay, 0s) infinite,
+    bubble-drift calc(var(--dur, 20s) * 0.7) ease-in-out var(--delay, 0s) infinite,
+    bubble-shimmer calc(var(--dur, 20s) * 0.3) ease-in-out var(--delay, 0s) infinite;
+  animation-iteration-count: infinite !important;
+  /* アニメーションを即座開始 */
+  animation-fill-mode: both;
 }
 
 @keyframes bubble-rise {
-  0%   { transform: translate3d(0, 0, 0) scale(.65); opacity: 0; }
-  8%   { opacity: .95; }
-  100% { transform: translate3d(0, -120vh, 0) scale(1.05); opacity: 0; }
+  0%   { 
+    transform: translate3d(0, 0, 0) scale(.3); 
+    opacity: 0; 
+  }
+  3%   { 
+    opacity: calc(var(--max-opacity, .7) * 0.5); 
+  }
+  8%  { 
+    opacity: var(--max-opacity, .7); 
+    transform: translate3d(0, -8vh, 0) scale(.5); 
+  }
+  90%  { 
+    opacity: calc(var(--max-opacity, .7) * 0.8); 
+    transform: translate3d(0, -95vh, 0) scale(1.1); 
+  }
+  100% { 
+    transform: translate3d(0, -110vh, 0) scale(1.3); 
+    opacity: 0; 
+  }
 }
 
-/* 微小な左右揺れ（リアル寄り。やり過ぎない） */
+/* より自然な左右の揺れ */
 @keyframes bubble-drift {
   0%   { transform: translateX(0) }
+  25%  { transform: translateX(calc(var(--xdrift, 8px) * 0.7)) }
   50%  { transform: translateX(var(--xdrift, 8px)) }
+  75%  { transform: translateX(calc(var(--xdrift, 8px) * 0.3)) }
   100% { transform: translateX(0) }
+}
+
+/* 泡の輝き効果 */
+@keyframes bubble-shimmer {
+  0%   { filter: blur(.2px) brightness(1); }
+  50%  { filter: blur(.15px) brightness(1.3); }
+  100% { filter: blur(.2px) brightness(1); }
 }
 
 /* 中層だけ泡を出す（オプション） */
 .bubbles--mid {
   -webkit-mask-image: linear-gradient(
     to bottom,
-    transparent 10vh, black 40vh, black 70vh, transparent 90vh
+    transparent 5vh, black 25vh, black 75vh, transparent 95vh
   );
   mask-image: linear-gradient(
     to bottom,
-    transparent 10vh, black 40vh, black 70vh, transparent 90vh
+    transparent 5vh, black 25vh, black 75vh, transparent 95vh
   );
 }
 
@@ -3510,6 +3593,47 @@ html[data-caustics="off"] .ocean-overlay { display: none !important; }
     animation-iteration-count: infinite;
     opacity: .35;
   }
+}
+
+/* 動的泡のモバイル対応 */
+@media (max-width: 768px) {
+  .dynamic-bubble { 
+    filter: blur(.2px);
+  }
+  .foam-container {
+    /* モバイルではパフォーマンス優先で一部制限 */
+    will-change: auto;
+  }
+}
+
+/* reduced-motion設定での動的泡制御 */
+@media (prefers-reduced-motion: reduce) {
+  .dynamic-bubble {
+    transition: opacity 1s ease-out, transform 1s ease-out;
+  }
+}
+
+/* 🐛 デバッグ用：泡を確実に見えるようにする（一時的） */
+.bubble {
+  /* 泡を非常に見やすく強調 */
+  background: radial-gradient(ellipse at 30% 30%,
+              rgba(135,206,235,.9),  /* より青く */
+              rgba(255,255,255,.8) 30%,
+              rgba(135,206,235,.5) 60%,
+              rgba(255,255,255,.2) 80%,
+              rgba(0,0,0,0) 95%) !important;
+  box-shadow: 
+    inset 0 0 15px rgba(135,206,235,.7),
+    0 0 20px rgba(135,206,235,.4),
+    0 0 30px rgba(255,255,255,.2) !important;
+  border: 1px solid rgba(135,206,235,.3) !important;
+  opacity: 0.8 !important;  /* 強制的に見えるように */
+}
+
+/* 最初の数個の泡を即座に表示（デバッグ用） */
+.bubble:nth-child(-n+5) {
+  --delay: 0s !important;
+  opacity: 1 !important;
 }
 
 /* ===== Phase4: Scroll-Depth Effects ===== */
@@ -3905,4 +4029,5 @@ html[data-depth="off"] .depth-layer { display: none !important; }
 @media print {
   body { background: #ffffff !important; color: #111 !important; }
 }
+
 
