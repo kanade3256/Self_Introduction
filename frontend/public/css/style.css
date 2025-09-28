@@ -120,7 +120,9 @@ html {
   background-attachment: scroll;
 }
 
-html, body { min-height: 100%; }
+html, body { 
+  min-height: 100%; 
+}
 
 body {
   margin: 0;
@@ -131,6 +133,7 @@ body {
   color: var(--ocean-text);
   max-width: 100%;
   overflow-x: hidden; /* prevent horizontal scroll due to effects */
+  position: relative; /* 海藻コンテナのabsolute配置の基準点 */
 }
 
 /* Performance: Content Visibility for off-screen sections */
@@ -3598,11 +3601,11 @@ html[data-caustics="off"] .ocean-overlay { display: none !important; }
 /* ===== 水中エフェクト: 海藻の揺れ ===== */
 
 .seaweed-container {
-  position: fixed;
+  position: absolute; /* fixed から absolute に変更 */
   bottom: 0;
   left: 0;
   width: 100vw;
-  height: 100vh;
+  height: 50vh; /* 海藻の表示範囲を制限 */
   pointer-events: none;
   z-index: 0; /* 背景レイヤー */
   overflow: hidden;
@@ -3610,7 +3613,7 @@ html[data-caustics="off"] .ocean-overlay { display: none !important; }
 
 .seaweed {
   position: absolute;
-  bottom: 0;
+  bottom: 0; /* 確実にコンテナの最下部に配置 */
   width: 12px;
   background: linear-gradient(
     to top,
@@ -3621,7 +3624,7 @@ html[data-caustics="off"] .ocean-overlay { display: none !important; }
     transparent 100%
   );
   border-radius: 6px;
-  transform-origin: bottom center;
+  transform-origin: bottom center; /* 下部を基点に揺れる */
   animation: seaweed-sway var(--sway-duration, 4s) ease-in-out infinite;
   animation-delay: var(--sway-delay, 0s);
   filter: blur(0.5px);

@@ -238,9 +238,6 @@ const getNavAriaCurrent = (href: string) => {
       <div class="caustic-light"></div>
     </div>
     
-    <!-- 海藻エフェクト -->
-    <div id="seaweed-container" class="seaweed-container" aria-hidden="true"></div>
-    
     <!-- 魚影エフェクト -->
     <div id="fish-container" class="fish-container" aria-hidden="true"></div>
 
@@ -255,6 +252,9 @@ const getNavAriaCurrent = (href: string) => {
     <main id="content" class="site-main" role="main">
       <slot />
     </main>
+
+    <!-- 海藻エフェクト（ページ最下部に固定） -->
+    <div id="seaweed-container" class="seaweed-container" aria-hidden="true"></div>
 
     <footer class="site-footer" role="contentinfo">
       <div class="layout-container site-footer__inner">
