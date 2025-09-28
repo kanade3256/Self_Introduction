@@ -743,4 +743,147 @@
 
   })();
 
+  // ===== 水中エフェクト: 海藻生成 =====
+  (function() {
+    const seaweedContainer = document.getElementById('seaweed-container');
+    if (!seaweedContainer) return;
+
+    const seaweedCount = 12; // 海藻の数
+    const seaweedTypes = ['short', 'medium', 'tall', 'very-tall'];
+    const seaweedWidths = ['thin', '', 'thick']; // thin, normal, thick
+
+    // 海藻を生成
+    for (let i = 0; i < seaweedCount; i++) {
+      const seaweed = document.createElement('div');
+      const position = (i / seaweedCount) * 100 + Math.random() * 5; // 均等配置 + ランダムオフセット
+      const height = seaweedTypes[Math.floor(Math.random() * seaweedTypes.length)];
+      const width = seaweedWidths[Math.floor(Math.random() * seaweedWidths.length)];
+      const swayDuration = 3 + Math.random() * 4; // 3-7秒
+      const swayDelay = Math.random() * 2; // 0-2秒の遅延
+      const swayAngle = 5 + Math.random() * 10; // 5-15度の揺れ
+
+      seaweed.className = `seaweed seaweed--${height} ${width ? `seaweed--${width}` : ''}`;
+      seaweed.style.cssText = `
+        left: ${position}%;
+        --sway-duration: ${swayDuration}s;
+        --sway-delay: ${swayDelay}s;
+        --sway-angle: ${swayAngle}deg;
+      `;
+
+      seaweedContainer.appendChild(seaweed);
+    }
+  })();
+
+  // ===== 水中エフェクト: 魚影生成 =====
+  (function() {
+    const fishContainer = document.getElementById('fish-container');
+    if (!fishContainer) return;
+
+    let fishAnimationId = null;
+    const activeFish = [];
+    const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    
+    // 魚影生成の間隔（秒）
+    const fishInterval = prefersReduced ? 15000 : 8000; // 15秒 or 8秒
+
+    function createFish() {
+      if (activeFish.length >= 3) return; // 最大3匹まで
+
+      const fish = document.createElement('div');
+      const isLarge = Math.random() < 0.3; // 30%の確率で大きな魚
+      const direction = Math.random() < 0.5 ? 1 : -1; // 左右どちらから来るか
+      const yPosition = 20 + Math.random() * 60; // 画面の20-80%の高さ
+      const speed = 1 + Math.random() * 2; // 1-3px/frame
+      const opacity = 0.1 + Math.random() * 0.1; // 0.1-0.2
+
+      fish.className = `fish-shadow ${isLarge ? 'fish-shadow--large' : ''}`;
+      fish.style.cssText = `
+        top: ${yPosition}%;
+        ${direction === 1 ? 'left: -100px' : 'right: -100px'};
+        opacity: 0;
+        transform: ${direction === -1 ? 'scaleX(-1)' : 'scaleX(1)'};
+      `;
+
+      fishContainer.appendChild(fish);
+      
+      const fishData = {
+        element: fish,
+        direction: direction,
+        speed: speed,
+        life: 0,
+        maxOpacity: opacity
+      };
+      
+      activeFish.push(fishData);
+
+      // フェードイン
+      setTimeout(() => {
+        fish.style.opacity = fishData.maxOpacity.toString();
+        fish.style.transition = 'opacity 1s ease-in';
+      }, 100);
+    }
+
+    function updateFish() {
+      const screenWidth = window.innerWidth;
+      
+      activeFish.forEach((fishData, index) => {
+        fishData.life++;
+        const fish = fishData.element;
+        
+        // 位置を更新
+        if (fishData.direction === 1) {
+          // 左から右へ
+          const newX = -100 + (fishData.life * fishData.speed);
+          fish.style.left = `${newX}px`;
+          
+          // 画面外に出たら削除
+          if (newX > screenWidth + 100) {
+            fish.remove();
+            activeFish.splice(index, 1);
+          }
+        } else {
+          // 右から左へ
+          const newX = screenWidth + 100 - (fishData.life * fishData.speed);
+          fish.style.right = `${screenWidth - newX}px`;
+          
+          // 画面外に出たら削除
+          if (newX < -100) {
+            fish.remove();
+            activeFish.splice(index, 1);
+          }
+        }
+
+        // 中間点でフェードアウト開始
+        const progress = fishData.life * fishData.speed / (screenWidth + 200);
+        if (progress > 0.7) {
+          const fadeOpacity = fishData.maxOpacity * (1 - (progress - 0.7) * 3.33);
+          fish.style.opacity = Math.max(0, fadeOpacity).toString();
+        }
+      });
+      
+      fishAnimationId = requestAnimationFrame(updateFish);
+    }
+
+    // ページの可視性変更時の制御
+    document.addEventListener('visibilitychange', () => {
+      if (document.hidden) {
+        if (fishAnimationId) cancelAnimationFrame(fishAnimationId);
+      } else {
+        updateFish();
+      }
+    });
+
+    // 初期化
+    updateFish();
+    const fishGenerator = setInterval(createFish, fishInterval);
+
+    // クリーンアップ
+    window.addEventListener('beforeunload', () => {
+      clearInterval(fishGenerator);
+      if (fishAnimationId) cancelAnimationFrame(fishAnimationId);
+      activeFish.length = 0;
+    });
+
+  })();
+
 })();
