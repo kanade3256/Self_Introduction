@@ -240,14 +240,14 @@ const getNavAriaCurrent = (href: string) => {
     
     <!-- 魚影エフェクト -->
     <div id="fish-container" class="fish-container" aria-hidden="true"></div>
+    
+    <!-- 動的泡エフェクト用コンテナ（全画面固定） -->
+    <div id="foam-container" class="foam-container" aria-hidden="true"></div>
 
     <!-- スクロール深度レイヤー（本文より手前に常駐） -->
     <div class="depth-layer" aria-hidden="true">
       <div class="depth-layer__light"></div>
     </div>
-
-    <!-- 動的泡エフェクト用コンテナ -->
-    <div id="foam-container" class="foam-container" aria-hidden="true"></div>
 
     <main id="content" class="site-main" role="main">
       <slot />

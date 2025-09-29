@@ -641,6 +641,13 @@
     let foams = [];
     let clientWidth = document.documentElement.clientWidth;
     let clientHeight = document.documentElement.clientHeight;
+    let documentHeight = Math.max(
+      document.body.scrollHeight,
+      document.body.offsetHeight,
+      document.documentElement.clientHeight,
+      document.documentElement.scrollHeight,
+      document.documentElement.offsetHeight
+    );
     let isRunning = true;
     let animationId = null;
 
@@ -648,19 +655,25 @@
     window.addEventListener('resize', () => {
       clientWidth = document.documentElement.clientWidth;
       clientHeight = document.documentElement.clientHeight;
+      documentHeight = Math.max(
+        document.body.scrollHeight,
+        document.body.offsetHeight,
+        document.documentElement.clientHeight,
+        document.documentElement.scrollHeight,
+        document.documentElement.offsetHeight
+      );
     });
 
     // パフォーマンス調整のため、reduced-motion設定を考慮
     const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    const foamInterval = prefersReduced ? 200 : 80; // 生成間隔（ms）
-    const maxFoams = prefersReduced ? 15 : 35; // 最大泡数
+    const foamInterval = prefersReduced ? 200 : 100; // 生成間隔（ms）
+    const maxFoams = prefersReduced ? 20 : 40; // 最大泡数
 
     // 泡の生成
     function createFoam() {
       if (foams.length >= maxFoams) return;
 
       const positionX = Math.floor(Math.random() * (clientWidth - 80)) + 40;
-      const positionY = Math.floor(Math.random() * 100); // 下部から開始
       const size = Math.floor(Math.random() * 20) + 8; // 8-28px
       const opacity = Math.random() * 0.6 + 0.3; // 0.3-0.9
 
@@ -670,22 +683,91 @@
         width: ${size}px;
         height: ${size}px;
         left: ${positionX}px;
-        bottom: ${positionY}px;
+        top: ${clientHeight}px;
         opacity: ${opacity};
         --size: ${size}px;
+        position: fixed;
       `;
+
+      // クリックイベントを追加
+      foam.addEventListener('click', handleBubbleClick);
 
       foamContainer.appendChild(foam);
       foams.push({
         el: foam,
-        x: positionX,
-        y: positionY,
+        startX: positionX,
+        currentX: positionX,
+        currentY: clientHeight, // 画面最下部から開始
         size: size,
-        speed: Math.random() * 3 + 2, // 2-5px/frame
-        drift: (Math.random() - 0.5) * 0.8, // 左右のゆらめき
+        speed: Math.random() * 2 + 1.5, // 1.5-3.5px/frame（しっかり動くように）
+        drift: (Math.random() - 0.5) * 0.5, // 左右のゆらめき
         life: 0, // 生存時間
-        maxLife: Math.random() * 300 + 200 // ライフサイクル
+        maxLife: Math.random() * 400 + 300, // より長いライフサイクル
+        popped: false // ポップ済みフラグ
       });
+    }
+
+    // 泡クリック時のハンドラ
+    function handleBubbleClick(event) {
+      const bubble = event.target;
+      const foamIndex = foams.findIndex(foam => foam.el === bubble);
+      
+      if (foamIndex === -1 || foams[foamIndex].popped) return;
+
+      // ポップアニメーション開始
+      bubble.classList.add('popping');
+      foams[foamIndex].popped = true;
+
+      // アニメーション終了後に削除
+      bubble.addEventListener('animationend', () => {
+        bubble.remove();
+        foams.splice(foamIndex, 1);
+      }, { once: true });
+
+      // 音声効果（オプション）- 小さなポップ音のような効果を視覚で表現
+      createPopEffect(event.clientX, event.clientY);
+    }
+
+    // ポップエフェクト（追加の視覚効果）
+    function createPopEffect(x, y) {
+      for (let i = 0; i < 6; i++) {
+        const particle = document.createElement('div');
+        particle.style.cssText = `
+          position: fixed;
+          left: ${x}px;
+          top: ${y}px;
+          width: 4px;
+          height: 4px;
+          background: rgba(135,206,235,0.8);
+          border-radius: 50%;
+          pointer-events: none;
+          z-index: 1000;
+        `;
+
+        document.body.appendChild(particle);
+
+        // パーティクルアニメーション
+        const angle = (i / 6) * Math.PI * 2;
+        const distance = 30 + Math.random() * 20;
+        const endX = x + Math.cos(angle) * distance;
+        const endY = y + Math.sin(angle) * distance;
+
+        particle.animate([
+          { 
+            transform: 'translate(-50%, -50%) scale(1)', 
+            opacity: 1 
+          },
+          { 
+            transform: `translate(${endX - x}px, ${endY - y}px) scale(0)`, 
+            opacity: 0 
+          }
+        ], {
+          duration: 400,
+          easing: 'ease-out'
+        }).onfinish = () => {
+          particle.remove();
+        };
+      }
     }
 
     // 泡の動きを更新
@@ -693,23 +775,43 @@
       if (!isRunning) return;
 
       foams.forEach((foam, index) => {
-        foam.life++;
-        foam.y += foam.speed;
-        foam.x += foam.drift * Math.sin(foam.life * 0.02); // 左右の揺れ
+        // ポップ済みの泡はスキップ
+        if (foam.popped) return;
 
-        // 位置を更新
-        foam.el.style.transform = `translate(${foam.x - foam.el.offsetLeft}px, -${foam.y}px) scale(${1 + foam.life * 0.002})`;
+        foam.life++;
+        
+        // 確実に上昇させる（top座標系で上に向かって減少）
+        foam.currentY -= foam.speed;
+        
+        // 左右の揺れを追加
+        foam.currentX = foam.startX + Math.sin(foam.life * 0.02) * foam.drift * 20;
+        
+        // 境界チェック（画面外に出ないように）
+        foam.currentX = Math.max(20, Math.min(clientWidth - 20, foam.currentX));
+
+        // 位置を更新（topベースで座標設定）
+        foam.el.style.left = `${foam.currentX}px`;
+        foam.el.style.top = `${foam.currentY}px`;
+        
+        // サイズの変化（上昇につれて少し大きくなる）
+        const scaleRatio = 1 + (foam.life * 0.001);
+        foam.el.style.transform = `scale(${scaleRatio})`;
         
         // 透明度の変化（ライフサイクル）
         const lifeRatio = foam.life / foam.maxLife;
         let alpha = 1;
-        if (lifeRatio > 0.8) {
-          alpha = 1 - (lifeRatio - 0.8) * 5; // フェードアウト
+        if (lifeRatio > 0.7) {
+          alpha = 1 - (lifeRatio - 0.7) * 3.33; // フェードアウト
         }
-        foam.el.style.opacity = foam.el.style.opacity * alpha;
+        foam.el.style.opacity = (parseFloat(foam.el.style.opacity) * alpha).toString();
 
-        // 画面外に出るか、寿命が尽きたら削除
-        if (foam.y > clientHeight + 100 || foam.life > foam.maxLife) {
+        // 削除条件：
+        // 1. 画面上部を超えた場合（top座標が-100より小さい）
+        // 2. ライフサイクルが尽きた場合
+        // 3. 透明度が極端に低くなった場合
+        if (foam.currentY < -100 || 
+            foam.life > foam.maxLife || 
+            parseFloat(foam.el.style.opacity) < 0.1) {
           foam.el.remove();
           foams.splice(index, 1);
         }

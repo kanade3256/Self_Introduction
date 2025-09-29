@@ -134,6 +134,7 @@ body {
   max-width: 100%;
   overflow-x: hidden; /* prevent horizontal scroll due to effects */
   position: relative; /* 海藻コンテナのabsolute配置の基準点 */
+  min-height: 100vh; /* 最小高さを確保 */
 }
 
 /* Performance: Content Visibility for off-screen sections */
@@ -3482,14 +3483,14 @@ html[data-caustics="off"] .ocean-overlay { display: none !important; }
 /* ===== 動的泡エフェクト (JavaScript制御) ===== */
 
 .foam-container {
-  position: fixed;
-  top: 0;
+  position: fixed; /* absolute から fixed に戻してページ全体をカバー */
+  top: 0; /* 上部から開始 */
   left: 0;
   width: 100vw;
-  height: 100vh;
+  height: 100vh; /* ビューポート全体の高さ */
   pointer-events: none;
-  z-index: 1;
-  overflow: hidden;
+  z-index: 1; /* 適切なレイヤー順序 */
+  overflow: visible; /* 泡が上部まで見えるように */
 }
 
 .dynamic-bubble {
@@ -3508,6 +3509,53 @@ html[data-caustics="off"] .ocean-overlay { display: none !important; }
   border: 1px solid rgba(135,206,235,.2);
   will-change: transform, opacity;
   transition: opacity 0.3s ease-out;
+  cursor: pointer; /* クリック可能であることを示す */
+  pointer-events: auto; /* クリックイベントを有効化 */
+}
+
+/* 泡のポップエフェクト */
+.dynamic-bubble.popping {
+  animation: bubble-pop 0.5s ease-out forwards;
+  pointer-events: none; /* ポップ中はクリック無効 */
+}
+
+@keyframes bubble-pop {
+  0% { 
+    transform: scale(1); 
+    opacity: 1; 
+  }
+  30% { 
+    transform: scale(1.4); 
+    opacity: 0.8; 
+    box-shadow: 
+      inset 0 0 calc(var(--size) * 0.6) rgba(135,206,235,.8),
+      0 0 calc(var(--size) * 1.5) rgba(135,206,235,.6),
+      0 0 calc(var(--size) * 2.5) rgba(255,255,255,.3);
+  }
+  70% { 
+    transform: scale(1.8); 
+    opacity: 0.4;
+    background: radial-gradient(ellipse at 30% 30%,
+                rgba(255,255,255,.6),
+                rgba(135,206,235,.3) 40%,
+                transparent 80%);
+  }
+  100% { 
+    transform: scale(0.2); 
+    opacity: 0; 
+  }
+}
+
+/* ホバーエフェクト（デスクトップのみ） */
+@media (hover: hover) {
+  .dynamic-bubble:hover {
+    transform: scale(1.1);
+    box-shadow: 
+      inset 0 0 calc(var(--size) * 0.5) rgba(135,206,235,.8),
+      0 0 calc(var(--size) * 0.8) rgba(135,206,235,.5),
+      0 0 calc(var(--size) * 1.5) rgba(255,255,255,.2);
+    transition: all 0.2s ease-out;
+  }
 }
 
 .bubble {
@@ -3827,12 +3875,49 @@ html[data-caustics="off"] .ocean-overlay { display: none !important; }
   will-change: transform, opacity;
 }
 
+/* 泡のインタラクション最適化 */
+.dynamic-bubble {
+  will-change: transform, opacity, box-shadow;
+}
+
+.dynamic-bubble.popping {
+  will-change: auto; /* ポップ中はwill-changeをリセット */
+}
+
 /* 非表示時のパフォーマンス向上 */
 @media (prefers-reduced-motion: reduce) {
   .seaweed,
   .water-surface-reflection,
   .caustic-light {
     will-change: auto;
+  }
+  
+  /* reduced-motionでは泡のインタラクションを簡略化 */
+  .dynamic-bubble:hover {
+    transform: none;
+  }
+  
+  .dynamic-bubble.popping {
+    animation-duration: 0.2s; /* より短いアニメーション */
+  }
+}
+
+/* タッチデバイス対応 */
+@media (hover: none) {
+  .dynamic-bubble {
+    /* タッチデバイスでは最初から少し大きく表示 */
+    transform: scale(1.05);
+  }
+}
+
+/* 高DPI画面対応 */
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 2dppx) {
+  .dynamic-bubble {
+    /* 高DPI画面では影をより精細に */
+    box-shadow: 
+      inset 0 0 calc(var(--size) * 0.3) rgba(135,206,235,.7),
+      0 0 calc(var(--size) * 0.5) rgba(135,206,235,.4),
+      0 0 calc(var(--size) * 1.0) rgba(255,255,255,.2);
   }
 }
 
