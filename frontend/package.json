@@ -10,7 +10,10 @@
     "build:github": "cross-env NODE_ENV=production GITHUB_PAGES=true astro build",
     "build:prod": "cross-env NODE_ENV=production DEPLOY_TARGET=production astro build",
     "preview": "cross-env NODE_ENV=production astro preview",
-    "astro": "astro"
+    "astro": "astro",
+    "clean": "del-cli dist .astro",
+    "analyze": "astro build --analyze",
+    "check": "astro check"
   },
   "dependencies": {
     "@astrojs/mdx": "^3.1.7",

@@ -1,142 +1,103 @@
 (() => {
-  // JSが読み込まれたことを示すクラスを追加
-  document.documentElement.classList.add('js-loaded');
+  'use strict';
   
-  const root = document.documentElement;
-  const metaTheme = document.getElementById('meta-theme-color');
-  const navToggle = document.querySelector('.nav-toggle');
-  const siteNav = document.getElementById('site-nav');
-  const langBtn = document.getElementById('lang-toggle');
-  const yearEl = document.getElementById('year');
+  // パフォーマンス最適化: DOM要素の事前取得と最適化されたセレクタ
+  const elements = {
+    root: document.documentElement,
+    metaTheme: document.getElementById('meta-theme-color'),
+    navToggle: document.querySelector('.nav-toggle'),
+    siteNav: document.getElementById('site-nav'),
+    langBtn: document.getElementById('lang-toggle'),
+    yearEl: document.getElementById('year')
+  };
   
-  // ライトモードを強制設定
-  root.setAttribute('data-theme', 'light');
-  if (metaTheme) metaTheme.setAttribute('content', '#0ea5e9');
+  // JSロード完了のマーク
+  elements.root.classList.add('js-loaded');
+  
+  // ライトモード設定（最適化）
+  elements.root.setAttribute('data-theme', 'light');
+  if (elements.metaTheme) elements.metaTheme.setAttribute('content', '#0ea5e9');
 
-  // 簡易 i18n 定義（必要に応じて拡張）
+  // 年の自動更新（最適化）
+  if (elements.yearEl) elements.yearEl.textContent = new Date().getFullYear().toString();
+
+  // 簡易 i18n 定義（コンパクト版 - 使用中のキーのみ）
   const i18n = {
     ja: {
       'nav.about': '自己紹介',
-      'nav.projects': '制作物',
+      'nav.projects': '制作物', 
       'nav.experience': '経歴',
-      'nav.skills': 'スキル',
-      'nav.timeline': '経歴',
-      'nav.resume': '履歴書',
       'nav.contact': '連絡',
-      'breadcrumb.home': 'ホーム',
-      'index.hero.eyebrow': 'Serverless × Data / 実装から運用まで',
-      'index.hero.title': '現場に届く“運用される”プロダクトを作る',
-      'index.hero.subtitle': 'Serverless × Data を軸に、業務現場と研究の双方で成果を出す実装・改善サイクルを回しています。',
-      'index.hero.cta.resume': '履歴書を見る',
-      'index.hero.cta.github': 'GitHub',
-      'index.hero.cta.contact': 'お問い合わせ',
-      'index.about.eyebrow': '価値提供の軸',
+      'index.hero.title': '現場に届く"運用される"プロダクトを作る',
       'index.about.title': '自己紹介',
-      'index.about.lead': 'データとクラウドを武器に、課題解決から運用改善、リサーチまで横断的に取り組んでいます。',
-      'index.projects.eyebrow': 'Selected Work',
       'index.projects.title': '注目プロジェクト',
-      'index.projects.lead': '実務・研究・個人開発から厳選した3プロジェクトと研究ハイライト。',
-      'index.experience.eyebrow': 'Timeline',
-      'index.experience.title': '経歴',
-      'index.experience.lead': '成果と学習の過程を時系列で整理し、一目で理解できるタイムライン。',
-      'index.experience.cta': 'タイムラインを詳しく見る',
-      'index.skills.eyebrow': 'Skill Radar',
-      'index.skills.title': 'スキル',
-      'index.skills.lead': '密度を抑えた3レイヤー構成で、日々の実装・協働・学習のフォーカスを整理しています。',
-      'index.contact.eyebrow': 'Get in touch',
-      'index.contact.title': 'お問い合わせ',
-      'contact.cta.title': 'お気軽にお問い合わせください',
-      'contact.cta.body': 'お仕事のご相談、技術的な質問、コラボレーションなど、どんなことでもお気軽にご連絡ください。',
-      'timeline.title': 'タイムライン・実績',
-      'timeline.summary': '学習・開発・研究・受賞・登壇などの歩みを時系列で紹介します。継続的な成長と挑戦の軌跡をご覧ください。',
-      'timeline.ongoing.title': '継続的な取り組み'
+      'index.contact.title': 'お問い合わせ'
     },
     en: {
       'nav.about': 'About',
       'nav.projects': 'Projects',
-      'nav.experience': 'Experience',
-      'nav.skills': 'Skills',
-      'nav.timeline': 'Experience',
-      'nav.resume': 'Resume',
+      'nav.experience': 'Experience', 
       'nav.contact': 'Contact',
-      'breadcrumb.home': 'Home',
-      'index.hero.eyebrow': 'Serverless × Data / Operational Impact',
       'index.hero.title': 'Building products that stay in operation',
-      'index.hero.subtitle': 'Delivering measurable outcomes across data platforms and serverless operations with an iterate-and-improve cycle.',
-      'index.hero.cta.resume': 'View Resume',
-      'index.hero.cta.github': 'GitHub',
-      'index.hero.cta.contact': 'Contact',
-      'index.about.eyebrow': 'Who I build for',
       'index.about.title': 'About',
-      'index.about.lead': 'I connect data, cloud, and research to solve problems end to end—from discovery to sustainable operations.',
-      'index.projects.eyebrow': 'Selected Work',
       'index.projects.title': 'Featured Projects',
-      'index.projects.lead': 'Three flagship engagements plus a research highlight with KPIs front and center.',
-      'index.experience.eyebrow': 'Timeline',
-      'index.experience.title': 'Journey',
-      'index.experience.lead': 'A readable track of milestones, impact, and learning moments.',
-      'index.experience.cta': 'View full timeline',
-      'index.skills.eyebrow': 'Skill Radar',
-      'index.skills.title': 'Skills',
-      'index.skills.lead': 'Three layers that clarify daily delivery, weekly collaboration, and ongoing learning.',
-      'index.contact.eyebrow': 'Get in touch',
-      'index.contact.title': 'Contact',
-      'contact.cta.title': 'Get In Touch',
-      'contact.cta.body': 'Feel free to reach out for work opportunities, technical questions, or collaboration.',
-      'timeline.title': 'Timeline & Achievements',
-      'timeline.summary': 'A chronological journey of learning, delivery, research, awards, and talks.',
-      'timeline.ongoing.title': 'Ongoing Initiatives'
+      'index.contact.title': 'Contact'
     }
   };
 
+  // 軽量化された言語切り替え機能
   const applyTranslations = (lang) => {
-    // 書字言語属性を更新
     document.documentElement.lang = lang;
     
-    // data-i18n要素のテキストを置換
-    document.querySelectorAll('[data-i18n]')
-      .forEach(el => {
+    // 必要最小限のi18n適用（パフォーマンス重視）
+    const i18nElements = document.querySelectorAll('[data-i18n]');
+    if (i18nElements.length > 0) {
+      i18nElements.forEach(el => {
         const key = el.getAttribute('data-i18n');
-        const translation = i18n[lang] && i18n[lang][key];
-        if (translation) {
-          el.textContent = translation;
+        if (i18n[lang] && i18n[lang][key]) {
+          el.textContent = i18n[lang][key];
         }
       });
+    }
     
     // 言語ボタンのテキストを更新
-    if (langBtn) {
-      langBtn.textContent = lang === 'ja' ? '🌐 EN' : '🌐 JP';
-      langBtn.setAttribute('aria-label', lang === 'ja' ? 'Switch to English' : '日本語に切り替え');
+    if (elements.langBtn) {
+      elements.langBtn.textContent = lang === 'ja' ? '🌐 EN' : '🌐 JP';
+      elements.langBtn.setAttribute('aria-label', lang === 'ja' ? 'Switch to English' : '日本語に切り替え');
     }
   };
 
-  // 年の自動更新
-  if (yearEl) yearEl.textContent = String(new Date().getFullYear());
+  // 年の自動更新（最適化）
+  if (elements.yearEl) elements.yearEl.textContent = new Date().getFullYear().toString();
 
-  // 言語制御の初期化
+  // 言語制御の初期化（最適化）
   const savedLang = localStorage.getItem('language') || 'ja';
-  root.setAttribute('data-lang', savedLang);
+  document.documentElement.setAttribute('data-lang', savedLang);
   applyTranslations(savedLang);
 
-  // 言語切り替え
-  langBtn?.addEventListener('click', () => {
-    const current = root.getAttribute('data-lang') || 'ja';
+  // 言語切り替え（要素キャッシュ活用）
+  elements.langBtn?.addEventListener('click', () => {
+    const current = document.documentElement.getAttribute('data-lang') || 'ja';
     const next = current === 'ja' ? 'en' : 'ja';
     localStorage.setItem('language', next);
-    root.setAttribute('data-lang', next);
+    document.documentElement.setAttribute('data-lang', next);
     document.documentElement.lang = next;
     applyTranslations(next);
   });
 
-  // モバイルナビ
-  navToggle?.addEventListener('click', () => {
-    const isOpen = siteNav?.classList.toggle('open');
-    navToggle.setAttribute('aria-expanded', String(Boolean(isOpen)));
+  // モバイルナビ（要素キャッシュ活用）
+  elements.navToggle?.addEventListener('click', () => {
+    const isOpen = elements.siteNav?.classList.toggle('open');
+    elements.navToggle.setAttribute('aria-expanded', String(Boolean(isOpen)));
   });
-  siteNav?.querySelectorAll('a').forEach((a) => a.addEventListener('click', () => {
-    siteNav.classList.remove('open');
-    navToggle?.setAttribute('aria-expanded', 'false');
-  }));
+  
+  // ナビリンククリック時にメニューを閉じる（イベント委譲で効率化）
+  elements.siteNav?.addEventListener('click', (e) => {
+    if (e.target.tagName === 'A') {
+      elements.siteNav.classList.remove('open');
+      elements.navToggle?.setAttribute('aria-expanded', 'false');
+    }
+  });
 
   // 現在位置に応じたナビ有効化（内部リンクのみ）
   const navLinks = Array.from(document.querySelectorAll('header .site-nav a[href^="#"]'));
@@ -664,50 +625,53 @@
       );
     });
 
-    // パフォーマンス調整のため、reduced-motion設定を考慮
+    // パフォーマンス調整（reduced-motion対応）
     const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    const foamInterval = prefersReduced ? 200 : 100; // 生成間隔（ms）
-    const maxFoams = prefersReduced ? 20 : 40; // 最大泡数
+    const foamInterval = prefersReduced ? 200 : 100; 
+    const maxFoams = prefersReduced ? 20 : 40;
 
-    // 泡の生成
+    // 泡の生成（最適化版）
     function createFoam() {
       if (foams.length >= maxFoams) return;
 
       const positionX = Math.floor(Math.random() * (clientWidth - 80)) + 40;
-      const size = Math.floor(Math.random() * 20) + 8; // 8-28px
-      const opacity = Math.random() * 0.6 + 0.3; // 0.3-0.9
+      const size = Math.floor(Math.random() * 20) + 8;
+      const opacity = Math.random() * 0.6 + 0.3;
 
       const foam = document.createElement('div');
       foam.className = 'dynamic-bubble motion-okay';
-      foam.style.cssText = `
-        width: ${size}px;
-        height: ${size}px;
-        left: ${positionX}px;
-        top: ${clientHeight}px;
-        opacity: ${opacity};
-        --size: ${size}px;
-        position: fixed;
-      `;
+      
+      // CSS設定を効率化
+      Object.assign(foam.style, {
+        width: `${size}px`,
+        height: `${size}px`,
+        left: `${positionX}px`,
+        top: `${clientHeight}px`,
+        opacity: opacity,
+        position: 'fixed'
+      });
+      
+      foam.style.setProperty('--size', `${size}px`);
 
-      // クリックイベントを追加
-      foam.addEventListener('click', handleBubbleClick);
+      // クリックイベント（一度だけ実行される最適化）
+      foam.addEventListener('click', handleBubbleClick, { once: true });
 
       foamContainer.appendChild(foam);
       foams.push({
         el: foam,
         startX: positionX,
         currentX: positionX,
-        currentY: clientHeight, // 画面最下部から開始
+        currentY: clientHeight,
         size: size,
-        speed: Math.random() * 2 + 1.5, // 1.5-3.5px/frame（しっかり動くように）
-        drift: (Math.random() - 0.5) * 0.5, // 左右のゆらめき
-        life: 0, // 生存時間
-        maxLife: Math.random() * 400 + 300, // より長いライフサイクル
-        popped: false // ポップ済みフラグ
+        speed: Math.random() * 2 + 1.5,
+        drift: (Math.random() - 0.5) * 0.5,
+        life: 0,
+        maxLife: Math.random() * 400 + 300,
+        popped: false
       });
     }
 
-    // 泡クリック時のハンドラ
+    // バブルクリックハンドラ（最適化版）
     function handleBubbleClick(event) {
       const bubble = event.target;
       const foamIndex = foams.findIndex(foam => foam.el === bubble);
@@ -718,56 +682,55 @@
       bubble.classList.add('popping');
       foams[foamIndex].popped = true;
 
-      // アニメーション終了後に削除
+      // アニメーション終了後に削除（最適化）
       bubble.addEventListener('animationend', () => {
         bubble.remove();
         foams.splice(foamIndex, 1);
       }, { once: true });
 
-      // 音声効果（オプション）- 小さなポップ音のような効果を視覚で表現
+      // ポップエフェクト
       createPopEffect(event.clientX, event.clientY);
     }
 
-    // ポップエフェクト（追加の視覚効果）
+    // ポップエフェクト（パフォーマンス最適化版）
     function createPopEffect(x, y) {
+      const fragment = document.createDocumentFragment(); // DOM操作を一度にまとめる
+      
       for (let i = 0; i < 6; i++) {
         const particle = document.createElement('div');
-        particle.style.cssText = `
-          position: fixed;
-          left: ${x}px;
-          top: ${y}px;
-          width: 4px;
-          height: 4px;
-          background: rgba(135,206,235,0.8);
-          border-radius: 50%;
-          pointer-events: none;
-          z-index: 1000;
-        `;
+        
+        // スタイル設定を効率化
+        Object.assign(particle.style, {
+          position: 'fixed',
+          left: `${x}px`,
+          top: `${y}px`,
+          width: '4px',
+          height: '4px',
+          background: 'rgba(135,206,235,0.8)',
+          borderRadius: '50%',
+          pointerEvents: 'none',
+          zIndex: '1000'
+        });
 
-        document.body.appendChild(particle);
+        fragment.appendChild(particle);
 
-        // パーティクルアニメーション
+        // パーティクルアニメーション（最適化）
         const angle = (i / 6) * Math.PI * 2;
         const distance = 30 + Math.random() * 20;
         const endX = x + Math.cos(angle) * distance;
         const endY = y + Math.sin(angle) * distance;
 
         particle.animate([
-          { 
-            transform: 'translate(-50%, -50%) scale(1)', 
-            opacity: 1 
-          },
-          { 
-            transform: `translate(${endX - x}px, ${endY - y}px) scale(0)`, 
-            opacity: 0 
-          }
+          { transform: 'translate(-50%, -50%) scale(1)', opacity: 1 },
+          { transform: `translate(${endX-x-2}px, ${endY-y-2}px) scale(0)`, opacity: 0 }
         ], {
           duration: 400,
-          easing: 'ease-out'
-        }).onfinish = () => {
-          particle.remove();
-        };
+          easing: 'ease-out',
+          fill: 'forwards'
+        }).addEventListener('finish', () => particle.remove());
       }
+      
+      document.body.appendChild(fragment);
     }
 
     // 泡の動きを更新

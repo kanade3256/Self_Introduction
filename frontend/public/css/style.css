@@ -23,10 +23,6 @@
   box-sizing: border-box;
 }
 
-/* Allow specific components to keep motion even in reduced motion environments. */
-.motion-okay {
-}
-
 :root {
   color-scheme: light;
   --bg: #ffffff;
@@ -55,9 +51,6 @@
   --font-sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, var(--font-sans-jp);
   --font-mono: ui-monospace, 'SF Mono', 'Monaco', 'Cascadia Code', 'JetBrains Mono', 'Consolas', 'SFMono-Regular', monospace;
 
-  --shadow-soft: 0 20px 40px rgba(30, 41, 59, 0.15);
-  --shadow-card: 0 8px 25px rgba(30, 41, 59, 0.20);
-
   --space-1: 0.25rem;
   --space-2: 0.5rem;
   --space-3: 0.75rem;
@@ -73,13 +66,14 @@
   --radius-md: 16px;
   --radius-lg: 24px;
 
+  /* 統合されたshadow定義 */
   --shadow-soft: 0 24px 60px rgba(5, 9, 20, 0.35);
+  --shadow-card: 0 16px 40px rgba(8, 13, 28, 0.38);
+  --shadow-focus: 0 0 0 4px color-mix(in oklab, var(--ring), transparent 55%);
   
   /* Performance: Content Visibility Optimization */
   --intrinsic-height-section: 800px;
   --intrinsic-height-large: 1200px;
-  --shadow-card: 0 16px 40px rgba(8, 13, 28, 0.38);
-  --shadow-focus: 0 0 0 4px color-mix(in oklab, var(--ring), transparent 55%);
 
   --transition-fast: 120ms ease;
   --transition-base: 240ms ease;
@@ -2438,9 +2432,9 @@ section[id] {
   transition: opacity 0.4s ease, transform 0.4s ease !important;
 }
 
-/* -----------------------------------------------------------
-   Responsive
------------------------------------------------------------ */
+/* ===== モバイル最適化（統合） ===== */
+
+/* タブレット対応 */
 @media (max-width: 1000px) {
   .hero__grid {
     grid-template-columns: minmax(0, 1fr);
@@ -2493,7 +2487,117 @@ section[id] {
   }
 }
 
+/* モバイル対応 */
 @media (max-width: 800px) {
+  /* レイアウト調整 */
+  .layout-container {
+    width: min(100%, 100% - 2rem);
+  }
+
+  .section {
+    padding-block: var(--space-section-mobile);
+  }
+
+  section[id] {
+    scroll-margin-top: 80px;
+  }
+
+  /* ナビゲーション */
+  .site-header__toggle {
+    display: flex;
+  }
+
+  .site-header__nav {
+    position: absolute;
+    inset: 0;
+    top: 100%;
+    flex-direction: column;
+    align-items: stretch;
+    background: rgba(255, 255, 255, 0.95);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    margin: 0.75rem auto 0;
+    width: calc(100% - 2rem);
+    padding: var(--space-5);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12), 0 2px 8px rgba(0, 0, 0, 0.08);
+    opacity: 0;
+    pointer-events: none;
+    transform: translateY(-12px);
+    transition: opacity var(--transition-base), transform var(--transition-base);
+    backdrop-filter: blur(20px);
+  }
+
+  .site-header__nav.open {
+    opacity: 1;
+    pointer-events: auto;
+    transform: translateY(0);
+  }
+
+  /* ヒーローセクション */
+  .hero__metrics {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .timeline-preview__item {
+    grid-template-columns: repeat(1, minmax(0, 1fr));
+  }
+
+  .project-catalog__meta {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--space-1);
+  }
+
+  .project-catalog__metrics {
+    justify-content: flex-start;
+  }
+
+  /* プロジェクトスライダー */
+  .projects-row {
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--space-4);
+  }
+
+  .project-row-card {
+    padding: var(--space-4);
+    min-height: 350px;
+  }
+
+  .projects-horizontal-slider__controls {
+    gap: var(--space-3);
+  }
+
+  /* 水中エフェクト */
+  .seaweed {
+    width: 8px;
+    filter: blur(1px);
+  }
+  
+  .seaweed--thick {
+    width: 12px;
+  }
+  
+  .water-surface-reflection {
+    height: 30vh;
+  }
+  
+  .fish-shadow {
+    width: 40px;
+    height: 15px;
+  }
+  
+  .fish-shadow--large {
+    width: 60px;
+    height: 20px;
+  }
+
+  .dynamic-bubble { 
+    filter: blur(.2px);
+  }
+  .foam-container {
+    will-change: auto;
+  }
+}
   .hero__metrics {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
@@ -3937,29 +4041,6 @@ html[data-caustics="off"] .ocean-overlay { display: none !important; }
   .dynamic-bubble {
     transition: opacity 1s ease-out, transform 1s ease-out;
   }
-}
-
-/* 🐛 デバッグ用：泡を確実に見えるようにする（一時的） */
-.bubble {
-  /* 泡を非常に見やすく強調 */
-  background: radial-gradient(ellipse at 30% 30%,
-              rgba(135,206,235,.9),  /* より青く */
-              rgba(255,255,255,.8) 30%,
-              rgba(135,206,235,.5) 60%,
-              rgba(255,255,255,.2) 80%,
-              rgba(0,0,0,0) 95%) !important;
-  box-shadow: 
-    inset 0 0 15px rgba(135,206,235,.7),
-    0 0 20px rgba(135,206,235,.4),
-    0 0 30px rgba(255,255,255,.2) !important;
-  border: 1px solid rgba(135,206,235,.3) !important;
-  opacity: 0.8 !important;  /* 強制的に見えるように */
-}
-
-/* 最初の数個の泡を即座に表示（デバッグ用） */
-.bubble:nth-child(-n+5) {
-  --delay: 0s !important;
-  opacity: 1 !important;
 }
 
 /* ===== Phase4: Scroll-Depth Effects ===== */

@@ -61,6 +61,7 @@ export default defineConfig({
   vite: {
     build: {
       assetsInlineLimit: 0,
+      minify: 'esbuild', // 高速な最小化
       rollupOptions: {
         output: {
           // 本番環境でのアセットファイル名を調整
@@ -74,15 +75,15 @@ export default defineConfig({
               return `assets/[name].[hash][extname]`;
             }
             if (/css/i.test(extType)) {
-              return `css/[name][extname]`;
+              return `css/[name].[hash][extname]`; // CSSにもハッシュ追加
             }
             if (/js/i.test(extType)) {
-              return `js/[name][extname]`;
+              return `js/[name].[hash][extname]`; // JSにもハッシュ追加
             }
             return `assets/[name].[hash][extname]`;
           },
           chunkFileNames: 'js/[name].[hash].js',
-          entryFileNames: 'js/[name].js'
+          entryFileNames: 'js/[name].[hash].js' // エントリーファイルにもハッシュ追加
         }
       }
     }
