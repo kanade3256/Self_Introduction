@@ -253,7 +253,8 @@ const getNavAriaCurrent = (href: string) => {
       <slot />
     </main>
 
-    <!-- 海藻エフェクト（ページ最下部に固定） -->
+    <!-- 水中エフェクトコンテナ（全ページで共通） -->
+    <div id="bubbleContainer" class="water-effects-container" aria-hidden="true"></div>
     <div id="seaweed-container" class="seaweed-container" aria-hidden="true"></div>
 
     <footer class="site-footer" role="contentinfo">
