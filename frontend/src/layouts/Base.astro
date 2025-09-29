@@ -1,4 +1,6 @@
 ---
+import Bubbles from '../components/Bubbles.astro';
+
 export interface Props {
   title?: string;
   description?: string;
@@ -230,7 +232,19 @@ const getNavAriaCurrent = (href: string) => {
 
     <div class="layout__sentinel" aria-hidden="true"></div>
 
-    <!-- ✅ スクロール深度レイヤー（本文より手前に常駐） -->
+    <!-- 水中エフェクト群 -->
+    <!-- 水面反射エフェクト -->
+    <div class="water-surface-reflection" aria-hidden="true">
+      <div class="caustic-light"></div>
+    </div>
+    
+    <!-- 魚影エフェクト -->
+    <div id="fish-container" class="fish-container" aria-hidden="true"></div>
+    
+    <!-- 動的泡エフェクト用コンテナ（全画面固定） -->
+    <div id="foam-container" class="foam-container" aria-hidden="true"></div>
+
+    <!-- スクロール深度レイヤー（本文より手前に常駐） -->
     <div class="depth-layer" aria-hidden="true">
       <div class="depth-layer__light"></div>
     </div>
@@ -238,6 +252,9 @@ const getNavAriaCurrent = (href: string) => {
     <main id="content" class="site-main" role="main">
       <slot />
     </main>
+
+    <!-- 海藻エフェクト（ページ最下部に固定） -->
+    <div id="seaweed-container" class="seaweed-container" aria-hidden="true"></div>
 
     <footer class="site-footer" role="contentinfo">
       <div class="layout-container site-footer__inner">

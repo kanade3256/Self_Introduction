@@ -1,7 +1,6 @@
 ---
 import { getCollection, getEntry } from 'astro:content';
 import Base from '../../layouts/Base.astro';
-import Bubbles from '../../components/Bubbles.astro';
 
 // 静的ルート生成のためのgetStaticPaths
 export async function getStaticPaths() {
@@ -71,8 +70,6 @@ if (data.links?.repo || data.links?.github) {
 
   <!-- プロジェクト詳細記事 -->
   <article class="project-detail on-deep" style="position: relative; min-height: 100vh;">
-    <!-- バブルエフェクトを追加 -->
-    <Bubbles count={8} />
 
     <!-- プロジェクトヘッダー -->
     <section class="section section--hero project-hero">

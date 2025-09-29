@@ -1,4 +1,4 @@
-/* -----------------------------------------------------------
+﻿/* -----------------------------------------------------------
    Global Design Tokens
 ----------------------------------------------------------- */
 
@@ -51,9 +51,6 @@
   --font-sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, var(--font-sans-jp);
   --font-mono: ui-monospace, 'SF Mono', 'Monaco', 'Cascadia Code', 'JetBrains Mono', 'Consolas', 'SFMono-Regular', monospace;
 
-  --shadow-soft: 0 20px 40px rgba(30, 41, 59, 0.15);
-  --shadow-card: 0 8px 25px rgba(30, 41, 59, 0.20);
-
   --space-1: 0.25rem;
   --space-2: 0.5rem;
   --space-3: 0.75rem;
@@ -69,13 +66,14 @@
   --radius-md: 16px;
   --radius-lg: 24px;
 
+  /* 統合されたshadow定義 */
   --shadow-soft: 0 24px 60px rgba(5, 9, 20, 0.35);
+  --shadow-card: 0 16px 40px rgba(8, 13, 28, 0.38);
+  --shadow-focus: 0 0 0 4px color-mix(in oklab, var(--ring), transparent 55%);
   
   /* Performance: Content Visibility Optimization */
   --intrinsic-height-section: 800px;
   --intrinsic-height-large: 1200px;
-  --shadow-card: 0 16px 40px rgba(8, 13, 28, 0.38);
-  --shadow-focus: 0 0 0 4px color-mix(in oklab, var(--ring), transparent 55%);
 
   --transition-fast: 120ms ease;
   --transition-base: 240ms ease;
@@ -116,7 +114,9 @@ html {
   background-attachment: scroll;
 }
 
-html, body { min-height: 100%; }
+html, body { 
+  min-height: 100%; 
+}
 
 body {
   margin: 0;
@@ -127,6 +127,8 @@ body {
   color: var(--ocean-text);
   max-width: 100%;
   overflow-x: hidden; /* prevent horizontal scroll due to effects */
+  position: relative; /* 海藻コンテナのabsolute配置の基準点 */
+  min-height: 100vh; /* 最小高さを確保 */
 }
 
 /* Performance: Content Visibility for off-screen sections */
@@ -325,8 +327,8 @@ section[id] {
 .section--layer {
   /* Completely transparent background to maintain gradient */
   background: transparent;
-  border-top: 1px solid color-mix(in srgb, var(--border) 25%, transparent 75%);
-  border-bottom: 1px solid color-mix(in srgb, var(--border) 25%, transparent 75%);
+  /* Remove borders to eliminate white lines between sections */
+  border: none;
   backdrop-filter: none;
 }
 
@@ -2430,9 +2432,9 @@ section[id] {
   transition: opacity 0.4s ease, transform 0.4s ease !important;
 }
 
-/* -----------------------------------------------------------
-   Responsive
------------------------------------------------------------ */
+/* ===== モバイル最適化（統合） ===== */
+
+/* タブレット対応 */
 @media (max-width: 1000px) {
   .hero__grid {
     grid-template-columns: minmax(0, 1fr);
@@ -2485,7 +2487,117 @@ section[id] {
   }
 }
 
+/* モバイル対応 */
 @media (max-width: 800px) {
+  /* レイアウト調整 */
+  .layout-container {
+    width: min(100%, 100% - 2rem);
+  }
+
+  .section {
+    padding-block: var(--space-section-mobile);
+  }
+
+  section[id] {
+    scroll-margin-top: 80px;
+  }
+
+  /* ナビゲーション */
+  .site-header__toggle {
+    display: flex;
+  }
+
+  .site-header__nav {
+    position: absolute;
+    inset: 0;
+    top: 100%;
+    flex-direction: column;
+    align-items: stretch;
+    background: rgba(255, 255, 255, 0.95);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    margin: 0.75rem auto 0;
+    width: calc(100% - 2rem);
+    padding: var(--space-5);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12), 0 2px 8px rgba(0, 0, 0, 0.08);
+    opacity: 0;
+    pointer-events: none;
+    transform: translateY(-12px);
+    transition: opacity var(--transition-base), transform var(--transition-base);
+    backdrop-filter: blur(20px);
+  }
+
+  .site-header__nav.open {
+    opacity: 1;
+    pointer-events: auto;
+    transform: translateY(0);
+  }
+
+  /* ヒーローセクション */
+  .hero__metrics {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .timeline-preview__item {
+    grid-template-columns: repeat(1, minmax(0, 1fr));
+  }
+
+  .project-catalog__meta {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--space-1);
+  }
+
+  .project-catalog__metrics {
+    justify-content: flex-start;
+  }
+
+  /* プロジェクトスライダー */
+  .projects-row {
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--space-4);
+  }
+
+  .project-row-card {
+    padding: var(--space-4);
+    min-height: 350px;
+  }
+
+  .projects-horizontal-slider__controls {
+    gap: var(--space-3);
+  }
+
+  /* 水中エフェクト */
+  .seaweed {
+    width: 8px;
+    filter: blur(1px);
+  }
+  
+  .seaweed--thick {
+    width: 12px;
+  }
+  
+  .water-surface-reflection {
+    height: 30vh;
+  }
+  
+  .fish-shadow {
+    width: 40px;
+    height: 15px;
+  }
+  
+  .fish-shadow--large {
+    width: 60px;
+    height: 20px;
+  }
+
+  .dynamic-bubble { 
+    filter: blur(.2px);
+  }
+  .foam-container {
+    will-change: auto;
+  }
+}
   .hero__metrics {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
@@ -2685,8 +2797,8 @@ section[id] {
 }
 
 [data-theme="light"] .section--layer {
-  border-top: 1px solid rgba(209, 213, 219, 0.3);
-  border-bottom: 1px solid rgba(209, 213, 219, 0.3);
+  /* Remove borders to eliminate white lines between sections */
+  border: none;
   background: transparent;
 }
 
@@ -3374,11 +3486,22 @@ section[id] {
    Motion Preferences
 ----------------------------------------------------------- */
 @media (prefers-reduced-motion: reduce) {
-  *, *::before, *::after {
+  *:not(.motion-okay), *:not(.motion-okay)::before, *:not(.motion-okay)::after {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
+  }
+
+  /* Exception: keep bubble animations for visual design even in reduced motion.
+     We still minimize other animations to respect user preference. */
+  .bubble,
+  .bubbles .bubble,
+  .bubble-item {
+    animation: bubble-rise var(--dur, 20s) linear var(--delay, 0s) infinite,
+               bubble-drift calc(var(--dur, 20s) * 0.7) ease-in-out var(--delay, 0s) infinite,
+               bubble-shimmer calc(var(--dur, 20s) * 0.3) ease-in-out var(--delay, 0s) infinite !important;
+    animation-fill-mode: both !important;
   }
   .btn,
   .card,
@@ -3451,50 +3574,165 @@ html[data-caustics="off"] .ocean-overlay { display: none !important; }
 /* ===== Phase3: Bubbles (CSS-only animation) ===== */
 
 .bubbles {
-  position: absolute;
-  inset: 0;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
   pointer-events: none;
-  z-index: 0; /* 背景より前、コンテンツより後ろ */
+  z-index: 1; /* コンテンツを妨害しないように下げる */
+  overflow: hidden;
+}
+
+/* ===== 動的泡エフェクト (JavaScript制御) ===== */
+
+.foam-container {
+  position: fixed; /* absolute から fixed に戻してページ全体をカバー */
+  top: 0; /* 上部から開始 */
+  left: 0;
+  width: 100vw;
+  height: 100vh; /* ビューポート全体の高さ */
+  pointer-events: none;
+  z-index: 1; /* 適切なレイヤー順序 */
+  overflow: visible; /* 泡が上部まで見えるように */
+}
+
+.dynamic-bubble {
+  position: absolute;
+  border-radius: 50%;
+  background: radial-gradient(ellipse at 30% 30%,
+              rgba(135,206,235,.9),
+              rgba(255,255,255,.7) 35%,
+              rgba(135,206,235,.4) 70%,
+              rgba(255,255,255,.1) 85%,
+              rgba(0,0,0,0) 95%);
+  box-shadow: 
+    inset 0 0 calc(var(--size) * 0.4) rgba(135,206,235,.6),
+    0 0 calc(var(--size) * 0.6) rgba(135,206,235,.3),
+    0 0 calc(var(--size) * 1.2) rgba(255,255,255,.15);
+  border: 1px solid rgba(135,206,235,.2);
+  will-change: transform, opacity;
+  transition: opacity 0.3s ease-out;
+  cursor: pointer; /* クリック可能であることを示す */
+  pointer-events: auto; /* クリックイベントを有効化 */
+}
+
+/* 泡のポップエフェクト */
+.dynamic-bubble.popping {
+  animation: bubble-pop 0.5s ease-out forwards;
+  pointer-events: none; /* ポップ中はクリック無効 */
+}
+
+@keyframes bubble-pop {
+  0% { 
+    transform: scale(1); 
+    opacity: 1; 
+  }
+  30% { 
+    transform: scale(1.4); 
+    opacity: 0.8; 
+    box-shadow: 
+      inset 0 0 calc(var(--size) * 0.6) rgba(135,206,235,.8),
+      0 0 calc(var(--size) * 1.5) rgba(135,206,235,.6),
+      0 0 calc(var(--size) * 2.5) rgba(255,255,255,.3);
+  }
+  70% { 
+    transform: scale(1.8); 
+    opacity: 0.4;
+    background: radial-gradient(ellipse at 30% 30%,
+                rgba(255,255,255,.6),
+                rgba(135,206,235,.3) 40%,
+                transparent 80%);
+  }
+  100% { 
+    transform: scale(0.2); 
+    opacity: 0; 
+  }
+}
+
+/* ホバーエフェクト（デスクトップのみ） */
+@media (hover: hover) {
+  .dynamic-bubble:hover {
+    transform: scale(1.1);
+    box-shadow: 
+      inset 0 0 calc(var(--size) * 0.5) rgba(135,206,235,.8),
+      0 0 calc(var(--size) * 0.8) rgba(135,206,235,.5),
+      0 0 calc(var(--size) * 1.5) rgba(255,255,255,.2);
+    transition: all 0.2s ease-out;
+  }
 }
 
 .bubble {
   position: absolute;
-  bottom: -12vh;              /* 画面外の下から湧く */
-  border-radius: 9999px;
+  bottom: -10vh;              /* 画面外の下から湧く */
+  border-radius: 50%;
   background: radial-gradient(ellipse at 30% 30%,
-              rgba(255,255,255,.9),
-              rgba(255,255,255,.15) 60%,
-              rgba(255,255,255,0) 70%);
-  box-shadow: inset 0 0 10px rgba(255,255,255,.7);
-  filter: blur(.2px);
-  opacity: 0;                 /* 最初は透明 */
+              rgba(255,255,255,.95),
+              rgba(135,206,235,.7) 40%,
+              rgba(255,255,255,.4) 70%,
+              rgba(255,255,255,0) 90%);
+  box-shadow: 
+    inset 0 0 12px rgba(255,255,255,.8),
+    0 0 8px rgba(135,206,235,.6),
+    0 0 16px rgba(255,255,255,.3);
+  filter: blur(.05px);
+  opacity: 0.6;                 /* 初期で見えるように */
   animation:
-    bubble-rise var(--dur, 16s) linear var(--delay, 0s) infinite,
-    bubble-drift calc(var(--dur, 16s) * 0.8) ease-in-out var(--delay, 0s) infinite;
+    bubble-rise var(--dur, 20s) linear var(--delay, 0s) infinite,
+    bubble-drift calc(var(--dur, 20s) * 0.7) ease-in-out var(--delay, 0s) infinite,
+    bubble-shimmer calc(var(--dur, 20s) * 0.3) ease-in-out var(--delay, 0s) infinite;
+  animation-iteration-count: infinite !important;
+  /* アニメーションを即座開始 */
+  animation-fill-mode: both;
 }
 
 @keyframes bubble-rise {
-  0%   { transform: translate3d(0, 0, 0) scale(.65); opacity: 0; }
-  8%   { opacity: .95; }
-  100% { transform: translate3d(0, -120vh, 0) scale(1.05); opacity: 0; }
+  0%   { 
+    transform: translate3d(0, 0, 0) scale(.3); 
+    opacity: 0; 
+  }
+  3%   { 
+    opacity: calc(var(--max-opacity, .7) * 0.5); 
+  }
+  8%  { 
+    opacity: var(--max-opacity, .7); 
+    transform: translate3d(0, -8vh, 0) scale(.5); 
+  }
+  90%  { 
+    opacity: calc(var(--max-opacity, .7) * 0.8); 
+    transform: translate3d(0, -95vh, 0) scale(1.1); 
+  }
+  100% { 
+    transform: translate3d(0, -110vh, 0) scale(1.3); 
+    opacity: 0; 
+  }
 }
 
-/* 微小な左右揺れ（リアル寄り。やり過ぎない） */
+/* より自然な左右の揺れ */
 @keyframes bubble-drift {
   0%   { transform: translateX(0) }
+  25%  { transform: translateX(calc(var(--xdrift, 8px) * 0.7)) }
   50%  { transform: translateX(var(--xdrift, 8px)) }
+  75%  { transform: translateX(calc(var(--xdrift, 8px) * 0.3)) }
   100% { transform: translateX(0) }
+}
+
+/* 泡の輝き効果 */
+@keyframes bubble-shimmer {
+  0%   { filter: blur(.2px) brightness(1); }
+  50%  { filter: blur(.15px) brightness(1.3); }
+  100% { filter: blur(.2px) brightness(1); }
 }
 
 /* 中層だけ泡を出す（オプション） */
 .bubbles--mid {
   -webkit-mask-image: linear-gradient(
     to bottom,
-    transparent 10vh, black 40vh, black 70vh, transparent 90vh
+    transparent 5vh, black 25vh, black 75vh, transparent 95vh
   );
   mask-image: linear-gradient(
     to bottom,
-    transparent 10vh, black 40vh, black 70vh, transparent 90vh
+    transparent 5vh, black 25vh, black 75vh, transparent 95vh
   );
 }
 
@@ -3509,6 +3747,299 @@ html[data-caustics="off"] .ocean-overlay { display: none !important; }
     animation-duration: 30s !important;
     animation-iteration-count: infinite;
     opacity: .35;
+  }
+}
+
+/* ===== 水中エフェクト: 海藻の揺れ ===== */
+
+.seaweed-container {
+  position: absolute; /* fixed から absolute に変更 */
+  bottom: 0;
+  left: 0;
+  width: 100vw;
+  height: 50vh; /* 海藻の表示範囲を制限 */
+  pointer-events: none;
+  z-index: 0; /* 背景レイヤー */
+  overflow: hidden;
+}
+
+.seaweed {
+  position: absolute;
+  bottom: 0; /* 確実にコンテナの最下部に配置 */
+  width: 12px;
+  background: linear-gradient(
+    to top,
+    rgba(34, 139, 34, 0.4) 0%,
+    rgba(46, 125, 50, 0.35) 30%,
+    rgba(56, 142, 60, 0.25) 70%,
+    rgba(67, 160, 71, 0.15) 90%,
+    transparent 100%
+  );
+  border-radius: 6px;
+  transform-origin: bottom center; /* 下部を基点に揺れる */
+  animation: seaweed-sway var(--sway-duration, 4s) ease-in-out infinite;
+  animation-delay: var(--sway-delay, 0s);
+  filter: blur(0.5px);
+}
+
+.seaweed--thin {
+  width: 6px;
+  border-radius: 3px;
+  background: linear-gradient(
+    to top,
+    rgba(34, 139, 34, 0.3) 0%,
+    rgba(46, 125, 50, 0.25) 40%,
+    rgba(56, 142, 60, 0.15) 80%,
+    transparent 100%
+  );
+}
+
+.seaweed--thick {
+  width: 18px;
+  border-radius: 9px;
+  background: linear-gradient(
+    to top,
+    rgba(34, 139, 34, 0.5) 0%,
+    rgba(46, 125, 50, 0.4) 25%,
+    rgba(56, 142, 60, 0.3) 60%,
+    rgba(67, 160, 71, 0.2) 85%,
+    transparent 100%
+  );
+}
+
+@keyframes seaweed-sway {
+  0%, 100% { 
+    transform: rotate(0deg) scaleY(1); 
+  }
+  25% { 
+    transform: rotate(var(--sway-angle, 8deg)) scaleY(1.02); 
+  }
+  50% { 
+    transform: rotate(0deg) scaleY(0.98); 
+  }
+  75% { 
+    transform: rotate(calc(var(--sway-angle, 8deg) * -1)) scaleY(1.01); 
+  }
+}
+
+/* 異なる高さの海藻バリエーション */
+.seaweed--short { height: 15vh; }
+.seaweed--medium { height: 25vh; }
+.seaweed--tall { height: 35vh; }
+.seaweed--very-tall { height: 45vh; }
+
+/* ===== 水中エフェクト: 水面反射 ===== */
+
+.water-surface-reflection {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 50vh; /* 上半分のみ */
+  pointer-events: none;
+  z-index: 0;
+  overflow: hidden;
+  background: linear-gradient(
+    to bottom,
+    rgba(135, 206, 235, 0.08) 0%,
+    rgba(173, 216, 230, 0.05) 25%,
+    rgba(135, 206, 235, 0.03) 50%,
+    transparent 100%
+  );
+  animation: surface-ripple 8s ease-in-out infinite;
+}
+
+.caustic-light {
+  position: absolute;
+  width: 200%;
+  height: 200%;
+  top: -50%;
+  left: -50%;
+  background: 
+    radial-gradient(ellipse 300px 150px at 20% 30%, rgba(255,255,255,0.15) 0%, transparent 60%),
+    radial-gradient(ellipse 400px 200px at 70% 60%, rgba(135,206,235,0.1) 0%, transparent 70%),
+    radial-gradient(ellipse 250px 120px at 90% 20%, rgba(255,255,255,0.12) 0%, transparent 50%);
+  animation: caustic-drift 12s ease-in-out infinite;
+  mix-blend-mode: screen;
+}
+
+@keyframes surface-ripple {
+  0%, 100% { transform: scaleY(1) scaleX(1); opacity: 1; }
+  50% { transform: scaleY(1.02) scaleX(0.98); opacity: 0.8; }
+}
+
+@keyframes caustic-drift {
+  0% { transform: translate(0%, 0%) rotate(0deg); }
+  33% { transform: translate(-2%, 1%) rotate(2deg); }
+  66% { transform: translate(1%, -1%) rotate(-1deg); }
+  100% { transform: translate(0%, 0%) rotate(0deg); }
+}
+
+/* ===== 水中エフェクト: 魚影 ===== */
+
+.fish-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  pointer-events: none;
+  z-index: 0;
+  overflow: hidden;
+}
+
+.fish-shadow {
+  position: absolute;
+  width: 60px;
+  height: 20px;
+  background: rgba(0, 0, 0, 0.15);
+  border-radius: 30px 10px 30px 10px;
+  opacity: 0;
+  transform: translateX(-100px);
+  will-change: transform, opacity;
+}
+
+.fish-shadow::before {
+  content: '';
+  position: absolute;
+  right: -15px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 0;
+  height: 0;
+  border-left: 15px solid rgba(0, 0, 0, 0.15);
+  border-top: 8px solid transparent;
+  border-bottom: 8px solid transparent;
+}
+
+.fish-shadow--large {
+  width: 90px;
+  height: 30px;
+  background: rgba(0, 0, 0, 0.12);
+}
+
+.fish-shadow--large::before {
+  border-left: 20px solid rgba(0, 0, 0, 0.12);
+  border-top: 12px solid transparent;
+  border-bottom: 12px solid transparent;
+}
+
+/* ===== 水中エフェクト: レスポンシブ & パフォーマンス最適化 ===== */
+
+/* モバイル対応 */
+@media (max-width: 768px) {
+  .seaweed {
+    width: 8px;
+    filter: blur(1px);
+  }
+  
+  .seaweed--thick {
+    width: 12px;
+  }
+  
+  .water-surface-reflection {
+    height: 30vh; /* モバイルでは範囲を狭める */
+  }
+  
+  .fish-shadow {
+    width: 40px;
+    height: 15px;
+  }
+  
+  .fish-shadow--large {
+    width: 60px;
+    height: 20px;
+  }
+}
+
+/* reduced-motion設定での制御 */
+@media (prefers-reduced-motion: reduce) {
+  .seaweed {
+    animation-duration: 8s; /* より緩やか */
+  }
+  
+  .water-surface-reflection {
+    animation: none; /* 反射エフェクトを停止 */
+    opacity: 0.5;
+  }
+  
+  .caustic-light {
+    animation: none; /* 光エフェクトを停止 */
+  }
+}
+
+/* パフォーマンス最適化 */
+.seaweed,
+.fish-shadow,
+.caustic-light {
+  will-change: transform;
+}
+
+.water-surface-reflection {
+  will-change: transform, opacity;
+}
+
+/* 泡のインタラクション最適化 */
+.dynamic-bubble {
+  will-change: transform, opacity, box-shadow;
+}
+
+.dynamic-bubble.popping {
+  will-change: auto; /* ポップ中はwill-changeをリセット */
+}
+
+/* 非表示時のパフォーマンス向上 */
+@media (prefers-reduced-motion: reduce) {
+  .seaweed,
+  .water-surface-reflection,
+  .caustic-light {
+    will-change: auto;
+  }
+  
+  /* reduced-motionでは泡のインタラクションを簡略化 */
+  .dynamic-bubble:hover {
+    transform: none;
+  }
+  
+  .dynamic-bubble.popping {
+    animation-duration: 0.2s; /* より短いアニメーション */
+  }
+}
+
+/* タッチデバイス対応 */
+@media (hover: none) {
+  .dynamic-bubble {
+    /* タッチデバイスでは最初から少し大きく表示 */
+    transform: scale(1.05);
+  }
+}
+
+/* 高DPI画面対応 */
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 2dppx) {
+  .dynamic-bubble {
+    /* 高DPI画面では影をより精細に */
+    box-shadow: 
+      inset 0 0 calc(var(--size) * 0.3) rgba(135,206,235,.7),
+      0 0 calc(var(--size) * 0.5) rgba(135,206,235,.4),
+      0 0 calc(var(--size) * 1.0) rgba(255,255,255,.2);
+  }
+}
+
+/* 動的泡のモバイル対応 */
+@media (max-width: 768px) {
+  .dynamic-bubble { 
+    filter: blur(.2px);
+  }
+  .foam-container {
+    /* モバイルではパフォーマンス優先で一部制限 */
+    will-change: auto;
+  }
+}
+
+/* reduced-motion設定での動的泡制御 */
+@media (prefers-reduced-motion: reduce) {
+  .dynamic-bubble {
+    transition: opacity 1s ease-out, transform 1s ease-out;
   }
 }
 
@@ -3905,4 +4436,5 @@ html[data-depth="off"] .depth-layer { display: none !important; }
 @media print {
   body { background: #ffffff !important; color: #111 !important; }
 }
+
 
